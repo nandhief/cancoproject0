@@ -1,0 +1,214 @@
+<?php
+
+/*
+|--------------------------------------------------------------------------
+| Application Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register all of the routes for an application.
+| It's a breeze. Simply tell Laravel the URIs it should respond to
+| and give it the Closure to execute when that URI is requested.
+|
+*/
+
+date_default_timezone_set('Asia/Jakarta');
+
+Route::get('/', function() {
+  return Redirect::to('dashboard');
+});
+
+Route::post('/tester', 'UserController@tambahUser');
+
+Route::get("/login","LoginController@showLogin");
+Route::post("/login","LoginController@processLogin");
+Route::get("/logout","LoginController@processLogout");
+Route::post("/logout","LoginController@processLogout");
+
+Route::get("/dashboard","DashboardController@dashboardMain");
+Route::get("/dashboard/admin", "DashboardController@dashboardAdmin");
+
+//route new admin
+Route::get("/admin/collection/jadwal", "CollectionController@listJadwalAdmin");
+Route::get("/admin/collection/tabungan", "CollectionController@listTabunganAdmin");
+Route::get("/admin/collection/tabungan/laporan", "CollectionController@adminTabunganDownload");
+Route::get("/admin/collection/tabungan/laporan/view", "CollectionController@adminTabunganView");
+
+Route::get("/collection/collector", "CollectionController@formlistCollector");
+Route::post("/collection/collector", "CollectionController@submitCollector");
+Route::get("/collection/collector/detail", "CollectionController@listDetailCollector");
+
+Route::get("/collection/jadwal-penagihan", "CollectionController@formlistJadwal");
+Route::post("/collection/jadwal-penagihan", "CollectionController@submitJadwal");
+Route::delete("/collection/jadwal-penagihan", "CollectionController@deleteJadwal");
+Route::get("/collection/jadwal-penagihan/{buId}", "CollectionController@listDetailJadwal");
+
+//admin marker maps
+Route::get("/admin/collection/monitoring", "CollectionController@displayMonitoringAdmin");
+Route::post("/admin/collection/monitoring", "CollectionController@displayMonitoringAdmin");
+Route::get("/admin/collection/monitoring/position", "CollectionController@getPositionAdmin");
+//end marker
+
+Route::get("/collection/monitoring", "CollectionController@displayMonitoring");
+Route::post("/collection/monitoring", "CollectionController@displayMonitoring");
+Route::get("/collection/monitoring/position", "CollectionController@getPosition");
+
+///route tabungan web
+Route::get("/collection/tabungan", "CollectionController@formlistTabungan");
+Route::post("/collection/tabungan/store", "CollectionController@submitTabungan");
+Route::delete("/collection/tabungan/delete", "CollectionController@deleteTabungan");
+Route::get("/collection/tabungan/detail/{buId}", "CollectionController@detailTabungan");
+
+//route api tabungan
+Route::get("/collection/api/tabungan", "CollectionController@apiGetTabungan");
+Route::get("/collection/api/tabungan/history", "CollectionController@apiGetHistory");
+Route::post("/collection/api/tabungan/store", "CollectionController@apiUpdateTabungan");
+
+//end route
+
+Route::get("/collection/laporan", "CollectionController@listLaporan");
+Route::get("/collection/laporan/download", "CollectionController@downloadLaporan");
+Route::get("/collection/laporan/view", "CollectionController@listLaporanView");
+
+Route::get("/collection/api/jadwal", "CollectionController@apiListJadwal");
+Route::post("/collection/api/jadwal", "CollectionController@apiListJadwal");
+Route::post("/collection/api/jadwal/update", "CollectionController@apiUpdateJadwal");
+Route::post("/collection/api/jadwal/nontarget", "CollectionController@apiUpdateJadwalX");
+//api list full jadwal
+Route::get("/collection/api/jadwal/full", "CollectionController@apiListJadwalFull");
+
+Route::get("/collection/api/receipt", "CollectionController@apiGetReceipt");
+Route::post("/collection/api/receipt", "CollectionController@apiGetReceipt");
+
+Route::get("/collection/api/dashboard", "CollectionController@apiGetSummary");
+Route::post("/collection/api/dashboard", "CollectionController@apiGetSummary");
+
+Route::get("/collection/api/start-check-in", "CollectionController@apiRegisterStartCheckIn");
+Route::post("/collection/api/start-check-in", "CollectionController@apiRegisterStartCheckIn");
+
+Route::get("/collection", function() {
+  return Redirect::to("/collection/jadwal-penagihan");
+});
+Route::post("/collection", function() {
+  return Redirect::to("/collection/jadwal-penagihan");
+});
+
+//user management
+Route::get("/user", "UserController@listUsers");
+Route::get("/user/detail", "UserController@getUserData");
+Route::post("/user", "UserController@addUser");
+Route::post("/user/check", "UserController@check");
+Route::post("/user/checkuser", "UserController@checkuser");
+Route::put("/user", "UserController@updateUser");
+Route::delete("/user", "UserController@deleteUser");
+Route::get('/user/change-password', "UserController@editPassword");
+Route::post('/user/change-password', "UserController@updatePassword");
+
+//admin management
+Route::get("/admin", "UserController@listAdmin");
+Route::post("/admin/store", "UserController@addAdmin");
+Route::delete("/admin/delete", "UserController@deleteAdmin");
+Route::get("/admin/laporan", "CollectionController@adminReport");
+Route::get("/admin/laporan/download", "CollectionController@adminReportDownload");
+Route::get("/admin/laporan/view", "CollectionController@adminReportView");
+//end route
+
+Route::post("/user/reset-password", "UserController@resetUserPassword");
+Route::get("/user/reset-password", "UserController@resetUserPassword");
+
+Route::post("/user/update-status", "UserController@updateUserStatus");
+Route::get("/user/update-status", "UserController@updateUserStatus");
+
+//company management
+Route::get("/company", "CompanyController@listCompanies");
+Route::post("/company/check", "CompanyController@checkLembaga");
+Route::get("/company/detail", "CompanyController@getCompanyData");
+Route::post("/company", "CompanyController@addCompany");
+Route::post("/company-update", "CompanyController@updateCompany");
+Route::delete("/company", "CompanyController@deleteCompany");
+
+Route::post("/company/update-status", "CompanyController@updateCompanyStatus");
+Route::get("/company/update-status", "CompanyController@updateCompanyStatus");
+
+//profile
+Route::get("/profil", "ProfileController@formProfile");
+Route::put("/profil", "ProfileController@updateProfile");
+
+Route::get("/settings", "SettingController@formSettings");
+Route::post("/settings", "SettingController@updateSettings");
+
+Route::get("/ref/{refCategory}", "CollectionController@getReference");
+
+
+//admin settings
+Route::get("/adm/settings", "SettingController@formAdmSettings");
+Route::post("/adm/settings", "SettingController@updateAdmSettings");
+
+//testing
+Route::get("/tes", "LoginController@checkToken");
+Route::get("/tes1", "DashboardController@tesTgl");
+Route::get("/tes3", function() {
+  $dateA = ("2017-08-09 10:22:34");
+  $dateB = ("2017-08-10 15:11:11");
+  $arrDiff = dayDifference2($dateA, $dateB, false);
+  echo "DAY : ".$arrDiff["DAY"]."<br>";
+  echo "MONTH : ".$arrDiff["MONTH"]."<br>";
+  echo "YEAR : ".$arrDiff["YEAR"]."<br>";
+  echo "HOUR : ".$arrDiff["HOUR"]."<br>";
+  echo "MINUTE : ".$arrDiff["MINUTE"]."<br>";
+  echo "SECOND : ".$arrDiff["SECOND"]."<br>";
+});
+
+//API New
+//login server new mobile
+Route::get('/login/api', 'LoginController@mobileLogin');
+Route::post('/login/api', 'LoginController@mobileLogin');
+//api check token
+Route::get('/login/checktoken', 'LoginController@mobileCheckToken');
+//update profil new mobile
+//Route::get("/collection/profile/update", "ProfileController@profileMobile");
+Route::put("/collection/profile/update", "ProfileController@profileUpdateMobile");
+
+Route::get("/server-time", "DashboardController@tesTgl2");
+
+Route::get('/test', function () {
+    return View::make('test');
+});
+Route::post('/test', function () {
+    $objPHPExcel = PHPExcel_IOFactory::load(Input::file('file'));
+    $worksheet = $objPHPExcel->getActiveSheet();
+    $highestRow = $worksheet->getHighestRow();
+    $highestColumn = $worksheet->getHighestColumn();
+    $highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn);
+    $titles = $worksheet->rangeToArray('A1:' . $highestColumn . "1");
+    $body = $worksheet->rangeToArray('A2:' . $highestColumn . $highestRow);
+    $table = [];
+    $a = [];
+    $rules = ["KODE_GROUP", "NO_REKENING", "CAB", "ID_NASABAH", "NAMA_NASABAH", "ALAMAT", "NO_HP", "AGUNAN", "JML_PINJAMAN", "SALDO_NOMINATIF", "FP", "FB", "POKOK_BLN", "BUNGA_BLN", "KOLEKTIBILITAS", "ANGSURAN_KE", "JANGKA_WAKTU", "TGL_REALISASI", "TGL_UPLOAD_PENAGIHAN", "TGL_JADWAL", "TUNGG_POKOK", "TUNGG_BUNGA", "TUNGG_DENDA", "TAGIHAN", "PEMBAYARAN"];
+    // dump($titles, $body);
+    foreach ($titles[0] as $key => $value) {
+        if (! in_array($value, $rules)) {
+            if (isset($rules[$key])) {
+                dump('Error Kolom ' . ($key + 1) . ':' . $value . ' Tidak sama dengan ' .  $rules[$key]);
+            }
+        }
+    }
+    foreach ($body as $keyf => $field) {
+        foreach ($field as $key => $value) {
+            switch ($key) {
+                case 17:
+                case 18:
+                    $data[] = Carbon\Carbon::parse(str_replace('/', '-', $value))->format('Y-m-d');
+                    break;
+
+                default:
+                    $data[] = $value;
+                    break;
+            }
+        }
+        $a[$keyf] = array_combine($rules, $data);
+        $data = [];
+    }
+    dump($a);
+});
+
+?>
