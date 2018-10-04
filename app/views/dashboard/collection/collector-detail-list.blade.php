@@ -52,7 +52,7 @@
       <h5 class="panel-title text-semibold" style="color: #bb0a0a !important">Detil Data Collector <?php echo $ctlCollectorData->{"U_ID"}; ?></h5>
       <!--
       <div class="heading-elements">
-        <ul class="icons-list">
+        <ul class="icons-list">  
           <li><a href="javascript:addPayment()"><i class=" icon-plus2"></i> New Payment</a></li>
           <li><a data-action="collapse"></a></li>
         </ul>
@@ -61,8 +61,8 @@
     </div>
     <div class="panel-body">
       <div class="row">
-        <div class="col-lg-3">
-          <!-- <select class="form-control" id="filterPeriode" onChange="reloadPage()">
+        <div class="col-lg-3">          
+          <select class="form-control" id="filterPeriode" onChange="reloadPage()">
             <option value="<?php echo (date("Y")-1); ?>-12">Desember <?php echo date("Y")-1; ?></option>
             <option value="<?php echo date("Y"); ?>-01">Januari <?php echo date("Y"); ?></option>
             <option value="<?php echo date("Y"); ?>-02">Februari <?php echo date("Y"); ?></option>
@@ -76,21 +76,13 @@
             <option value="<?php echo date("Y"); ?>-10">Oktober <?php echo date("Y"); ?></option>
             <option value="<?php echo date("Y"); ?>-11">November <?php echo date("Y"); ?></option>
             <option value="<?php echo date("Y"); ?>-12">Desember <?php echo date("Y"); ?></option>
-          </select> -->
-          <div class="input-group">
-            <input type="text" class="form-control datepicker" id="dari" data-value="<?= date_format(date_create(Input::get('dari')), 'Y/m/d') ?>">
-            <div class="input-group-addon">s/d</div>
-            <input type="text" class="form-control datepicker" id="sampai" data-value="<?= date_format(date_create(Input::get('sampai')), 'Y/m/d') ?>">
-            <span class="input-group-btn">
-              <button class="btn btn-sm btn-info filterPeriode">Tampilkan</button>
-            </span>
-          </div>
+          </select>
           <script type="text/javascript">
             $("#filterPeriode").val("<?php echo $ctlFilterYear; ?>-<?php echo $ctlFilterMonth; ?>");
           </script>
         </div>
         <div class="col-lg-8">&nbsp;</div>
-      </div>
+      </div>          
       <div class="row">
         <div class="col-lg-12">
           <table class="table datatable-basic" style="font-size:90%;">
@@ -169,10 +161,10 @@
             </tbody>
           </table>
         </div>
-      </div>
+      </div>        
     </div>
   </div>
-</div>
+</div>  
 
 <div class="footer text-muted"></div>
 
@@ -192,9 +184,9 @@
     // ------------------------------
     // Setting datatable defaults
     $.extend( $.fn.dataTable.defaults, {
-        autoWidth: false,
+        autoWidth: false,        
         /*
-        columnDefs: [{
+        columnDefs: [{ 
             orderable: false,
             width: '80px',
             targets: [ 3 ]
@@ -235,7 +227,7 @@
     // Enable Select2 select for the length option
     $('.dataTables_length select').select2({
         minimumResultsForSearch: "-1"
-    });
+    });     
   });
 
   function reloadPage() {

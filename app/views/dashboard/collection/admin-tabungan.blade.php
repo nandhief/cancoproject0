@@ -321,7 +321,7 @@
     function(){
       createOverlay("Mohon Tunggu...");
       $.ajax({
-        type  : "DELETE",
+        type  : "POST",
         url   : "<?php echo asset_url(); ?>/collection/tabungan/delete",
         data  : "id=" + buId,
         success : function(result) {
@@ -330,7 +330,7 @@
 
           if(data["STATUS"] == "SUCCESS") {
             toastr.success(data["MESSAGE"]);
-            window.location = "<?php echo asset_url(); ?>admin/collection/tabungan";
+            window.location = "<?php echo asset_url(); ?>/admin/collection/tabungan";
           }
           else {
             toastr.error(data["MESSAGE"]);

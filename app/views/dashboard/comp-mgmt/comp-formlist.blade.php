@@ -603,8 +603,9 @@ function validasi(){
         var data = JSON.parse(result);
 
         if(data["STATUS"] == "SUCCESS") {
+          var prsh = data["PAYLOAD"]["PRSH_ID"];
           $('#mdlCompany_Edit').on('shown.bs.modal', function() {
-            $("#prshIdEdit").val(data["PAYLOAD"]["PRSH_ID"]);
+            $("#prshIdEdit").val(prsh.replace('PIN', ''));
             $("#prshNamaEdit").val(data["PAYLOAD"]["PRSH_NAMA"]);
             $("#prshTipeEdit").val(data["PAYLOAD"]["PRSH_JENIS_TIPE"]);
             $("#prshAlamatEdit").val(data["PAYLOAD"]["PRSH_ALAMAT"]);
@@ -708,12 +709,12 @@ function validasi(){
       var prshMaxCollectorX = $("#maxCollectorE").val();
 
       //console.log("data " + prshTelpEditX);
-      if(prshNamaX != "" && prshTipeX != "" && prshAlamatX != "" && prshKotaX != "" && prshPICNamaX != "" && prshPICTelpX != "" && prshMaxSupervisorX != "" && prshMaxCollectorX != "" && prshTelpX != "") {
+      if(prshNamaX != "") {
         createOverlay("Mohon Tunggu...");
         $.ajax({
           type  : "POST",
           url   : "<?php echo asset_url(); ?>/company-update",
-          data  : "prshId=" + encodeURI(prshIdX) + "&prshNama=" + encodeURI(prshNamaX) + "&prshTipe=" + encodeURI(prshTipeX) + "&prshAlamat=" + encodeURI(prshAlamatX) + "&prshKota=" + encodeURI(prshKotaX) + "&prshPICNama=" + encodeURI(prshPICNamaX) + "&prshPICTelp=" + encodeURI(prshPICTelpX) + "&prshMaxSupervisor=" + encodeURI(prshMaxSupervisorX) + "&prshMaxCollector=" + encodeURI(prshMaxCollectorX) + "&prshTelp=" + encodeURI(prshTelpX),
+          data  : "prshId=PIN" + encodeURI(prshIdX) + "&prshNama=" + encodeURI(prshNamaX) + "&prshTipe=" + encodeURI(prshTipeX) + "&prshAlamat=" + encodeURI(prshAlamatX) + "&prshKota=" + encodeURI(prshKotaX) + "&prshPICNama=" + encodeURI(prshPICNamaX) + "&prshPICTelp=" + encodeURI(prshPICTelpX) + "&prshMaxSupervisor=" + encodeURI(prshMaxSupervisorX) + "&prshMaxCollector=" + encodeURI(prshMaxCollectorX) + "&prshTelp=" + encodeURI(prshTelpX),
             success : function(result) {
             gOverlay.hide();
             var data = JSON.parse(result);
@@ -828,8 +829,8 @@ function validasi(){
     function(){
       createOverlay("Mohon Tunggu...");
       $.ajax({
-        type  : "DELETE",
-        url   : "<?php echo asset_url(); ?>/company",
+        type  : "POST",
+        url   : "<?php echo asset_url(); ?>/company/delete",
         data  : "id=" + slug,
         success : function(result) {
           gOverlay.hide();

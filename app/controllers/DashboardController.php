@@ -126,7 +126,7 @@ class DashboardController extends BaseController {
 	      //----
 	      $ringkasanPerCollector = DB::select("SELECT SUM(Y.BUD_PINJ_JUMLAH_BAYAR) AS JUMLAH_BAYAR, SUM(Y.BUD_PINJ_JUMLAH) AS JUMLAH_TAGIHAN,X.J_COLL_U_ID, Z.U_NAMA FROM coll_jadwal AS X INNER JOIN coll_batch_upload_data AS Y ON X.BUD_ID = Y.BUD_ID INNER JOIN coll_user AS Z ON X.J_COLL_U_ID = Z.U_ID WHERE X.J_TGL = ? GROUP BY J_COLL_U_ID, U_NAMA", array($thn."-".$bln."-".$tgl));
 
-				return View::make("dashboard.dashboard-admin")
+				return View::make("dashboard.dashboard-admin")	
 					->with("ctlUserData",$userData)
 					->with("ctlJmlTagihan", $jmlTagihan)
 					->with("ctlJmlBayar", $jmlBayar)
@@ -144,10 +144,10 @@ class DashboardController extends BaseController {
 					->with("ctlSummaryByCollector", $ringkasanPerCollector)
 					->with("ctlFilterMonth", $bln)
 					->with("ctlFilterYear", $thn);
-			// }
+			// }	
 			// else {
 			// 	return Redirect::to("/company");
-			// }
+			// }				
 		}
 		else {
 			Session::flush();
@@ -276,7 +276,7 @@ class DashboardController extends BaseController {
 	      //----
 	      $ringkasanPerCollector = DB::select("SELECT SUM(Y.BUD_PINJ_JUMLAH_BAYAR) AS JUMLAH_BAYAR, SUM(Y.BUD_PINJ_JUMLAH) AS JUMLAH_TAGIHAN,X.J_COLL_U_ID, Z.U_NAMA FROM coll_jadwal AS X INNER JOIN coll_batch_upload_data AS Y ON X.BUD_ID = Y.BUD_ID INNER JOIN coll_user AS Z ON X.J_COLL_U_ID = Z.U_ID WHERE X.J_TGL = ? AND X.PRSH_ID = ? GROUP BY J_COLL_U_ID, U_NAMA", array($thn."-".$bln."-".$tgl, $userData->{"PRSH_ID"}));
 
-				return View::make("dashboard.dashboard-main")
+				return View::make("dashboard.dashboard-main")	
 					->with("ctlUserData",$userData)
 					->with("ctlJmlTagihan", $jmlTagihan)
 					->with("ctlJmlBayar", $jmlBayar)
@@ -294,10 +294,10 @@ class DashboardController extends BaseController {
 					->with("ctlSummaryByCollector", $ringkasanPerCollector)
 					->with("ctlFilterMonth", $bln)
 					->with("ctlFilterYear", $thn);
-			// }
+			// }	
 			// else {
 			// 	return Redirect::to("/company");
-			// }
+			// }				
 		}
 		else {
 			Session::flush();
@@ -317,13 +317,13 @@ class DashboardController extends BaseController {
         $periode = Input::get("periode");
       }
 
-
+      
 			return composeReply("SUCCESS", "Summary data");
 		}
 		else {
 			Session::flush();
 			return composeReply("ERROR", "Silahkan login dahulu");
-		}
+		}	
 	}
 
 	public function tesTgl() {

@@ -81,7 +81,7 @@
           <div class="col-lg-4">
             <div class="input-group">
               <span class="input-group-addon"><i class="icon-user"></i></span>
-              <input type="text" class="form-control" id="userBigId" name="userBIgId" placeholder="User ID..." onkeypress="return hanyaAngka(event)">
+              <input type="text" class="form-control first-input" id="userBigId" name="userBIgId" placeholder="User ID..." onkeypress="return hanyaAngka(event)">
             </div>
           </div>
         </div>
@@ -91,7 +91,7 @@
           <div class="col-lg-4">
             <div class="input-group">
               <span class="input-group-addon"><i class="icon-user"></i></span>
-              <input type="text" class="form-control" id="userId" name="userId" placeholder="Username..." onkeyup="this.value = this.value.toUpperCase()">
+              <input type="text" class="form-control first-input" id="userId" name="userId" placeholder="Username..." onkeyup="this.value = this.value.toUpperCase()">
             </div>
           </div>
         </div>
@@ -101,14 +101,14 @@
           <div class="col-lg-4">
             <div class="input-group">
               <span class="input-group-addon"><i class="fa fa-asterisk"></i></span>
-              <input type="password" class="form-control" id="userPass" name="userPass" value="12345678" readonly required>
-              {{-- <span class="input-group-addon"><input type="checkbox" id="showPass"> Show</span> --}}
+              <input type="text" class="form-control" id="userPass" name="userPass" value="12345678" readonly required>
+              <!-- <span class="input-group-addon"><input type="checkbox" id="showPass"> Show</span> -->
               <style type="text/css">
-                #message {display: none; background: #f1f1f1; color: #000; position: relative; padding: 5px; margin-top: 5px; } #message p {padding: 5px 10px; font-size: 10px; } /* Add a green text color and a checkmark when the requirements are right */ .valid {color: green; display: none; } .valid:before {position: relative; left: -35px; } /* Add a red text color and an "x" icon when the requirements are wrong */ .invalid {color: red; } .invalid:before {position: relative; left: -35px; }
+                #message { display: none; background: #f1f1f1; color: #000; position: relative; padding: 5px; margin-top: 5px; } #message p { padding: 5px 10px; font-size: 10px; } /* Add a green text color and a checkmark when the requirements are right */ .valid { color: green; display: none; } .valid:before { position: relative; left: -35px; } /* Add a red text color and an "x" icon when the requirements are wrong */ .invalid { color: red; } .invalid:before { position: relative; left: -35px; }
               </style>
             </div>
-            {{-- <p id="complete" class="invalid">* Password harus mengandung <span id="letter" class="invalid">huruf kecil, </span><span id="capital" class="invalid">huruf besar, </span><span id="number" class="invalid">angka, </span><span id="length" class="invalid">min. 6 karakter</span></p>
-            <script type="text/javascript"> --}}
+            <!-- <p id="complete" class="invalid">* Password harus mengandung <span id="letter" class="invalid">huruf kecil, </span><span id="capital" class="invalid">huruf besar, </span><span id="number" class="invalid">angka, </span><span id="length" class="invalid">min. 6 karakter</span></p> -->
+            <script type="text/javascript">
               $(function(){
                   $("#showPass").click(function(){ // #showPass -> id Checkbox
                     if($("[name=userPass]").attr('type')=='password'){
@@ -563,9 +563,6 @@
 <script type="text/javascript" src="<?php echo asset_url(); ?>/assets/js/jquery.form.js"></script>
 <script type="text/javascript">
   $(function() {
-    toastr.options = {
-      "positionClass": "toast-top-right"
-    }
     // Table setup
     // ------------------------------
     // Setting datatable defaults
@@ -685,7 +682,7 @@
       }
     });
     $('#userPonsel').blur(function () {
-      if ($(this).val().length >= 10) {
+      if ($(this).val().length > 10) {
         check({
           key: 'userPonsel',
           value: $(this).val()
@@ -830,11 +827,11 @@
       $('#userId').focus();
       return false;
     }
-    if (!$('#userPass').val().length) {
-      required('Kolom Password');
-      $('#userPass').focus();
-      return false;
-    }
+    // if (!$('#userPass').val().length) {
+    //   required('Kolom Password');
+    //   $('#userPass').focus();
+    //   return false;
+    // }
     if (!$('#userNama').val().length) {
       required('Kolom Nama');
       $('#userNama').focus();
@@ -933,7 +930,7 @@
     function(){
       createOverlay("Mohon Tunggu...");
       $.ajax({
-        type  : "DELETE",
+        type  : "POST",
         url   : "<?php echo asset_url(); ?>/admin/delete",
         data  : "id=" + slug,
         success : function(result) {

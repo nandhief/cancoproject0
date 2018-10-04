@@ -218,8 +218,7 @@
       var sampai = $('#sampai').val();
       window.location = "<?php echo asset_url(); ?>/collection/jadwal-penagihan?dari=" + dari + "&sampai=" + sampai;
     });
-
-
+    
     // Table setup
     // ------------------------------
     // Setting datatable defaults
@@ -379,8 +378,8 @@
     function(){
       createOverlay("Mohon Tunggu...");
       $.ajax({
-        type  : "DELETE",
-        url   : "<?php echo asset_url(); ?>/collection/jadwal-penagihan",
+        type  : "POST",
+        url   : "<?php echo asset_url(); ?>/collection/jadwal-penagihan/delete",
         data  : "id=" + buId,
         success : function(result) {
           gOverlay.hide();

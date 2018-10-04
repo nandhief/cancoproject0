@@ -144,8 +144,8 @@ class CollectionController extends BaseController {
                   if($column == 15 && $titles[0][$column] != "ANGSURAN_KE")      return composeReply("ERROR","Kolom ke-16 HARUS bernama  ANGSURAN_KE");
                   if($column == 16 && $titles[0][$column] != "JANGKA_WAKTU")         return composeReply("ERROR","Kolom ke-17 HARUS bernama JANGKA_WAKTU");
                   if($column == 17 && $titles[0][$column] != "TGL_REALISASI")         return composeReply("ERROR","Kolom ke-18 HARUS bernama TGL_REALISASI");
-                  if($column == 18 && $titles[0][$column] != "TGL_UPLOAD_PENAGIHAN")     return composeReply("ERROR","Kolom ke-19 HARUS bernama TGL_UPLOAD_PENAGIHAN");
-                  if($column == 19 && $titles[0][$column] != "TGL_JADWAL")        return composeReply("ERROR","Kolom ke-20 HARUS bernama TGL_JADWAL");
+                  if($column == 18 && $titles[0][$column] != "TGL_UPLOAD")     return composeReply("ERROR","Kolom ke-19 HARUS bernama TGL_UPLOAD");
+                  if($column == 19 && $titles[0][$column] != "TGL_JATUH_TEMPO")        return composeReply("ERROR","Kolom ke-20 HARUS bernama TGL_JATUH_TEMPO");
                   if($column == 20 && $titles[0][$column] != "TUNGG_POKOK")        return composeReply("ERROR","Kolom ke-21 HARUS bernama TUNGG_POKOK");
                   if($column == 21 && $titles[0][$column] != "TUNGG_BUNGA")        return composeReply("ERROR","Kolom ke-22 HARUS bernama TUNGG_BUNGA");
                   if($column == 22 && $titles[0][$column] != "TUNGG_DENDA")        return composeReply("ERROR","Kolom ke-23 HARUS bernama TUNGG_DENDA");
@@ -179,12 +179,12 @@ class CollectionController extends BaseController {
                   $date1 = str_replace('/', '-', $var1);
                   $tglKredit1 = date("Y-m-d", strtotime($date1));
 
-                  if(strpos($table[$row]["TGL_UPLOAD_PENAGIHAN"], "-") !== false) $separator = "-";
-                  if(strpos($table[$row]["TGL_UPLOAD_PENAGIHAN"], "/") !== false) $separator = "/";
-                //   $arrTgl = explode("-", $table[$row]["TGL_UPLOAD_PENAGIHAN"]);
-                //   $tglAngsur = "20".trim($arrTgl[2])."-".trim($arrTgl[0])."-".trim($arrTgl[1]);;
+                  if(strpos($table[$row]["TGL_UPLOAD"], "-") !== false) $separator = "-";
+                  if(strpos($table[$row]["TGL_UPLOAD"], "/") !== false) $separator = "/";
+                  // $arrTgl = explode("-", $table[$row]["TGL_UPLOAD"]);
+                  // $tglAngsur = "20".trim($arrTgl[2])."-".trim($arrTgl[0])."-".trim($arrTgl[1]);;
                   //new format tanggal
-                  $var2 = trim($table[$row]["TGL_UPLOAD_PENAGIHAN"]);
+                  $var2 = trim($table[$row]["TGL_UPLOAD"]);
                   $date2 = str_replace('/', '-', $var2);
                   $tglAngsur1 = date("Y-m-d", strtotime($date2));
 
@@ -210,7 +210,7 @@ class CollectionController extends BaseController {
                   $bayarDenda = str_replace(".", "", $bayarDenda);
 
                   //cek dl apakah sdh ada user kolektor
-                  $kolektor = DB::table("coll_user")->where("U_KODE_GROUP",trim($table[$row]["KODE_GROUP"]))->first();
+                  // $kolektor = DB::table("coll_user")->where("U_KODE_GROUP",trim($table[$row]["KODE_GROUP"]))->first();
 
                   //cek dl apakah sdh ada data nasabah
                   $nasabah = DB::table("coll_customers")->where("CUST_ID", trim($table[$row]["ID_NASABAH"]))->first();
@@ -257,10 +257,14 @@ class CollectionController extends BaseController {
                   $prshId = $userData->{"PRSH_ID"};
 
                   $collID = DB::table("coll_user")->where("U_KODE_GROUP", "=", $table[$row]["KODE_GROUP"])->first();
+                  if (is_null($collID)) {
+                    return composeReply("ERROR","KODE_GROUP " .  $tKgroup . ' Tidak Berkaitan dengan collector manapun');
+                  }
+                  if ($collID->PRSH_ID != $prshId) {
+                    $collID = DB::table("coll_user")->whereNull("U_KODE_GROUP")->first();
+                  }
                   $collect_id = $collID->{"U_ID"};
                   $coll_nama = $collID->{"U_NAMA"};
-
-                  //dd($coll_nama);
 
                   $budId = DB::table("coll_batch_upload_data")->insertGetId(array(
                     'BU_ID' => $buId,
@@ -286,7 +290,7 @@ class CollectionController extends BaseController {
                     'BUD_PINJ_TGL_KREDIT' => $tglKredit1,
                     'BUD_PINJ_TGL_ANGS' => $tglAngsur1,
                     'BUD_PINJ_TGL_JADWAL' => $tglAngsur1,
-                    'BUD_TGL_DEPAN_JADWAL' => trim($table[$row]["TGL_JADWAL"]),
+                    'BUD_TGL_DEPAN_JADWAL' => trim($table[$row]["TGL_JATUH_TEMPO"]),
                     'BUD_PINJ_POKOK' => $bayarPokok,
                     'BUD_PINJ_BUNGA' => $bayarBunga,
                     'BUD_PINJ_DENDA' => $bayarDenda,
@@ -410,8 +414,8 @@ class CollectionController extends BaseController {
                   if($column == 15 && $titles[0][$column] != "ANGSURAN_KE")      return composeReply("ERROR","Kolom ke-16 HARUS bernama  ANGSURAN_KE");
                   if($column == 16 && $titles[0][$column] != "JANGKA_WAKTU")         return composeReply("ERROR","Kolom ke-17 HARUS bernama JANGKA_WAKTU");
                   if($column == 17 && $titles[0][$column] != "TGL_REALISASI")         return composeReply("ERROR","Kolom ke-18 HARUS bernama TGL_REALISASI");
-                  if($column == 18 && $titles[0][$column] != "TGL_UPLOAD_PENAGIHAN")     return composeReply("ERROR","Kolom ke-19 HARUS bernama TGL_UPLOAD_PENAGIHAN");
-                  if($column == 19 && $titles[0][$column] != "TGL_JADWAL")        return composeReply("ERROR","Kolom ke-20 HARUS bernama TGL_JADWAL");
+                  if($column == 18 && $titles[0][$column] != "TGL_UPLOAD")     return composeReply("ERROR","Kolom ke-19 HARUS bernama TGL_UPLOAD");
+                  if($column == 19 && $titles[0][$column] != "TGL_JATUH_TEMPO")        return composeReply("ERROR","Kolom ke-20 HARUS bernama TGL_JATUH_TEMPO");
                   if($column == 20 && $titles[0][$column] != "TUNGG_POKOK")        return composeReply("ERROR","Kolom ke-21 HARUS bernama TUNGG_POKOK");
                   if($column == 21 && $titles[0][$column] != "TUNGG_BUNGA")        return composeReply("ERROR","Kolom ke-22 HARUS bernama TUNGG_BUNGA");
                   if($column == 22 && $titles[0][$column] != "TUNGG_DENDA")        return composeReply("ERROR","Kolom ke-23 HARUS bernama TUNGG_DENDA");
@@ -445,10 +449,12 @@ class CollectionController extends BaseController {
                   $date1 = str_replace('/', '-', $var1);
                   $tglKredit1 = date("Y-m-d", strtotime($date1));
 
-                  if(strpos($table[$row]["TGL_UPLOAD_PENAGIHAN"], "-") !== false) $separator = "-";
-                  if(strpos($table[$row]["TGL_UPLOAD_PENAGIHAN"], "/") !== false) $separator = "/";
+                  if(strpos($table[$row]["TGL_UPLOAD"], "-") !== false) $separator = "-";
+                  if(strpos($table[$row]["TGL_UPLOAD"], "/") !== false) $separator = "/";
+                  // $arrTgl = explode("-", $table[$row]["TGL_UPLOAD"]);
+                  // $tglAngsur = "20".trim($arrTgl[2])."-".trim($arrTgl[0])."-".trim($arrTgl[1]);
                   //new format tanggal
-                  $var2 = trim($table[$row]["TGL_UPLOAD_PENAGIHAN"]);
+                  $var2 = trim($table[$row]["TGL_UPLOAD"]);
                   $date2 = str_replace('/', '-', $var2);
                   $tglAngsur1 = date("Y-m-d", strtotime($date2));
 
@@ -516,10 +522,14 @@ class CollectionController extends BaseController {
                   $prshId = $userData->{"PRSH_ID"};
 
                   $collID = DB::table("coll_user")->where("U_KODE_GROUP", "=", $table[$row]["KODE_GROUP"])->first();
+                  if (is_null($collID)) {
+                    return composeReply("ERROR","KODE_GROUP " .  $tKgroup . ' Tidak Berkaitan dengan collector manapun');
+                  }
+                  if ($collID->PRSH_ID != $prshId) {
+                    $collID = DB::table("coll_user")->whereNull("U_KODE_GROUP")->first();
+                  }
                   $collect_id = $collID->{"U_ID"};
                   $coll_nama = $collID->{"U_NAMA"};
-
-                  //dd($coll_nama);
 
                   $budId = DB::table("coll_batch_upload_data")->insertGetId(array(
                     'BU_ID' => $dataTgl->BU_ID,
@@ -545,7 +555,7 @@ class CollectionController extends BaseController {
                     'BUD_PINJ_TGL_KREDIT' => $tglKredit1,
                     'BUD_PINJ_TGL_ANGS' => $tglAngsur1,
                     'BUD_PINJ_TGL_JADWAL' => $tglAngsur1,
-                    'BUD_TGL_DEPAN_JADWAL' => trim($table[$row]["TGL_JADWAL"]),
+                    'BUD_TGL_DEPAN_JADWAL' => trim($table[$row]["TGL_JATUH_TEMPO"]),
                     'BUD_PINJ_POKOK' => $bayarPokok,
                     'BUD_PINJ_BUNGA' => $bayarBunga,
                     'BUD_PINJ_DENDA' => $bayarDenda,
@@ -1202,7 +1212,9 @@ class CollectionController extends BaseController {
         ->where("BUD_IMG_PATH", "!=", "-")
         ->get();
       foreach ($bud as $aData) {
-        File::delete(asset_url()."/".$bud->{"BUD_IMG_PATH"});
+        if (isset($bud->{"BUD_IMG_PATH"})) {
+          File::delete(asset_url()."/".$bud->{"BUD_IMG_PATH"});
+        }
       }
 
       DB::table("coll_jadwal")->where("BU_ID", Input::get("id"))->delete();
@@ -3747,7 +3759,7 @@ class CollectionController extends BaseController {
             'BUD_EDIT_DENDA' => $editDenda,
             'BUD_STATUS' => $statusPenagihan,
             'BUD_STATUS_WAKTU' => date("Y-m-d H:i:s"),
-            'BUD_KETERANGAN' => Input::get("keterangan"),
+            'BUD_KETERANGAN' => Input::get("keterangan") . ' ' . Input::get('status'),
             'BUD_PINJ_JUMLAH_BAYAR' => $jmlBayar,
             'BUD_PINJ_TGL_BAYAR' => $tglBayar,
             'BUD_LOKASI_LAT' => Input::get("latitude"),
@@ -3871,10 +3883,10 @@ class CollectionController extends BaseController {
         if(floatval($jmlBayar) >= floatval($budData->{"BUD_PINJ_JUMLAH"})) {
           $statusPenagihan = "ST_BAYAR_NON_TARGET";
         }
-        if(floatval($jmlBayar) == 0) {
+        if(floatval($jmlBayar) == 0 && Input::get("status") == 'ST_TIDAK_BAYAR_NON_TARGET') {
           $statusPenagihan = "ST_TIDAK_BAYAR_NON_TARGET";
         }
-        if(floatval($jmlBayar) == 0) {
+        if(floatval($jmlBayar) == 0 && Input::get("status") == 'ST_TIDAK_DITEMUKAN_NON_TARGET') {
           $statusPenagihan = "ST_TIDAK_DITEMUKAN_NON_TARGET";
         }
       }
@@ -3967,7 +3979,7 @@ class CollectionController extends BaseController {
 
           $jadwal = DB::select("SELECT DISTINCT(BU_ID) AS BU_ID FROM coll_jadwal WHERE J_TGL = ? AND J_COLL_U_ID = ?", array(Input::get("periode"), Input::get("userId")));
 
-            if(empty($jadwal) ) {
+            if($jadwal) {
               foreach ($jadwal as $aData) {
                 $cisId = DB::table("coll_check_in_start")->insertGetId(array(
                   'CIS_WAKTU' => date("Y-m-d H:i:s"),
@@ -4024,6 +4036,14 @@ class CollectionController extends BaseController {
     $jmlNonTarget = 0;
     $nominalTarget = 0;
     $nominalBayar = 0;
+    $total_bayar = 0;
+    $total_bayar_parsial = 0;
+    $jml_bayar_non_target = 0;
+    $jml_bayar_parsial_non_target = 0;
+    $jml_tidak_bayar_non_target = 0;
+    $jml_tidak_bertemu_non_target = 0;
+    $total_bayar_non_target = 0;
+    $total_bayar_parsial_non_target = 0;
 
     if(null === Input::get("periode") || trim(Input::get("periode")) === "") {
       $periode = date("Y-m-d");
@@ -4041,9 +4061,27 @@ class CollectionController extends BaseController {
 
     $collRecords = DB::select("SELECT * FROM coll_jadwal WHERE J_TGL = ?  AND J_COLL_U_ID = ?", array($periode, $userData->{"U_ID"}));
     $collRecordsAll = DB::select("SELECT * FROM coll_jadwal WHERE J_TGL = ? AND J_STATUS = 'ST_JADWAL' AND PRSH_ID = ? AND J_COLL_U_ID != ?", array($periode, $prsh_id, Input::get("userId")));
+    $collRecordsNonTarget = DB::select("SELECT * FROM coll_jadwal WHERE J_TGL = ? AND PRSH_ID = ?", array($periode, $prsh_id));
 
     foreach($collRecordsAll as $fullData) {
       if($fullData->{"J_STATUS"} == "ST_JADWAL") $jmlNonTarget++;
+    }
+
+    foreach ($collRecordsNonTarget as $data) {
+      if($data->{"J_STATUS"} == "ST_BAYAR_NON_TARGET") {
+        $jml_bayar_non_target++;
+        $total_bayar_non_target += $data->J_PINJ_JUMLAH_BAYAR;
+      }
+      if($data->{"J_STATUS"} == "ST_BAYAR_PARSIAL_NON_TARGET") {
+        $jml_bayar_parsial_non_target++;
+        $total_bayar_parsial_non_target += $data->J_PINJ_JUMLAH_BAYAR;
+      }
+      if($data->{"J_STATUS"} == "ST_TIDAK_BAYAR_NON_TARGET") {
+        $jml_tidak_bayar_non_target++;
+      }
+      if($data->{"J_STATUS"} == "ST_TIDAK_DITEMUKAN_NON_TARGET") {
+        $jml_tidak_ditemukan_non_target++;
+      }
     }
 
     foreach ($collRecords as $aData) {
@@ -4053,11 +4091,23 @@ class CollectionController extends BaseController {
       //if($aData->{"BUD_STATUS"} == "ST_TIDAK_DITEMUKAN")  $jmlStatusTdkBertemu++;
       //if($aData->{"BUD_STATUS"} == "ST_BAYAR_PARSIAL")  $jmlStatusBayarParsial++;
 
-      if($aData->{"J_STATUS"} == "ST_JADWAL") $jmlStatusJadwal++;
-      if($aData->{"J_STATUS"} == "ST_BAYAR")  $jmlStatusBayar++;
-      if($aData->{"J_STATUS"} == "ST_TIDAK_BAYAR")  $jmlStatusTdkBayar++;
-      if($aData->{"J_STATUS"} == "ST_TIDAK_DITEMUKAN")  $jmlStatusTdkBertemu++;
-      if($aData->{"J_STATUS"} == "ST_BAYAR_PARSIAL")  $jmlStatusBayarParsial++;
+      if($aData->{"J_STATUS"} == "ST_JADWAL") {
+        $jmlStatusJadwal++;
+      }
+      if($aData->{"J_STATUS"} == "ST_BAYAR") {
+        $jmlStatusBayar++;
+        $total_bayar += $aData->J_PINJ_JUMLAH_BAYAR;
+      }
+      if($aData->{"J_STATUS"} == "ST_TIDAK_BAYAR") {
+        $jmlStatusTdkBayar++;
+      }
+      if($aData->{"J_STATUS"} == "ST_TIDAK_DITEMUKAN") {
+        $jmlStatusTdkBertemu++;
+      }
+      if($aData->{"J_STATUS"} == "ST_BAYAR_PARSIAL") {
+        $jmlStatusBayarParsial++;
+        $total_bayar_parsial += $aData->J_PINJ_JUMLAH_BAYAR;
+      }
 
       //$nominalTar += floatval($aData->{"BUD_PINJ_JUMLAH"});
       //$nominalBayar += floatval($aData->{"BUD_PINJ_JUMLAH_BAYAR"});
@@ -4072,14 +4122,26 @@ class CollectionController extends BaseController {
       'JUMLAH_JADWAL' => $jmlStatusJadwal,
       'SUMMARY_BAYAR' => $jmlStatusBayar." orang",
       'JUMLAH_BAYAR' => $jmlStatusBayar,
+      'TOTAL_BAYAR' => $total_bayar,
       'SUMMARY_BAYAR_PARSIAL' => $jmlStatusBayarParsial." orang",
       'JUMLAH_BAYAR_PARSIAL' => $jmlStatusBayarParsial,
+      'TOTAL_BAYAR_PARSIAL' => $total_bayar_parsial,
       'SUMMARY_TIDAK_BAYAR' => $jmlStatusTdkBayar." orang",
       'JUMLAH_TIDAK_BAYAR' => $jmlStatusTdkBayar,
       'SUMMARY_TIDAK_BERTEMU' => $jmlStatusTdkBertemu. " orang",
       'JUMLAH_TIDAK_BERTEMU' => $jmlStatusTdkBertemu,
       'JUMLAH_NON_TARGET' => $jmlNonTarget. " orang",
       'SUMMARY_NON_TARGET' => $jmlNonTarget,
+      'SUMMARY_BAYAR_NON_TARGET' => $jml_bayar_non_target . " orang",
+      'JUMLAH_BAYAR_NON_TARGET' => $jml_bayar_non_target,
+      'TOTAL_BAYAR_NON_TARGET' => $total_bayar_non_target,
+      'SUMMARY_BAYAR_PARSIAL_NON_TARGET' => $jml_bayar_parsial_non_target . " orang",
+      'JUMLAH_BAYAR_PARSIAL_NON_TARGET' => $jml_bayar_parsial_non_target,
+      'TOTAL_BAYAR_PARSIAL_NON_TARGET' => $total_bayar_parsial_non_target,
+      'SUMMARY_TIDAK_BAYAR_NON_TARGET' => $jml_tidak_bayar_non_target . " orang",
+      'JUMLAH_TIDAK_BAYAR_NON_TARGET' => $jml_tidak_bayar_non_target,
+      'SUMMARY_TIDAK_BERTEMU_NON_TARGET' => $jml_tidak_bertemu_non_target . " orang",
+      'JUMLAH_TIDAK_BERTEMU_NON_TARGET' => $jml_tidak_bertemu_non_target,
       'SUMMARY_TARGET_BAYAR' => $nominalTarget,
       'SUMMARY_REALISASI_BAYAR' => $nominalBayar
     ));

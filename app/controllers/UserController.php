@@ -132,25 +132,25 @@ class UserController extends BaseController {
 
 	}
 
-    public function check()
-    {
-        if (Session::has('SESSION_USER_ID') && Session::has('SESSION_LOGIN_TOKEN')) {
-            if(!isLoginValid(Session::get('SESSION_USER_ID'), Session::get('SESSION_LOGIN_TOKEN'))) {
-                Session::flush();
-                return Redirect::to('login')->with('ctlError', 'Silahkan Login terlebih dahulu');
-            }
-            if (! empty($userBigId = Input::get('userBigId'))) {
-                $userId = DB::table('coll_user')->where('USERBIGID', $userBigId)->where('PRSH_ID', Input::get('userPrsh'))->first();
-                if (empty($userId)) {
-                    return composeReply('SUCCESS', 'User ID tersedia');
-                }
-                return composeReply('ERROR', 'User ID sudah dipakai');
-            }
-        } else {
-            Session::flush();
-            return composeReply('ERROR', 'Harus Login terlebih dahulu');
-        }
-    }
+	public function check()
+	{
+		if (Session::has('SESSION_USER_ID') && Session::has('SESSION_LOGIN_TOKEN')) {
+			if(!isLoginValid(Session::get('SESSION_USER_ID'), Session::get('SESSION_LOGIN_TOKEN'))) {
+				Session::flush();
+				return Redirect::to('login')->with('ctlError', 'Silahkan Login terlebih dahulu');
+			}
+			if (! empty($userBigId = Input::get('userBigId'))) {
+				$userId = DB::table('coll_user')->where('USERBIGID', $userBigId)->where('PRSH_ID', Input::get('userPrsh'))->first();
+				if (empty($userId)) {
+					return composeReply('SUCCESS', 'User ID tersedia');
+				}
+				return composeReply('ERROR', 'User ID sudah dipakai');
+			}
+		} else {
+			Session::flush();
+			return composeReply('ERROR', 'Harus Login terlebih dahulu');
+		}
+	}
 
 	public function checkuser()
 	{
@@ -180,6 +180,41 @@ class UserController extends BaseController {
 					return composeReply('SUCCESS', $value . ' tersedia');
 				}
 				return composeReply('ERROR', $value . ' sudah dipakai');
+			}
+		} else {
+			Session::flush();
+			return composeReply('ERROR', 'Harus Login terlebih dahulu');
+		}
+	}
+
+	public function kodecheck()
+	{
+		if (Session::has('SESSION_USER_ID') && Session::has('SESSION_LOGIN_TOKEN')) {
+			if(!isLoginValid(Session::get('SESSION_USER_ID'), Session::get('SESSION_LOGIN_TOKEN'))) {
+				Session::flush();
+				return Redirect::to('login')->with('ctlError', 'Silahkan Login terlebih dahulu');
+			}
+            $value = Input::get('value');
+            switch (Input::get('key')) {
+                case 'userKodeGroup':
+	                $kode = 'Kode Group Kollektor';
+                    $key = 'U_KODE_GROUP';
+                    break;
+                case 'userKodeTabungan':
+	                $kode = 'Kode Group Tabungan';
+                    $key = 'U_KODE_TABUNGAN';
+                    break;
+                default:
+	                $kode = '';
+                    $key = '';
+                    break;
+            }
+            if (! empty($key)) {
+                $user = DB::table('coll_user')->where('PRSH_ID', Input::get('userPrsh'))->where($key, $value)->first();
+				if (empty($user)) {
+					return composeReply('SUCCESS', $kode . ' ' . $value . ' tersedia');
+				}
+				return composeReply('ERROR', $kode . ' ' . $value . ' sudah dipakai');
 			}
 		} else {
 			Session::flush();
@@ -221,6 +256,9 @@ class UserController extends BaseController {
 		if(null === Input::get("userNama") || trim(Input::get("userNama")) === "")		return composeReply("ERROR", "Nama user harus diisi");
 		if(null === Input::get("userGroup") || trim(Input::get("userGroup")) === "")	return composeReply("ERROR", "Group role user harus diisi");
 		if(null === Input::get("userPass") || trim(Input::get("userPass")) === "")		return composeReply("ERROR", "Password harus diisi minimal 6 karakter");
+	    // if(!preg_match('(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}', Input::get("userPass"))) return composeReply("ERROR", "Password harus kombinasi karakter");
+
+		//if(strlen(Input::get("userPass")) < 6)	return composeReply("ERROR", "Password harus diisi minimal 6 karakter");
 
 		if(trim(Input::get("userPrsh")) === "-" && Input::get("userGroup") != "GR_ADMINISTRATOR")	return composeReply("ERROR", "User non-perusahaan hanya bisa diset sebagai anggota grup ".getReferenceInfo("GROUP_ROLE", "GR_ADMINISTRATOR"));
 
@@ -259,7 +297,8 @@ class UserController extends BaseController {
 						'U_PASSWORD_HASH' => md5($userId.Input::get("userPass")),
 						'U_STATUS' => 'USER_ACTIVE',
 						'PRSH_ID' => Input::get("userPrsh"),
-						'U_KODE_GROUP' => Input::get("userKodeGroup")
+						'U_KODE_GROUP' => Input::get("userKode"),
+						'U_KODE_TABUNGAN' => Input::get("userKodeTabungan"),
 					));
 				} else {
 					return composeReply("ERROR", "Supervisor Melebihi data yang telah ditentukan");
@@ -284,7 +323,8 @@ class UserController extends BaseController {
 							'U_NOTA_ID' => '0',
 							'PRSH_ID' => Input::get("userPrsh"),
 							'U_STATUS_COLLECT' => Input::get("status_collect"),
-							'U_STATUS_TAB' => Input::get("status_tab")
+							'U_STATUS_TAB' => Input::get("status_tab"),
+							'U_KODE_TABUNGAN' => Input::get("userKodeTabungan"),
 						));
 				} else {
 					return composeReply("ERROR", "Collector Melebihi data yang telah ditentukan");
@@ -493,7 +533,8 @@ class UserController extends BaseController {
 				'U_KODE_GROUP' => Input::get("userKode"),
 				'PRSH_ID' => Input::get("userPrsh"),
 				'U_STATUS_COLLECT' => input::get("status_collect"),
-				'U_STATUS_TAB' => Input::get("status_tab")
+				'U_STATUS_TAB' => Input::get("status_tab"),
+				'U_KODE_TABUNGAN' => Input::get("userKodeTabungan"),
 			));
 
 			return composeReply("SUCCESS", "Perubahan data user telah disimpan");
@@ -682,7 +723,6 @@ class UserController extends BaseController {
 			DB::table("coll_user")->where("U_ID", Input::get("user_id"))->update(array(
 				'U_PASSWORD' => Input::get('password'),
 				'U_PASSWORD_HASH' => md5($userData->{"U_ID"}.Input::get('password')),
-				// 'U_LOGIN_TOKEN' => '-',
                 'U_GANTIPASS' => true,
 			));
 			return composeReply("SUCCESS", "Perubahan data telah disimpan");

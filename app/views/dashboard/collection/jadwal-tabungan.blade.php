@@ -332,7 +332,7 @@
             },
             function(){
               setTimeout(function(){
-                // window.location = "<?php echo asset_url(); ?>/collection/tabungan";
+                window.location = "<?php echo asset_url(); ?>/collection/tabungan";
               }, 500);
             });
           }
@@ -345,7 +345,7 @@
 
           toastr.error("Proses <b>GAGAL</b>");
           $(".btn").removeAttr("disabled");
-          // window.location = "<?php echo asset_url(); ?>/collection/tabungan";
+          window.location = "<?php echo asset_url(); ?>/collection/tabungan";
         }
       };
       $('#formUploadData').submit(function() {
@@ -371,7 +371,7 @@
     function(){
       createOverlay("Mohon Tunggu...");
       $.ajax({
-        type  : "DELETE",
+        type  : "POST",
         url   : "<?php echo asset_url(); ?>/collection/tabungan/delete",
         data  : "id=" + buId,
         success : function(result) {

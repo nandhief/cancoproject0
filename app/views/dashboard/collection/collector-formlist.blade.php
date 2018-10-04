@@ -147,47 +147,13 @@
           <div class="col-lg-4">
             <div class="input-group">
               <span class="input-group-addon"><i class="fa fa-asterisk"></i></span>
-              <input type="password" class="form-control" id="userPass" name="userPass" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" required>
-              <span class="input-group-addon"><input type="checkbox" id="showPass"> Show</span>
+              <input type="text" class="form-control" id="userPass" name="userPass" value="12345678" readonly required>
+              {{-- <span class="input-group-addon"><input type="checkbox" id="showPass"> Show</span> --}}
               <style type="text/css">
-                #message {
-                  display: none;
-                        background: #f1f1f1;
-                        color: #000;
-                        position: relative;
-                        padding: 5px;
-                        margin-top: 5px;
-                    }
-
-                    #message p {
-                        padding: 5px 10px;
-                        font-size: 10px;
-                    }
-
-                    /* Add a green text color and a checkmark when the requirements are right */
-                    .valid {
-                        display: none;
-                        color: green;
-                    }
-
-                    .valid:before {
-                        position: relative;
-                        left: -35px;
-                        content: "&#10004;";
-                    }
-
-                    /* Add a red text color and an "x" icon when the requirements are wrong */
-                    .invalid {
-                        color: red;
-                    }
-
-                    .invalid:before {
-                        position: relative;
-                        left: -35px;
-                    }
+                #message {display: none; background: #f1f1f1; color: #000; position: relative; padding: 5px; margin-top: 5px; } #message p {padding: 5px 10px; font-size: 10px; } /* Add a green text color and a checkmark when the requirements are right */ .valid {display: none; color: green; } .valid:before {position: relative; left: -35px; content: "&#10004;"; } /* Add a red text color and an "x" icon when the requirements are wrong */ .invalid {color: red; } .invalid:before {position: relative; left: -35px; }
               </style>
             </div>
-            <p id="complete" class="invalid">* Password harus mengandung <span id="letter" class="invalid">huruf kecil, </span><span id="capital" class="invalid">huruf besar, </span><span id="number" class="invalid">angka, </span><span id="length" class="invalid">min. 6 karakter</span></p>
+            {{-- <p id="complete" class="invalid">* Password harus mengandung <span id="letter" class="invalid">huruf kecil, </span><span id="capital" class="invalid">huruf besar, </span><span id="number" class="invalid">angka, </span><span id="length" class="invalid">min. 6 karakter</span></p> --}}
             <script type="text/javascript">
               $(function(){
                   $("#showPass").click(function(){ // #showPass -> id Checkbox
@@ -233,11 +199,21 @@
         </div>
 
         <div class="form-group">
-          <label class="col-lg-2 control-label text-semibold">Kode Group</label>
+          <label class="col-lg-2 control-label text-semibold">Kode Group Pinjaman</label>
           <div class="col-lg-4">
             <div class="input-group">
               <span class="input-group-addon"><i class="icon-mention"></i></span>
-              <input type="text" class="form-control" onkeyup="this.value = this.value.toUpperCase();" id="userKode" name="userKode" placeholder="Kode group user...">
+              <input type="text" class="form-control" onkeyup="this.value = this.value.toUpperCase();" id="userKode" name="userKode" placeholder="Kode group user pinjaman...">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-lg-2 control-label text-semibold">Kode Group Tabungan</label>
+          <div class="col-lg-4">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="icon-gear"></i></span>
+              <input type="text" class="form-control" id="userKodeTabungan" name="userKodeTabungan" placeholder="Kode Group Tabungan...">
             </div>
           </div>
         </div>
@@ -419,14 +395,24 @@
           </div>
 
           <div class="form-group">
-            <label class="col-lg-4 control-label text-semibold">Kode Group</label>
+            <label class="col-lg-4 control-label text-semibold">Kode Group Pinjaman</label>
             <div class="col-lg-8">
               <div class="input-group">
                 <span class="input-group-addon"><i class="icon-mention"></i></span>
-                <input type="text" class="form-control" id="userKodeEdit" name="userKodeEdit" placeholder="Kode Group user...">
+                <input type="text" class="form-control" id="userKodeEdit" name="userKodeEdit" placeholder="Kode Group user..." data-pinjaman="">
               </div>
             </div>
           </div>
+
+            <div class="form-group">
+              <label class="col-lg-4 control-label text-semibold">Kode Group Tabungan</label>
+              <div class="col-lg-8">
+                <div class="input-group">
+                  <span class="input-group-addon"><i class="icon-mention"></i></span>
+                  <input type="text" class="form-control" id="userKodeTabunganEdit" name="userKodeTabunganEdit" placeholder="Kode Group Tabungan..." data-tabungan="">
+                </div>
+              </div>
+            </div>
 
            <div class="form-group">
             <label class="col-lg-4 control-label text-semibold">Collect Pinjaman</label>
@@ -880,31 +866,167 @@
     });
   }
 
-  $('#userBigId').blur(function () {
+  var check = function (data) {
     $.ajax({
       type: 'POST',
-      url: "<?= asset_url(); ?>/user/check",
-      data: {
-        userBigId: $('#userBigId').val()
-      },
+      url: "<?= asset_url() ?>/user/checkuser",
+      data: data,
+      dataType: 'JSON',
       success: function (res) {
         toastr.options = {
           "positionClass": "toast-top-right"
         }
-        var data = $.parseJSON(res);
-        if (data.STATUS == 'SUCCESS') {
-          toastr.success(data.MESSAGE, 'Berhasil');
+        if (res.STATUS == 'SUCCESS') {
+          toastr.success(res.MESSAGE, 'Berhasil');
         }
-        if (data.STATUS == 'ERROR') {
-          toastr.error(data.MESSAGE, 'Perhatian');
-          $('#userBigId').focus();
+        if (res.STATUS == 'ERROR') {
+          toastr.error(res.MESSAGE, 'Perhatian');
         }
       },
       error: function (res) {
         console.log(res)
       }
     });
+  }
+
+  var checkKode = function (data) {
+    $.ajax({
+      type: 'POST',
+      url: '<?= asset_url() ?>/user/kodecheck',
+      data: data,
+      dataType: 'JSON',
+      success: function (res) {
+        toastr.options = {
+          "positionClass": "toast-top-right"
+        }
+        if (res.STATUS == 'SUCCESS') {
+          toastr.success(res.MESSAGE, 'Berhasil');
+        }
+        if (res.STATUS == 'ERROR') {
+          toastr.error(res.MESSAGE, 'Perhatian');
+        }
+      },
+      error: function (res) {
+        console.log(res);
+      }
+    });
+  }
+
+    var checkUser = function () {
+      $.ajax({
+        type: 'POST',
+        url: "<?= asset_url(); ?>/user/check",
+        data: {
+          userPrsh: '<?= $ctlUserData->PRSH_ID; ?>',
+          userBigId: $('#userBigId').val()
+        },
+        success: function (res) {
+          toastr.options = {
+            "positionClass": "toast-top-right"
+          }
+          var data = $.parseJSON(res);
+          if (data.STATUS == 'SUCCESS') {
+            toastr.success(data.MESSAGE, 'Berhasil');
+          }
+          if (data.STATUS == 'ERROR') {
+            toastr.error(data.MESSAGE, 'Perhatian');
+          }
+        },
+        error: function (res) {
+          console.log(res)
+        }
+      });
+    }
+
+  $('#userBigId').blur(function () {
+    if ($(this).val().length > 0) {
+        checkUser();
+    }
   });
+  $('#userId').blur(function () {
+    if ($(this).val().length > 0) {
+      check({
+        key: 'userId',
+        value: $(this).val()
+      });
+    }
+  });
+  $('#userPonsel').blur(function () {
+    if ($(this).val().length >= 10) {
+      check({
+        key: 'userPonsel',
+        value: $(this).val()
+      });
+    }
+  });
+  $('#userPonselEdit').blur(function () {
+    if ($(this).val().length >= 10) {
+      check({
+        key: 'userPonselEdit',
+        value: $(this).val()
+      });
+    }
+  });
+  $('#userEmail').blur(function () {
+    if ($(this).val().length > 0) {
+      if (!$(this).val().match(/^([a-zA-Z0-9_.+-])+@(([a-zA-Z0-9-])+.([a-zA-Z0-9]{2,4}))+$/)) {
+        toastr.error('Pastikan email sudah benar', 'Kolom Email');
+        return false;
+      }
+      check({
+        key: 'userEmail',
+        value: $(this).val()
+      });
+    }
+  });
+  $('#userEmailEdit').blur(function () {
+    if ($(this).val().length > 0) {
+      if (!$(this).val().match(/^([a-zA-Z0-9_.+-])+@(([a-zA-Z0-9-])+.([a-zA-Z0-9]{2,4}))+$/)) {
+        toastr.error('Pastikan email sudah benar', 'Kolom Email');
+        return false;
+      }
+      check({
+        key: 'userEmail',
+        value: $(this).val()
+      });
+    }
+  });
+    $("#userKode").blur(function () {
+      if ($(this).val().length > 0) {
+        checkKode({
+          userPrsh: '<?= $ctlUserData->PRSH_ID; ?>',
+          key: 'userKodeGroup',
+          value: $(this).val()
+        });
+      }
+    });
+    $("#userKodeTabungan").blur(function () {
+      if ($(this).val().length > 0) {
+        checkKode({
+          userPrsh: '<?= $ctlUserData->PRSH_ID; ?>',
+          key: 'userKodeTabungan',
+          value: $(this).val()
+        });
+      }
+    });
+    $("#userKodeEdit").blur(function () {
+      if ($(this).val().length > 0 && $(this).val() != $(this).data('pinjaman')) {
+        checkKode({
+          userPrsh: '<?= $ctlUserData->PRSH_ID; ?>',
+          key: 'userKodeGroup',
+          value: $(this).val()
+        });
+      }
+    });
+    $("#userKodeTabunganEdit").blur(function () {
+      if ($(this).val().length > 0 && $(this).val() != $(this).data('tabungan')) {
+        checkKode({
+          userPrsh: '<?= $ctlUserData->PRSH_ID; ?>',
+          key: 'userKodeTabungan',
+          value: $(this).val()
+        });
+      }
+    });
 
   var saveData = function(){
     var userIdX = $("#userId").val();
@@ -916,6 +1038,7 @@
     var userPrshX = $("#userPrsh").val();
     var userEmailX = $("#userEmail").val();
     var userKodeX = $("#userKode").val();
+    var userKodeTabunganX = $("#userKodeTabungan").val();
     var userStatusCollectX = $("#status_collect").val();
     var userStatusTabX = $("#status_tab").val();
 
@@ -959,8 +1082,13 @@
       return false;
     }
     if (!$('#userKode').val().length) {
-      required('Kolom Kode Group');
+      required('Kolom Kode Group Pinjaman');
       $('#userKode').focus();
+      return false;
+    }
+    if (!$('#userKodeTabungan').val().length) {
+      required('Kolom Kode Group Tabungan');
+      $('#userKodeTabungan').focus();
       return false;
     }
 
@@ -971,7 +1099,7 @@
       $.ajax({
         type  : "POST",
         url   : "<?php echo asset_url(); ?>/tester",
-        data  : "userId=" + encodeURI(userIdX) + "&userBigId=" + encodeURI(userBigIdX) + "&userPass=" + encodeURI(userPassX) + "&userNama=" + encodeURI(userNamaX) + "&userPonsel=" + encodeURI(userPonselX) + "&userGroup=" + userGroupX + "&userPrsh=" + userPrshX + "&userEmail=" + encodeURI(userEmailX) + "&userKode=" + encodeURI(userKodeX) + "&status_collect=" + encodeURI(userStatusCollectX) + "&status_tab=" + encodeURI(userStatusTabX),
+        data  : "userId=" + encodeURI(userIdX) + "&userBigId=" + encodeURI(userBigIdX) + "&userPass=" + encodeURI(userPassX) + "&userNama=" + encodeURI(userNamaX) + "&userPonsel=" + encodeURI(userPonselX) + "&userGroup=" + userGroupX + "&userPrsh=" + userPrshX + "&userEmail=" + encodeURI(userEmailX) + "&userKode=" + encodeURI(userKodeX) + "&userKodeTabungan=" + encodeURI(userKodeTabunganX) + "&status_collect=" + encodeURI(userStatusCollectX) + "&status_tab=" + encodeURI(userStatusTabX),
         success : function(result) {
           gOverlay.hide();
           console.log();
@@ -1030,8 +1158,8 @@
     function(){
       createOverlay("Mohon Tunggu...");
       $.ajax({
-        type  : "DELETE",
-        url   : "<?php echo asset_url(); ?>/user",
+        type  : "POST",
+        url   : "<?php echo asset_url(); ?>/user/delete",
         data  : "id=" + slug,
         success : function(result) {
           gOverlay.hide();
@@ -1196,6 +1324,9 @@
             $("#userPonselEdit").val(data["PAYLOAD"]["U_TELPON"]);
             $("#userEmailEdit").val(data["PAYLOAD"]["U_EMAIL"]);
             $("#userKodeEdit").val(data["PAYLOAD"]["U_KODE_GROUP"]);
+            $('#userKodeEdit').data('pinjaman', data["PAYLOAD"]["U_KODE_GROUP"]);
+            $("#userKodeTabunganEdit").val(data["PAYLOAD"]["U_KODE_TABUNGAN"]);
+            $('#userKodeTabunganEdit').data('tabungan', data["PAYLOAD"]["U_KODE_TABUNGAN"]);
             $("#status_collectEdit").val(data["PAYLOAD"]["U_STATUS_COLLECT"]);
             $("#status_tabEdit").val(data["PAYLOAD"]["U_STATUS_TAB"]);
 
@@ -1228,6 +1359,7 @@
       var userPrsh = $("#userPrshEdit").val();
       var userEmail = $("#userEmailEdit").val();
       var userKode = $("#userKodeEdit").val();
+      var userKodeTabungan = $("#userKodeTabunganEdit").val();
       var status_collect = $("#status_collectEdit").val();
       var status_tab = $("#status_tabEdit").val();
 
@@ -1276,7 +1408,7 @@
         $.ajax({
           type  : "PUT",
           url   : "<?php echo asset_url(); ?>/user",
-          data  : "userId=" + encodeURI(userId) + "&userBigId=" + encodeURI(userBigId) + "&userNama=" + encodeURI(userNama) + "&userPonsel=" + encodeURI(userPonsel) + "&userGroup=" + userGroup + "&userPrsh=" + userPrsh + "&userEmail=" + encodeURI(userEmail) + "&userKode=" + encodeURI(userKode) + "&status_collect=" + encodeURI(status_collect) + "&status_tab=" + encodeURI(status_tab),
+          data  : "userId=" + encodeURI(userId) + "&userBigId=" + encodeURI(userBigId) + "&userNama=" + encodeURI(userNama) + "&userPonsel=" + encodeURI(userPonsel) + "&userGroup=" + userGroup + "&userPrsh=" + userPrsh + "&userEmail=" + encodeURI(userEmail) + "&userKode=" + encodeURI(userKode) + "&userKodeTabungan=" + encodeURI(userKodeTabungan) + "&status_collect=" + encodeURI(status_collect) + "&status_tab=" + encodeURI(status_tab),
           success : function(result) {
             gOverlay.hide();
             var data = JSON.parse(result);

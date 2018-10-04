@@ -185,6 +185,7 @@ class LoginController extends BaseController {
 					'collector_path_prsh' => asset_url()."/".$users[0]->{"PRSH_IMG_PATH"},
 					'collector_status_collect' => $users[0]->{"U_STATUS_COLLECT"},
 					'collector_status_tab' => $users[0]->{"U_STATUS_TAB"},
+					'collector_ganti_pass' => $users[0]->{"U_GANTIPASS"},
 				));
 			}
 			else {

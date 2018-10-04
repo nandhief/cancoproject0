@@ -173,11 +173,21 @@
         </div>
 
         <div class="form-group">
-          <label class="col-lg-2 control-label text-semibold">Kode Group</label>
+          <label class="col-lg-2 control-label text-semibold">Kode Group Pinjaman</label>
           <div class="col-lg-4">
             <div class="input-group">
               <span class="input-group-addon"><i class="icon-gear"></i></span>
-              <input type="text" class="form-control" id="userKodeGroup" name="userKodeGroup" placeholder="Kode Group user...">
+              <input type="text" class="form-control" id="userKodeGroup" name="userKodeGroup" placeholder="Kode Group Pinjaman...">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-lg-2 control-label text-semibold">Kode Group Tabungan</label>
+          <div class="col-lg-4">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="icon-gear"></i></span>
+              <input type="text" class="form-control" id="userKodeTabungan" name="userKodeTabungan" placeholder="Kode Group Tabungan...">
             </div>
           </div>
         </div>
@@ -193,7 +203,7 @@
         </div>
 
         <div class="form-group" id="coba1">
-          <label class="col-lg-2 control-label text-semibold">Kode Group Pinjaman</label>
+          <label class="col-lg-2 control-label text-semibold">Group Pinjaman</label>
           <div class="col-lg-4">
             <select class="form-control" name="status_collect" id="status_collect">
                 <option value="0">--  Tidak ada Tipe --</option>
@@ -203,7 +213,7 @@
         </div>
 
         <div class="form-group" id="coba2">
-          <label class="col-lg-2 control-label text-semibold">Kode Group Tabungan</label>
+          <label class="col-lg-2 control-label text-semibold">Group Tabungan</label>
           <div class="col-lg-4">
             <select class="form-control" name="status_tab" id="status_tab">
                 <option value="0">-- Tidak ada Tipe --</option>
@@ -236,7 +246,8 @@
             <tr>
               <th style="text-align:center" width="50%">Perusahaan</th>
               <th style="text-align:center" width="16%">User ID</th>
-              <th style="text-align:center" width="16%">Kode Group</th>
+              <th style="text-align:center" width="16%">Kode Group Pinjaman</th>
+              <th style="text-align:center" width="16%">Kode Group Tabungan</th>
               <th style="text-align:center" width="16%">Username</th>
               <th style="text-align:center" width="40%">Nama Pegawai</th>
               <th style="text-align:center" width="15%">Status</th>
@@ -255,6 +266,7 @@
                   <td><b><?php echo $aData->{"PRSH_NAMA"}; ?></b></td>
                   <td><b><?php echo $aData->{"USERBIGID"}; ?></b></td>
                   <td><b><?php echo $aData->{"U_KODE_GROUP"}; ?></b></td>
+                  <td><b><?php echo $aData->{"U_KODE_TABUNGAN"}; ?></b></td>
                   <td><b><?php echo $aData->{"U_ID"}; ?></b></td>
                   <td><?php echo $aData->{"U_NAMA"}; ?></td>
                   <td style="text-align:center">
@@ -368,7 +380,7 @@
               <div class="col-lg-8">
                 <div class="input-group">
                   <span class="input-group-addon"><i class="icon-phone2"></i></span>
-                  <input type="text" id="userPonselEdit" class="form-control" onkeypress="return hanyaAngka(event)">
+                  <input type="text" id="userPonselEdit" class="form-control" onkeypress="return hanyaAngka(event)" data-ponsel="">
                   <p style="color: red;">* isikan cuma bernilai angka.</p>
                 </div>
               </div>
@@ -379,17 +391,27 @@
               <div class="col-lg-8">
                 <div class="input-group">
                   <span class="input-group-addon"><i class="icon-mention"></i></span>
-                  <input type="text" class="form-control" id="userEmailEdit" name="userEmailEdit" placeholder="Email user...">
+                  <input type="text" class="form-control" id="userEmailEdit" name="userEmailEdit" placeholder="Email user..." data-email="">
                 </div>
               </div>
             </div>
 
             <div class="form-group">
-              <label class="col-lg-4 control-label text-semibold">Kode Group</label>
+              <label class="col-lg-4 control-label text-semibold">Kode Group Pinjaman</label>
               <div class="col-lg-8">
                 <div class="input-group">
                   <span class="input-group-addon"><i class="icon-mention"></i></span>
-                  <input type="text" class="form-control" id="userKodeEdit" name="userKodeEdit" placeholder="Kode Group user...">
+                  <input type="text" class="form-control" id="userKodeEdit" name="userKodeEdit" placeholder="Kode Group Pinjaman..." data-pinjaman="">
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-lg-4 control-label text-semibold">Kode Group Tabungan</label>
+              <div class="col-lg-8">
+                <div class="input-group">
+                  <span class="input-group-addon"><i class="icon-mention"></i></span>
+                  <input type="text" class="form-control" id="userKodeTabunganEdit" name="userKodeTabunganEdit" placeholder="Kode Group Tabungan..." data-tabungan="">
                 </div>
               </div>
             </div>
@@ -760,16 +782,22 @@
         gOverlay.hide();
         var data = JSON.parse(result);
 
+        console.log(data)
         if(data["STATUS"] == "SUCCESS") {
           $('#mdlUser_Edit').on('shown.bs.modal', function() {
             $("#userIdEdit").val(data["PAYLOAD"]["U_ID"]);
             $("#userBigIdEdit").val(data["PAYLOAD"]["USERBIGID"]);
             $("#userNamaEdit").val(data["PAYLOAD"]["U_NAMA"]);
             $("#userPonselEdit").val(data["PAYLOAD"]["U_TELPON"]);
+            $("#userPonselEdit").data('ponsel', data["PAYLOAD"]["U_TELPON"]);
             $("#userGroupEdit").val(data["PAYLOAD"]["U_GROUP_ROLE"]);
             $("#userPrshEdit").val(data["PAYLOAD"]["PRSH_ID"]);
             $("#userEmailEdit").val(data["PAYLOAD"]["U_EMAIL"]);
+            $("#userEmailEdit").data('email', data["PAYLOAD"]["U_EMAIL"]);
             $("#userKodeEdit").val(data["PAYLOAD"]["U_KODE_GROUP"]);
+            $('#userKodeEdit').data('pinjaman', data["PAYLOAD"]["U_KODE_GROUP"]);
+            $("#userKodeTabunganEdit").val(data["PAYLOAD"]["U_KODE_TABUNGAN"]);
+            $('#userKodeTabunganEdit').data('tabungan', data["PAYLOAD"]["U_KODE_TABUNGAN"]);
             $("#status_collectE").val(data["PAYLOAD"]["U_STATUS_COLLECT"]);
             $("#status_tabE").val(data["PAYLOAD"]["U_STATUS_TAB"]);
             //console.log($("#status_collectE").val(data["PAYLOAD"]["U_STATUS_COLLECT"]));
@@ -803,6 +831,7 @@
       var userPrsh = $("#userPrshEdit").val();
       var userEmail = $("#userEmailEdit").val();
       var userKodeGroup = $("#userKodeEdit").val();
+      var userKodeTabungan = $("#userKodeTabunganEdit").val();
       var userCollect = $("#status_collectE").val();
       var userTab = $("#status_tabE").val();
 
@@ -836,8 +865,13 @@
         return false;
       }
       if (!$('#userKodeEdit').val().length) {
-        required('Kolom Kode Group');
+        required('Kolom Kode Group Pinjaman');
         $('#userKodeEdit').focus();
+        return false;
+      }
+      if (!$('#userKodeTabunganEdit').val().length) {
+        required('Kolom Kode Group Tabungan');
+        $('#userKodeTabunganEdit').focus();
         return false;
       }
       if (!$('#userGroupEdit').val().length) {
@@ -866,7 +900,7 @@
         $.ajax({
           type  : "PUT",
           url   : "<?php echo asset_url(); ?>/user",
-          data  : "userId=" + encodeURI(userId) + "&userBigId=" + encodeURI(userBigId) + "&userNama=" + encodeURI(userNama) + "&userPonsel=" + encodeURI(userPonsel) + "&userGroup=" + userGroup + "&userPrsh=" + userPrsh + "&userEmail=" + encodeURI(userEmail) + "&userKode=" + encodeURI(userKodeGroup) + "&status_collect=" + encodeURI(userCollect) + "&status_tab=" + encodeURI(userTab),
+          data  : "userId=" + encodeURI(userId) + "&userBigId=" + encodeURI(userBigId) + "&userNama=" + encodeURI(userNama) + "&userPonsel=" + encodeURI(userPonsel) + "&userGroup=" + userGroup + "&userPrsh=" + userPrsh + "&userEmail=" + encodeURI(userEmail) + "&userKode=" + encodeURI(userKodeGroup) + "&userKodeTabungan=" + encodeURI(userKodeTabungan) + "&status_collect=" + encodeURI(userCollect) + "&status_tab=" + encodeURI(userTab),
           success : function(result) {
             gOverlay.hide();
             var data = JSON.parse(result);
@@ -909,6 +943,53 @@
     }
   }
 
+  var check = function (data) {
+    $.ajax({
+      type: 'POST',
+      url: "<?= asset_url() ?>/user/checkuser",
+      data: data,
+      dataType: 'JSON',
+      success: function (res) {
+        toastr.options = {
+          "positionClass": "toast-top-right"
+        }
+        var data = res;
+        if (data.STATUS == 'SUCCESS') {
+          toastr.success(data.MESSAGE, 'Berhasil');
+        }
+        if (data.STATUS == 'ERROR') {
+          toastr.error(data.MESSAGE, 'Perhatian');
+        }
+      },
+      error: function (res) {
+        console.log(res)
+      }
+    });
+  }
+
+  var checkKode = function (data) {
+    $.ajax({
+      type: 'POST',
+      url: '<?= asset_url() ?>/user/kodecheck',
+      data: data,
+      dataType: 'JSON',
+      success: function (res) {
+        toastr.options = {
+          "positionClass": "toast-top-right"
+        }
+        if (res.STATUS == 'SUCCESS') {
+          toastr.success(res.MESSAGE, 'Berhasil');
+        }
+        if (res.STATUS == 'ERROR') {
+          toastr.error(res.MESSAGE, 'Perhatian');
+        }
+      },
+      error: function (res) {
+        console.log(res);
+      }
+    });
+  }
+
     var checkUser = function () {
       $.ajax({
         type: 'POST',
@@ -930,7 +1011,7 @@
           }
         },
         error: function (res) {
-          console.log(res)
+          console.log(res);
         }
       });
     }
@@ -945,6 +1026,90 @@
         checkUser();
       }
     });
+    $('#userId').blur(function () {
+      if ($(this).val().length > 0) {
+        check({
+          key: 'userId',
+          value: $(this).val()
+        });
+      }
+    });
+    $('#userPonsel').blur(function () {
+      if ($(this).val().length >= 10) {
+        check({
+          key: 'userPonsel',
+          value: $(this).val()
+        });
+      }
+    });
+    $('#userEmail').blur(function () {
+      if ($(this).val().length > 0) {
+        if (!$(this).val().match(/^([a-zA-Z0-9_.+-])+@(([a-zA-Z0-9-])+.([a-zA-Z0-9]{2,4}))+$/)) {
+          toastr.error('Pastikan email sudah benar', 'Kolom Email');
+          return false;
+        }
+        check({
+          key: 'userEmail',
+          value: $(this).val()
+        });
+      }
+    });
+    $("#userKodeGroup").blur(function () {
+      if ($(this).val().length > 0) {
+        checkKode({
+          userPrsh: $('#userPrsh').val(),
+          key: 'userKodeGroup',
+          value: $(this).val()
+        });
+      }
+    });
+    $("#userKodeTabungan").blur(function () {
+      if ($(this).val().length > 0) {
+        checkKode({
+          userPrsh: $('#userPrsh').val(),
+          key: 'userKodeTabungan',
+          value: $(this).val()
+        });
+      }
+    });
+    $('#userPonselEdit').blur(function () {
+      if ($(this).val().length >= 10 && $(this).val() != $(this).data('ponsel')) {
+        check({
+          key: 'userPonsel',
+          value: $(this).val()
+        });
+      }
+    });
+    $('#userEmailEdit').blur(function () {
+      if ($(this).val().length > 0 && $(this).val() != $(this).data('email')) {
+        if (!$(this).val().match(/^([a-zA-Z0-9_.+-])+@(([a-zA-Z0-9-])+.([a-zA-Z0-9]{2,4}))+$/)) {
+          toastr.error('Pastikan email sudah benar', 'Kolom Email');
+          return false;
+        }
+        check({
+          key: 'userEmail',
+          value: $(this).val()
+        });
+      }
+    });
+    $("#userKodeEdit").blur(function () {
+      if ($(this).val().length > 0 && $(this).val() != $(this).data('pinjaman')) {
+        checkKode({
+          userPrsh: $("#userPrshEdit").val(),
+          key: 'userKodeGroup',
+          value: $(this).val()
+        });
+      }
+    });
+    $("#userKodeTabunganEdit").blur(function () {
+      if ($(this).val().length > 0 && $(this).val() != $(this).data('tabungan')) {
+        checkKode({
+          userPrsh: $("#userPrshEdit").val(),
+          key: 'userKodeTabungan',
+          value: $(this).val()
+        });
+      }
+    });
 
    var saveData = function(){
     var userBigIdX = $("#userBigId").val();
@@ -956,6 +1121,7 @@
     var userPrshX = $("#userPrsh").val();
     var userEmailX = $("#userEmail").val();
     var userKodeGroupX = $("#userKodeGroup").val();
+    var userKodeTabunganX = $("#userKodeTabungan").val();
     var status_collectX = $("#status_collect").val();
     var status_tabX = $("#status_tab").val();
 
@@ -1003,6 +1169,11 @@
       $('#userKodeGroup').focus();
       return false;
     }
+    if (!$('#userKodeTabungan').val().length) {
+      required('Kolom Kode Tabungan');
+      $('#userKodeTabungan').focus();
+      return false;
+    }
     if (!$('#userGroup').val().length) {
       required('Kolom Kode Group');
       $('#userGroup').focus();
@@ -1032,12 +1203,12 @@
     var numbers = /[0-9]/g;
     var emailValidate = /^([a-zA-Z0-9_.+-])+@(([a-zA-Z0-9-])+.)+([a-zA-Z0-9]{2,4})+$/;
 
-    if(userBigIdX != "" && userIdX != "" && userPassX != "" && userNamaX != "" && userPonselX != "" && userGroupX != "" && userPrshX != "" && userEmailX != "" && userKodeGroupX != "" && myInput.value.match(lowerCaseLetters) && myInput.value.match(upperCaseLetters) && myInput.value.match(numbers) && myInput.value.length >= 6 && myNumber.value.length >= 9 && myEmail.value.match(emailValidate)) {
+    if(userBigIdX != "" && userIdX != "" && userPassX != "" && userNamaX != "" && userPonselX != "" && userGroupX != "" && userPrshX != "" && userEmailX != "" && userKodeGroupX != "") {
       createOverlay("Mohon Tunggu...");
       $.ajax({
         type  : "POST",
         url   : "<?php echo asset_url(); ?>/tester",
-        data  : "userId=" + encodeURI(userIdX) + "&userBigId=" + encodeURI(userBigIdX) + "&userPass=" + encodeURI(userPassX) + "&userNama=" + encodeURI(userNamaX) + "&userPonsel=" + encodeURI(userPonselX) + "&userGroup=" + userGroupX + "&userPrsh=" + userPrshX + "&userEmail=" + encodeURI(userEmailX) + "&userKodeGroup=" + encodeURI(userKodeGroupX) + "&status_collect=" + encodeURI(status_collectX) + "&status_tab=" + encodeURI(status_tabX),
+        data  : "userId=" + encodeURI(userIdX) + "&userBigId=" + encodeURI(userBigIdX) + "&userPass=" + encodeURI(userPassX) + "&userNama=" + encodeURI(userNamaX) + "&userPonsel=" + encodeURI(userPonselX) + "&userGroup=" + userGroupX + "&userPrsh=" + userPrshX + "&userEmail=" + encodeURI(userEmailX) + "&userKode=" + encodeURI(userKodeGroupX) + "&userKodeTabungan=" + encodeURI(userKodeTabunganX) + "&status_collect=" + encodeURI(status_collectX) + "&status_tab=" + encodeURI(status_tabX),
         success : function(result) {
           gOverlay.hide();
           var data = JSON.parse(result);
@@ -1047,8 +1218,7 @@
             setTimeout(function(){
               window.location = "<?php echo asset_url(); ?>/user";
             }, 500);
-          }
-          else {
+          } else {
             //sweetAlert("Pesan Kesalahan", data["MESSAGE"], "error");
             //toastr.error(data["MESSAGE"]);
             swal({
@@ -1095,8 +1265,8 @@
     function(){
       createOverlay("Mohon Tunggu...");
       $.ajax({
-        type  : "DELETE",
-        url   : "<?php echo asset_url(); ?>/user",
+        type  : "POST",
+        url   : "<?php echo asset_url(); ?>/user/delete",
         data  : "id=" + slug,
         success : function(result) {
           gOverlay.hide();

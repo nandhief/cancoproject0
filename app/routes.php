@@ -27,7 +27,7 @@ Route::post("/logout","LoginController@processLogout");
 Route::get("/dashboard","DashboardController@dashboardMain");
 Route::get("/dashboard/admin", "DashboardController@dashboardAdmin");
 
-//route new admin
+//route new admin 
 Route::get("/admin/collection/jadwal", "CollectionController@listJadwalAdmin");
 Route::get("/admin/collection/tabungan", "CollectionController@listTabunganAdmin");
 Route::get("/admin/collection/tabungan/laporan", "CollectionController@adminTabunganDownload");
@@ -39,10 +39,11 @@ Route::get("/collection/collector/detail", "CollectionController@listDetailColle
 
 Route::get("/collection/jadwal-penagihan", "CollectionController@formlistJadwal");
 Route::post("/collection/jadwal-penagihan", "CollectionController@submitJadwal");
-Route::delete("/collection/jadwal-penagihan", "CollectionController@deleteJadwal");
+// Route::delete("/collection/jadwal-penagihan", "CollectionController@deleteJadwal");
+Route::post("/collection/jadwal-penagihan/delete", "CollectionController@deleteJadwal");
 Route::get("/collection/jadwal-penagihan/{buId}", "CollectionController@listDetailJadwal");
 
-//admin marker maps
+//admin marker maps 
 Route::get("/admin/collection/monitoring", "CollectionController@displayMonitoringAdmin");
 Route::post("/admin/collection/monitoring", "CollectionController@displayMonitoringAdmin");
 Route::get("/admin/collection/monitoring/position", "CollectionController@getPositionAdmin");
@@ -55,7 +56,8 @@ Route::get("/collection/monitoring/position", "CollectionController@getPosition"
 ///route tabungan web
 Route::get("/collection/tabungan", "CollectionController@formlistTabungan");
 Route::post("/collection/tabungan/store", "CollectionController@submitTabungan");
-Route::delete("/collection/tabungan/delete", "CollectionController@deleteTabungan");
+// Route::delete("/collection/tabungan", "CollectionController@deleteTabungan");
+Route::post("/collection/tabungan/delete", "CollectionController@deleteTabungan");
 Route::get("/collection/tabungan/detail/{buId}", "CollectionController@detailTabungan");
 
 //route api tabungan
@@ -98,15 +100,17 @@ Route::get("/user/detail", "UserController@getUserData");
 Route::post("/user", "UserController@addUser");
 Route::post("/user/check", "UserController@check");
 Route::post("/user/checkuser", "UserController@checkuser");
+Route::post("/user/kodecheck", "UserController@kodecheck");
 Route::put("/user", "UserController@updateUser");
-Route::delete("/user", "UserController@deleteUser");
+// Route::delete("/user", "UserController@deleteUser");
+Route::post("/user/delete", "UserController@deleteUser");
 Route::get('/user/change-password', "UserController@editPassword");
 Route::post('/user/change-password', "UserController@updatePassword");
 
 //admin management
+Route::post("/admin/delete", "UserController@deleteAdmin");
 Route::get("/admin", "UserController@listAdmin");
 Route::post("/admin/store", "UserController@addAdmin");
-Route::delete("/admin/delete", "UserController@deleteAdmin");
 Route::get("/admin/laporan", "CollectionController@adminReport");
 Route::get("/admin/laporan/download", "CollectionController@adminReportDownload");
 Route::get("/admin/laporan/view", "CollectionController@adminReportView");
@@ -124,7 +128,7 @@ Route::post("/company/check", "CompanyController@checkLembaga");
 Route::get("/company/detail", "CompanyController@getCompanyData");
 Route::post("/company", "CompanyController@addCompany");
 Route::post("/company-update", "CompanyController@updateCompany");
-Route::delete("/company", "CompanyController@deleteCompany");
+Route::post("/company/delete", "CompanyController@deleteCompany");
 
 Route::post("/company/update-status", "CompanyController@updateCompanyStatus");
 Route::get("/company/update-status", "CompanyController@updateCompanyStatus");
@@ -168,47 +172,41 @@ Route::get('/login/checktoken', 'LoginController@mobileCheckToken');
 //Route::get("/collection/profile/update", "ProfileController@profileMobile");
 Route::put("/collection/profile/update", "ProfileController@profileUpdateMobile");
 
+//Route::get("/server-time", function() {
+//  echo tglIndo(date("Y-m-d H:i:s"), "SHORT");
+//});
 Route::get("/server-time", "DashboardController@tesTgl2");
 
-Route::get('/test', function () {
-    return View::make('test');
-});
-Route::post('/test', function () {
-    $objPHPExcel = PHPExcel_IOFactory::load(Input::file('file'));
-    $worksheet = $objPHPExcel->getActiveSheet();
-    $highestRow = $worksheet->getHighestRow();
-    $highestColumn = $worksheet->getHighestColumn();
-    $highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn);
-    $titles = $worksheet->rangeToArray('A1:' . $highestColumn . "1");
-    $body = $worksheet->rangeToArray('A2:' . $highestColumn . $highestRow);
-    $table = [];
-    $a = [];
-    $rules = ["KODE_GROUP", "NO_REKENING", "CAB", "ID_NASABAH", "NAMA_NASABAH", "ALAMAT", "NO_HP", "AGUNAN", "JML_PINJAMAN", "SALDO_NOMINATIF", "FP", "FB", "POKOK_BLN", "BUNGA_BLN", "KOLEKTIBILITAS", "ANGSURAN_KE", "JANGKA_WAKTU", "TGL_REALISASI", "TGL_UPLOAD_PENAGIHAN", "TGL_JADWAL", "TUNGG_POKOK", "TUNGG_BUNGA", "TUNGG_DENDA", "TAGIHAN", "PEMBAYARAN"];
-    // dump($titles, $body);
-    foreach ($titles[0] as $key => $value) {
-        if (! in_array($value, $rules)) {
-            if (isset($rules[$key])) {
-                dump('Error Kolom ' . ($key + 1) . ':' . $value . ' Tidak sama dengan ' .  $rules[$key]);
-            }
-        }
-    }
-    foreach ($body as $keyf => $field) {
-        foreach ($field as $key => $value) {
-            switch ($key) {
-                case 17:
-                case 18:
-                    $data[] = Carbon\Carbon::parse(str_replace('/', '-', $value))->format('Y-m-d');
-                    break;
+Route::get('/pdf', function(){
+  $fpdf = new Fpdf();
+  $fpdf->AddPage();
+  $fpdf->SetFont('Arial','B',16);
+  $fpdf->Cell(40,10,'Hello World!');
+  $fpdf->Output();
+  exit;
 
-                default:
-                    $data[] = $value;
-                    break;
-            }
-        }
-        $a[$keyf] = array_combine($rules, $data);
-        $data = [];
-    }
-    dump($a);
+  //Fpdf::AddPage();
+  //Fpdf::SetFont('Arial','B',16);
+  //Fpdf::Cell(40,10,'Hello World!');
+  //Fpdf::Output();
+  //exit;
 });
+/*
+App::missing(function($exception) {
+  //return Response::view('errors.missing', array(), 404);
+  //return "Missing configuration";
 
+  //$url = Request::fullUrl();
+  //$userAgent = Request::header('user-agent');
+  //Log::warning("404 for URL: $url requested by user agent: $userAgent");
+  //return Response::view('errors.not-found', array(), 404);
+
+  Session::flush();
+  return Redirect::to('login');
+});
+*/
+
+Route::group(['prefix' => 'api'], function () {
+  Route::post('change', 'ApiController@updatePassword');
+});
 ?>

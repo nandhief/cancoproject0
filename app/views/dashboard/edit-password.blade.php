@@ -7,28 +7,28 @@
     <?php endif ?>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="shortcut icon" href="<?= asset_url(); ?>/assets/images/pintech.png">
-    <title><?= getSetting("APP_NAME"); ?></title>
+    <link rel="shortcut icon" href="<?php echo asset_url(); ?>/assets/images/pintech.png">
+    <title><?php echo getSetting("APP_NAME"); ?></title>
 
     <!-- Global stylesheets -->
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css">
-    <link href="<?= asset_url(); ?>/assets/css/icons/icomoon/styles.css" rel="stylesheet" type="text/css">
-    <link href="<?= asset_url(); ?>/assets/css/bootstrap.css" rel="stylesheet" type="text/css">
-    <link href="<?= asset_url(); ?>/assets/css/core.css" rel="stylesheet" type="text/css">
-    <link href="<?= asset_url(); ?>/assets/css/components.css" rel="stylesheet" type="text/css">
-    <link href="<?= asset_url(); ?>/assets/css/colors.css" rel="stylesheet" type="text/css">
-    <script type="text/javascript" src="<?= asset_url(); ?>/assets/js/plugins/loaders/pace.min.js"></script>
-    <script type="text/javascript" src="<?= asset_url(); ?>/assets/js/core/libraries/jquery.min.js"></script>
-    <script type="text/javascript" src="<?= asset_url(); ?>/assets/js/core/libraries/bootstrap.min.js"></script>
-    <script type="text/javascript" src="<?= asset_url(); ?>/assets/js/plugins/loaders/blockui.min.js"></script>
-    <script type="text/javascript" src="<?= asset_url(); ?>/assets/js/plugins/forms/styling/uniform.min.js"></script>
-    <script type="text/javascript" src="<?= asset_url(); ?>/assets/js/core/app.js"></script>
-    <script type="text/javascript" src="<?= asset_url(); ?>/assets/js/pages/login.js"></script>
+    <link href="<?php echo asset_url(); ?>/assets/css/icons/icomoon/styles.css" rel="stylesheet" type="text/css">
+    <link href="<?php echo asset_url(); ?>/assets/css/bootstrap.css" rel="stylesheet" type="text/css">
+    <link href="<?php echo asset_url(); ?>/assets/css/core.css" rel="stylesheet" type="text/css">
+    <link href="<?php echo asset_url(); ?>/assets/css/components.css" rel="stylesheet" type="text/css">
+    <link href="<?php echo asset_url(); ?>/assets/css/colors.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="<?php echo asset_url(); ?>/assets/js/plugins/loaders/pace.min.js"></script>
+    <script type="text/javascript" src="<?php echo asset_url(); ?>/assets/js/core/libraries/jquery.min.js"></script>
+    <script type="text/javascript" src="<?php echo asset_url(); ?>/assets/js/core/libraries/bootstrap.min.js"></script>
+    <script type="text/javascript" src="<?php echo asset_url(); ?>/assets/js/plugins/loaders/blockui.min.js"></script>
+    <script type="text/javascript" src="<?php echo asset_url(); ?>/assets/js/plugins/forms/styling/uniform.min.js"></script>
+    <script type="text/javascript" src="<?php echo asset_url(); ?>/assets/js/core/app.js"></script>
+    <script type="text/javascript" src="<?php echo asset_url(); ?>/assets/js/pages/login.js"></script>
     <!-- /theme JS files -->
 
     <!-- sweet alert-->
-    <script src="<?= asset_url(); ?>/assets/js/sweetalert/sweetalert.min.js"></script>
-  <link rel="stylesheet" href="<?= asset_url(); ?>/assets/js/sweetalert/sweetalert.css">
+    <script src="<?php echo asset_url(); ?>/assets/js/sweetalert/sweetalert.min.js"></script>
+  <link rel="stylesheet" href="<?php echo asset_url(); ?>/assets/js/sweetalert/sweetalert.css">
     <style type="text/css">
         #message {display: none; background: #f1f1f1; color: #000; position: relative; padding: 5px; margin-top: 5px; } #message p {padding: 5px 10px; font-size: 10px; } .valid {color: green; display: none; } .valid:before {position: relative; left: -35px; } .invalid {color: red; } .invalid:before {position: relative; left: -35px; }
     </style>
@@ -45,7 +45,7 @@
                     <form id="form">
                         <div class="panel panel-body login-form">
                             <div class="text-center">
-                                <img src="<?= asset_url(); ?>/assets/images/pintech.png" style="width: 270px;"></i>
+                                <img src="<?php echo asset_url(); ?>/assets/images/pintech.png" style="width: 270px;"></i>
                                 <h4 class="content-group">Ganti Password</h4>
                             </div>
                             <input type="hidden" name="user_id" id="user_id" value="<?= $ctlUserData->U_ID ?>">
@@ -58,7 +58,7 @@
                             </div>
 
                             <div class="form-group">
-                                <button type="button" class="btn btn-block submit" style="background-color: #bb0a0a; color: #fff" disabled>Update Password </button>
+                                <button type="button" class="btn btn-block submit" name="btnSubmit" style="background-color: #bb0a0a; color: #fff" disabled>Update Password </button>
                             </div>
                         </div>
                     </form>
@@ -83,7 +83,7 @@
                         type: 'success',
                         title: 'Berhasil'
                     }, function () {
-                        window.location = "<?= asset_url(); ?>";
+                        window.location = "<?php echo asset_url(); ?>";
                     });
                     $('.submit').attr('disabled', false);
                 },

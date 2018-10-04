@@ -22,6 +22,11 @@ class CompanyController extends BaseController {
 			if($jml < 10)	$jml = "60255700".$jml;
 			if($jml > 10 && $jml < 100)	$jml = "6025570".$jml;
 
+			do {
+				$jml = $jml+1;
+			} while (DB::table('coll_perusahaan')->where('PRSH_ID', 'PIN' . $jml)->count() > 0);
+
+
 			foreach ($prsh as $aData) {
 				$spv = DB::select("SELECT IFNULL(COUNT(U_ID),0) AS JUMLAH FROM coll_user WHERE PRSH_ID = ? AND U_GROUP_ROLE = 'GR_SUPERVISOR'", array($aData->{"PRSH_ID"}));
 				$aData->{"JUMLAH_SPV"} = $spv[0]->{"JUMLAH"};
@@ -62,7 +67,7 @@ class CompanyController extends BaseController {
                 Session::flush();
                 return Redirect::to('login')->with('ctlError','Please login to access system');
             }
-            $prsh = DB::table('coll_perusahaan')->where('PRSH_ID', Input::get('prshId'))->first();
+            $prsh = DB::table('coll_perusahaan')->where('PRSH_ID', 'PIN'.Input::get('prshId'))->first();
             if (empty($prsh)) {
                 return composeReply('SUCCESS', 'User ID tersedia');
             }
