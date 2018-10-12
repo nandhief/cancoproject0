@@ -273,7 +273,8 @@
             <th style="text-align:center" width="18%">Username</th>
             <th style="text-align:center" width="20%">Nama</th>
             <th style="text-align:center" width="15%">Status</th>
-            <th style="text-align:center;" width="20%">Kode Group</th>
+            <th style="text-align:center;" width="20%">Kode Group Pinjaman</th>
+            <th style="text-align:center;" width="20%">Kode Group Tabungan</th>
             <th style="text-align:center" width="15%">Group Role</th>
             <th style="text-align:center" width="13%">Tindakan</th>
           </tr>
@@ -305,6 +306,7 @@
                   </div>
                 </td>
                 <td style="text-align: center;"><?php echo $aData->{"U_KODE_GROUP"}; ?></td>
+                <td style="text-align: center;"><?php echo $aData->{"U_KODE_TABUNGAN"}; ?></td>
                 <td style="text-align:center"><?php echo getReferenceInfo("GROUP_ROLE",$aData->{"U_GROUP_ROLE"}); ?></td>
                 <td style="text-align:center">
                     <div class="btn-group">
@@ -312,7 +314,7 @@
                         <i class="icon-menu7"></i> &nbsp;<span class="caret"></span>
                       </button>
                       <ul class="dropdown-menu dropdown-menu-right" style="background-color:#bb0a0a;">
-                        <li><a href="javascript:showDetail('<?php echo $aData->{"U_ID"}; ?>')"><i class="fa fa-ellipsis-h"></i> Detil</a></li>
+                        <li><a href="javascript:showDetail('<?php echo $aData->{"U_ID"}; ?>')"><i class="fa fa-ellipsis-h"></i> Detail</a></li>
                         <li><a href="javascript:editData('<?php echo $aData->{"U_ID"}; ?>')"><i class="fa fa-edit"></i> Ubah</a></li>
                         <li><a href="javascript:resetPassword('<?php echo $aData->{"U_ID"}; ?>')"><i class="fa fa-retweet"></i> Reset Password</a></li>
                         <li><a href="javascript:gantiPassword('<?php echo $aData->{"U_ID"}; ?>')"><i class="fa fa-retweet"></i> Ganti Password</a></li>

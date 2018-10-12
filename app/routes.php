@@ -27,7 +27,7 @@ Route::post("/logout","LoginController@processLogout");
 Route::get("/dashboard","DashboardController@dashboardMain");
 Route::get("/dashboard/admin", "DashboardController@dashboardAdmin");
 
-//route new admin 
+//route new admin
 Route::get("/admin/collection/jadwal", "CollectionController@listJadwalAdmin");
 Route::get("/admin/collection/tabungan", "CollectionController@listTabunganAdmin");
 Route::get("/admin/collection/tabungan/laporan", "CollectionController@adminTabunganDownload");
@@ -43,7 +43,7 @@ Route::post("/collection/jadwal-penagihan", "CollectionController@submitJadwal")
 Route::post("/collection/jadwal-penagihan/delete", "CollectionController@deleteJadwal");
 Route::get("/collection/jadwal-penagihan/{buId}", "CollectionController@listDetailJadwal");
 
-//admin marker maps 
+//admin marker maps
 Route::get("/admin/collection/monitoring", "CollectionController@displayMonitoringAdmin");
 Route::post("/admin/collection/monitoring", "CollectionController@displayMonitoringAdmin");
 Route::get("/admin/collection/monitoring/position", "CollectionController@getPositionAdmin");

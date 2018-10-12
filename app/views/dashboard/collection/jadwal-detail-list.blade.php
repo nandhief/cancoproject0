@@ -15,7 +15,7 @@
     </div>
     //-->
   </div>
- 
+
   <div class="breadcrumb-line">
     <ul class="breadcrumb">
       <li><a href="<?php echo asset_url(); ?>"><i class="icon-home2 position-left"></i> Beranda</a></li>
@@ -50,14 +50,14 @@
   <div class="panel panel-flat border-top-primary">
     <div class="panel-heading">
       <h5 class="panel-title text-semibold" style="color: #bb0a0a !important">Detil Jadwal Penagihan ID#<?php echo $ctlBuId; ?></h5>
-      
+
       <div class="heading-elements">
-        <ul class="icons-list">  
+        <ul class="icons-list">
           <li><a href="javascript:addPayment()"><i class=" icon-plus2"></i></a></li>
           <li><a data-action="collapse"></a></li>
         </ul>
       </div>
-      
+
     </div>
     <div class="panel-body">
       <div class="row">
@@ -106,7 +106,7 @@
                 foreach ($ctlBUD as $aData) {
                   ?>
                   <tr>
-                     <td style="text-align: center;"><?php echo $aData->{"BUD_CAB"}; ?></td>
+                    <td style="text-align: center;"><?php echo $aData->{"BUD_CAB"}; ?></td>
                     <td style="text-align: center;"><?php echo $aData->{"BUD_KODE_GROUP"}; ?></td>
                     <td style="text-align:center" ><?php echo $aData->{"U_ID"}; ?></td>
                     <td style="text-align:left" ><?php echo $aData->{"U_NAMA"}; ?></td>
@@ -138,7 +138,7 @@
                     <td style="text-align:center" >Rp. <?php echo number_format($aData->{"BUD_PINJ_JUMLAH_BAYAR"}); ?></td>
                     <td style="text-align:center" ><?php echo tglIndo($aData->{"BUD_PINJ_TGL_BAYAR"},"SHORT"); ?></td>
                     <td style="text-align:center" ><?php echo date("H:i:s", strtotime($aData->{"BUD_PINJ_TGL_BAYAR"})); ?></td>
-                    <td style="text-align:center;vertical-align:top;">                      
+                    <td style="text-align:center;vertical-align:top;">
                       <?php
                       if(trim($aData->{"BUD_IMG_PATH"}) != "-" && trim($aData->{"BUD_IMG_PATH"}) != "") {
                         ?>
@@ -173,10 +173,10 @@
             </tbody>
           </table>
         </div>
-      </div>        
+      </div>
     </div>
   </div>
-</div>  
+</div>
 
 <div class="footer text-muted"></div>
 
@@ -196,9 +196,9 @@
     // ------------------------------
     // Setting datatable defaults
     $.extend( $.fn.dataTable.defaults, {
-        autoWidth: false,        
+        autoWidth: false,
         /*
-        columnDefs: [{ 
+        columnDefs: [{
             orderable: false,
             width: '80px',
             targets: [ 3 ]
@@ -239,7 +239,7 @@
     // Enable Select2 select for the length option
     $('.dataTables_length select').select2({
         minimumResultsForSearch: "-1"
-    });     
+    });
   });
 
 </script>

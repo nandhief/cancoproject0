@@ -389,7 +389,6 @@ class CollectionController extends BaseController {
               $titles = $objWorksheet->rangeToArray('A1:' . $highestColumn . "1");
               $body = $objWorksheet->rangeToArray('A2:' . $highestColumn . $highestRow);
               $table = array();
-              //return composeReply("ERROR", "HIT HERE : ".$highestRow);
               for ($row=0; $row <= $highestRow - 2; $row++) {
                 $a = array();
                 for ($column=0; $column <= $highestColumnIndex - 1; $column++) {
@@ -420,11 +419,6 @@ class CollectionController extends BaseController {
                   if($column == 21 && $titles[0][$column] != "TUNGG_BUNGA")        return composeReply("ERROR","Kolom ke-22 HARUS bernama TUNGG_BUNGA");
                   if($column == 22 && $titles[0][$column] != "TUNGG_DENDA")        return composeReply("ERROR","Kolom ke-23 HARUS bernama TUNGG_DENDA");
                   if($column == 23 && $titles[0][$column] != "TAGIHAN")        return composeReply("ERROR","Kolom ke-24 HARUS bernama TAGIHAN");
-                  // if($column == 23 && $titles[0][$column] != "PEMBAYARAN") return composeReply("ERROR", "Kolom ke-24 HARUS bernama PEMBAYARAN");
-                  // if($column == 24 && $titles[0][$column] != "TGL_BAYAR") return composeReply("ERROR", "Kolom ke-25 HARUS bernama TGL_BAYAR");
-                  // if($column == 25 && $titles[0][$column] != "STATUS") return composeReply("ERROR", "Kolom ke-26 HARUS bernama STATUS");
-                  // if($column == 26 && $titles[0][$column] != "KETERANGAN") return composeReply("ERROR", "Kolom ke-27 HARUS bernama KETERANGAN");
-                  //end field if
 
 
                   $a[$titles[0][$column]] = $body[$row][$column];
@@ -2243,82 +2237,12 @@ class CollectionController extends BaseController {
       }
       $userId = Session::get('SESSION_USER_ID', '');
       $userData = DB::table('coll_user')->where('U_ID',$userId)->first();
-      function bulan($bulan)
-      {
-      Switch ($bulan){
-          case 1 : $bulan="JANUARI";
-              break;
-          case 2 : $bulan="FEBRUARI";
-              break;
-          case 3 : $bulan="MARET";
-              break;
-          case 4 : $bulan="APRIL";
-              break;
-          case 5 : $bulan="MEI";
-              break;
-          case 6 : $bulan="JUNI";
-              break;
-          case 7 : $bulan="JULI";
-              break;
-          case 8 : $bulan="AGUSTUS";
-              break;
-          case 9 : $bulan="SEPTEMBER";
-              break;
-          case 10 : $bulan="OKTOBER";
-              break;
-          case 11 : $bulan="NOVEMBER";
-              break;
-          case 12 : $bulan="DESEMBER";
-              break;
-          }
-      return $bulan;
-      }
-      $rptType = Input::get("tipe");
-      if(!isset($rptType) || trim($rptType) === "") $rptType = "RPT_COLLECTING";
-      $userId = Session::get('SESSION_USER_ID', '');
-      $userData = DB::table('coll_user')->where('U_ID',$userId)->first();
-
       $prshData = Input::get("collector");
       $tgl_awal = Input::get("tglAwal");
       $tAwal = date("Y-m-d", strtotime($tgl_awal));
-
       $tgl_akhir = Input::get("tglAkhir");
       $tAkhir = date("Y-m-d", strtotime($tgl_akhir));
-
-      if($rptType == "RPT_COLLECTING") {
-        $bln = date("m");
-        $thn = date("Y");
-        if(null !== Input::get("bln") && trim(Input::get("bln")) !== "")  $bln = Input::get("bln");
-        if(null !== Input::get("thn") && trim(Input::get("thn")) !== "")  $thn = Input::get("thn");
-
-        if(null !== Input::get("periode") && trim(Input::get("periode")) !== "") {
-          $arrPeriode = explode("-", Input::get("periode"));
-          $bln = $arrPeriode[1];
-          $thn = $arrPeriode[0];
-        }
-
-        //formalitas
-        $daysOfMonth = cal_days_in_month(CAL_GREGORIAN, date("m"), date("Y"));
-        $awal = date("Y")."-".date("m")."-01";
-        $akhir = date("Y")."-".date("m")."-".$daysOfMonth;
-        $collector = "ALL";
-      }
-
-      if($rptType == "RPT_COLLECTING_QUERY") {
-        $bln = date("m"); //formalitas
-        $bln = bulan($bln);
-        $thn = date("Y"); //formalitas
-
-        $collector = "ALL";
-        if(null !== Input::get("collector") && trim(Input::get("collector")) !== "")  $collector = Input::get("collector");
-
-        $awal = date("Y")."-".date("m")."-01";
-        $akhir = date("Y")."-".date("m")."-".getLastDate(date("m"), date("Y"));
-
-        if(null !== Input::get("awal") && trim(Input::get("awal")) !== "")    $awal = Input::get("awal");
-        if(null !== Input::get("akhir") && trim(Input::get("akhir")) !== "")  $akhir = Input::get("akhir");
-      }
-      if($collector == "ALL") {
+      if($prshData == "ALL") {
         $jadwal = DB::table("coll_batch_upload_data")->join("coll_perusahaan", "coll_batch_upload_data.PRSH_ID", "=", "coll_perusahaan.PRSH_ID")->join("coll_jadwal", "coll_batch_upload_data.BUD_ID", "=", "coll_jadwal.BUD_ID")->whereBetween("coll_jadwal.J_TGL", array($tAwal, $tAkhir ))->get();
       }
       else {
@@ -3665,6 +3589,11 @@ class CollectionController extends BaseController {
     if(null === Input::get("status") || trim(Input::get("status")) === "")  return composeReply2("ERROR", "Status pembayaran harus diisi");
 
     if(Input::get("status") === "ST_JADWAL")  return composeReply2("ERROR", "Data tidak diproses karena status penagihan masih dalam penjadwalan");
+    if (!empty(Input::get('periode'))) {
+      if (Input::get('periode') != date('Y-m-d')) {
+        return composeReply2('ERROR', 'Maaf data tidak dalam penjadwalan');
+      }
+    }
 
     if(null === Input::get("budId") || trim(Input::get("budId")) === "")    return composeReply2("ERROR", "Invalid collection ID");
     $budData = DB::table("coll_batch_upload_data")->where("BUD_ID", Input::get("budId"))->first();
@@ -3702,10 +3631,10 @@ class CollectionController extends BaseController {
         if(floatval($jmlBayar) >= floatval($budData->{"BUD_PINJ_JUMLAH"})) {
           $statusPenagihan = "ST_BAYAR";
         }
-        if(floatval($jmlBayar) == 0) {
+        if(floatval($jmlBayar) == 0 && Input::get("status") == 'ST_TIDAK_BAYAR') {
           $statusPenagihan = "ST_TIDAK_BAYAR";
         }
-        if(floatval($jmlBayar) == 0) {
+        if(floatval($jmlBayar) == 0 && Input::get("status") == 'ST_TIDAK_DITEMUKAN') {
           $statusPenagihan = "ST_TIDAK_DITEMUKAN";
         }
       }
@@ -3759,7 +3688,7 @@ class CollectionController extends BaseController {
             'BUD_EDIT_DENDA' => $editDenda,
             'BUD_STATUS' => $statusPenagihan,
             'BUD_STATUS_WAKTU' => date("Y-m-d H:i:s"),
-            'BUD_KETERANGAN' => Input::get("keterangan") . ' ' . Input::get('status'),
+            'BUD_KETERANGAN' => Input::get("keterangan"),
             'BUD_PINJ_JUMLAH_BAYAR' => $jmlBayar,
             'BUD_PINJ_TGL_BAYAR' => $tglBayar,
             'BUD_LOKASI_LAT' => Input::get("latitude"),
@@ -3846,6 +3775,12 @@ class CollectionController extends BaseController {
     if(null === Input::get("status") || trim(Input::get("status")) === "")  return composeReply2("ERROR", "Status pembayaran harus diisi");
 
     if(Input::get("status") === "ST_JADWAL")  return composeReply2("ERROR", "Data tidak diproses karena status penagihan masih dalam penjadwalan");
+
+    if (!empty(Input::get('periode'))) {
+      if (Input::get('periode') != date('Y-m-d')) {
+        return composeReply2('ERROR', 'Maaf data tidak dalam penjadwalan');
+      }
+    }
 
     if(null === Input::get("budId") || trim(Input::get("budId")) === "")    return composeReply2("ERROR", "Invalid collection ID");
     $budData = DB::table("coll_batch_upload_data")->where("BUD_ID", Input::get("budId"))->first();

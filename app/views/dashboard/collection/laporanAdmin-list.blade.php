@@ -79,7 +79,7 @@
               <span class="input-group-addon"><i class="icon-calendar"></i></span>
               <input type="text" id="laporanTglAwal" name="tglAwal" class="form-control pickadate" placeholder="Tanggal awal&hellip;" data-date-format="dd-mm-yyyy" value="<?php echo date('d-m-Y'); ?>">
             </div>
-          </div>            
+          </div>
         </div>
 
         <div class="form-group">
@@ -89,17 +89,17 @@
               <span class="input-group-addon"><i class="icon-calendar"></i></span>
               <input type="text" id="laporanTglAkhir" name="tglAkhir" class="form-control pickadate" placeholder="Tanggal akhir&hellip;" data-date-format="dd-mm-yyyy" value="<?php echo date('d-m-Y'); ?>">
             </div>
-          </div>            
+          </div>
         </div>
 
         <div class="form-group">
-          <label class="col-lg-4 control-label text-semibold">&nbsp;</label>            
+          <label class="col-lg-4 control-label text-semibold">&nbsp;</label>
           <div class="col-lg-4">
             <!-- onClick="downloadReport('RPT_COLLECTING_QUERY');" -->
             <button type="button" class="btn bg-warning" onclick="return view('penagihan')"><b><i class="fa fa-list"></i></b> Lihat data</button>
             <button type="submit" class="btn bg-blue"><b><i class="fa fa-download"></i></b> Unduh File</button>
             <!-- <button type="submit">hhh</button> -->
-          </div>            
+          </div>
         </div>
       </form>
     </div>
@@ -136,7 +136,7 @@
               <span class="input-group-addon"><i class="icon-calendar"></i></span>
               <input type="text" id="laporanTglAwal" name="tglAwal1" class="form-control pickadate" placeholder="Tanggal awal&hellip;" data-date-format="dd-mm-yyyy" value="<?php echo date('d-m-Y'); ?>">
             </div>
-          </div>            
+          </div>
         </div>
 
         <div class="form-group">
@@ -146,22 +146,22 @@
               <span class="input-group-addon"><i class="icon-calendar"></i></span>
               <input type="text" id="laporanTglAkhir" name="tglAkhir1" class="form-control pickadate" placeholder="Tanggal akhir&hellip;" data-date-format="dd-mm-yyyy" value="<?php echo date('d-m-Y'); ?>">
             </div>
-          </div>            
+          </div>
         </div>
 
         <div class="form-group">
-          <label class="col-lg-4 control-label text-semibold">&nbsp;</label>            
+          <label class="col-lg-4 control-label text-semibold">&nbsp;</label>
           <div class="col-lg-4">
             <!-- onClick="downloadReport('RPT_COLLECTING_QUERY');" -->
             <button type="button" class="btn bg-warning" onclick="return view('tabungan')"><b><i class="fa fa-list"></i></b> Lihat data</button>
             <button type="submit" class="btn bg-blue"><b><i class="fa fa-download"></i></b> Unduh File</button>
             <!-- <button type="submit">hhh</button> -->
-          </div>            
+          </div>
         </div>
       </form>
     </div>
   </div>
-</div>  
+</div>
 
 <div class="footer text-muted"></div>
 
@@ -206,10 +206,10 @@
   function view(target) {
     console.log(target);
     if (target == 'tabungan') {
-      window.location = '<?php echo asset_url(); ?>/admin/collection/tabungan/laporan/view?' + $('#tabungan').serialize();
+      window.location = '<?php echo asset_url(); ?>/admin/collection/tabungan/laporan/view?type=RPT_COLLECTING_QUERY&' + $('#tabungan').serialize();
     }
     if (target == 'penagihan') {
-      window.location = '<?php echo asset_url(); ?>/admin/laporan/view?' + $('#penagihan').serialize();
+      window.location = '<?php echo asset_url(); ?>/admin/laporan/view?type=RPT_COLLECTING_QUERY&' + $('#penagihan').serialize();
     }
   }
 </script>
