@@ -241,10 +241,10 @@ class CollectionController extends BaseController {
                   }
 
                   //cek dl apakah sdh ada data pinjaman
-                  $pinjaman = DB::table("coll_pinjaman")->where("PINJ_ID", trim($table[$row]["NO_REKENING"]))->first();
+                  $pinjaman = DB::table("coll_pinjaman")->where("PINJ_ID", str_replace(',', '.', trim($table[$row]["NO_REKENING"])))->first();
                   if(count($pinjaman) <= 0) {
                     DB::table("coll_pinjaman")->insert(array(
-                      'PINJ_ID' => trim($table[$row]["NO_REKENING"]),
+                      'PINJ_ID' => str_replace(',', '.', trim($table[$row]["NO_REKENING"])),
                       'CUST_ID' => trim($table[$row]["ID_NASABAH"]),
                       'PINJ_JUMLAH' => trim($table[$row]["JML_PINJAMAN"]),
                       'PINJ_MASA_KREDIT' => trim($table[$row]["JANGKA_WAKTU"]),
@@ -271,7 +271,7 @@ class CollectionController extends BaseController {
                     'BUD_KODE_GROUP' => $table[$row]["KODE_GROUP"],
                     'BUD_COLL_U_ID' => $collect_id,
                     'BUD_CAB' => trim($table[$row]["CAB"]),
-                    'BUD_PINJ_ID' => trim($table[$row]["NO_REKENING"]),
+                    'BUD_PINJ_ID' => str_replace(',', '.', trim($table[$row]["NO_REKENING"])),
                     'BUD_PINJ_PERIODE' => trim($table[$row]["ANGSURAN_KE"]),
                     'BUD_CUST_ID' => trim($table[$row]["ID_NASABAH"]),
                     'BUD_CUST_NAMA' => trim($table[$row]["NAMA_NASABAH"]),
@@ -322,7 +322,7 @@ class CollectionController extends BaseController {
                     $cek = DB::table("coll_jadwal")
                       ->where("J_TGL", $tglAngsur1)
                       ->where("CUST_ID", trim($table[$row]["ID_NASABAH"]))
-                      ->where("PINJ_ID", trim($table[$row]["NO_REKENING"]))
+                      ->where("PINJ_ID", str_replace(',', '.', trim($table[$row]["NO_REKENING"])))
                       ->where("J_PINJ_JUMLAH", $bayarJumlah)
                       ->first();
 
@@ -332,7 +332,7 @@ class CollectionController extends BaseController {
                         'BU_ID' => $buId,
                         'BUD_ID' => $budId,
                         'CUST_ID' => trim($table[$row]["ID_NASABAH"]),
-                        'PINJ_ID' => trim($table[$row]["NO_REKENING"]),
+                        'PINJ_ID' => str_replace(',', '.', trim($table[$row]["NO_REKENING"])),
                         'J_PINJ_JUMLAH' => $bayarJumlah,
                         'J_PINJ_JUMLAH_BAYAR' => '0',
                         'J_STATUS' => 'ST_JADWAL',
@@ -344,7 +344,7 @@ class CollectionController extends BaseController {
                       DB::table("coll_jadwal")
                         ->where("J_TGL", $aTgl)
                         ->where("CUST_ID", trim($table[$row]["ID_NASABAH"]))
-                        ->where("PINJ_ID", trim($table[$row]["NO_REKENING"]))
+                        ->where("PINJ_ID", str_replace(',', '.', trim($table[$row]["NO_REKENING"])))
                         ->where("J_PINJ_JUMLAH", $bayarJumlah)
                         ->update(array(
                             'BUD_ID' => $budId,
@@ -500,10 +500,10 @@ class CollectionController extends BaseController {
                   }
 
                   //cek dl apakah sdh ada data pinjaman
-                  $pinjaman = DB::table("coll_pinjaman")->where("PINJ_ID", trim($table[$row]["NO_REKENING"]))->first();
+                  $pinjaman = DB::table("coll_pinjaman")->where("PINJ_ID", str_replace(',', '.', trim($table[$row]["NO_REKENING"])))->first();
                   if(count($pinjaman) <= 0) {
                     DB::table("coll_pinjaman")->insert(array(
-                      'PINJ_ID' => trim($table[$row]["NO_REKENING"]),
+                      'PINJ_ID' => str_replace(',', '.', trim($table[$row]["NO_REKENING"])),
                       'CUST_ID' => trim($table[$row]["ID_NASABAH"]),
                       'PINJ_JUMLAH' => trim($table[$row]["JML_PINJAMAN"]),
                       'PINJ_MASA_KREDIT' => trim($table[$row]["JANGKA_WAKTU"]),
@@ -530,7 +530,7 @@ class CollectionController extends BaseController {
                     'BUD_KODE_GROUP' => $table[$row]["KODE_GROUP"],
                     'BUD_COLL_U_ID' => $collect_id,
                     'BUD_CAB' => trim($table[$row]["CAB"]),
-                    'BUD_PINJ_ID' => trim($table[$row]["NO_REKENING"]),
+                    'BUD_PINJ_ID' => str_replace(',', '.', trim($table[$row]["NO_REKENING"])),
                     'BUD_PINJ_PERIODE' => trim($table[$row]["ANGSURAN_KE"]),
                     'BUD_CUST_ID' => trim($table[$row]["ID_NASABAH"]),
                     'BUD_CUST_NAMA' => trim($table[$row]["NAMA_NASABAH"]),
@@ -581,7 +581,7 @@ class CollectionController extends BaseController {
                     $cek = DB::table("coll_jadwal")
                       ->where("J_TGL", $tglAngsur1)
                       ->where("CUST_ID", trim($table[$row]["ID_NASABAH"]))
-                      ->where("PINJ_ID", trim($table[$row]["NO_REKENING"]))
+                      ->where("PINJ_ID", str_replace(',', '.', trim($table[$row]["NO_REKENING"])))
                       ->where("J_PINJ_JUMLAH", $bayarJumlah)
                       ->first();
 
@@ -591,7 +591,7 @@ class CollectionController extends BaseController {
                         'BU_ID' => $dataTgl->BU_ID,
                         'BUD_ID' => $budId,
                         'CUST_ID' => trim($table[$row]["ID_NASABAH"]),
-                        'PINJ_ID' => trim($table[$row]["NO_REKENING"]),
+                        'PINJ_ID' => str_replace(',', '.', trim($table[$row]["NO_REKENING"])),
                         'J_PINJ_JUMLAH' => $bayarJumlah,
                         'J_PINJ_JUMLAH_BAYAR' => '0',
                         'J_STATUS' => 'ST_JADWAL',
@@ -603,7 +603,7 @@ class CollectionController extends BaseController {
                       DB::table("coll_jadwal")
                         ->where("J_TGL", $aTgl)
                         ->where("CUST_ID", trim($table[$row]["ID_NASABAH"]))
-                        ->where("PINJ_ID", trim($table[$row]["NO_REKENING"]))
+                        ->where("PINJ_ID", str_replace(',', '.', trim($table[$row]["NO_REKENING"])))
                         ->where("J_PINJ_JUMLAH", $bayarJumlah)
                         ->update(array(
                             'BUD_ID' => $budId,
@@ -968,7 +968,7 @@ class CollectionController extends BaseController {
                       'BT_KODE_GROUP' => trim($table[$row]["KODE_GROUP"]),
                       'BT_COLL_ID' => $cekColl,
                       'BT_CAB' => trim($table[$row]["CAB"]),
-                      'BT_NO_REKENING' => trim($table[$row]["NO_REKENING"]),
+                      'BT_NO_REKENING' => str_replace(',', '.', trim($table[$row]["NO_REKENING"])),
                       'BT_NASABAH_ID' => trim($table[$row]["NASABAH_ID"]),
                       'BT_NASABAH_NAMA' => trim($table[$row]["NAMA_NASABAH"]),
                       'BT_ALAMAT' => trim($table[$row]["ALAMAT"]),
@@ -1103,7 +1103,7 @@ class CollectionController extends BaseController {
                       'BT_KODE_GROUP' => trim($table[$row]["KODE_GROUP"]),
                       'BT_COLL_ID' => $cekColl,
                       'BT_CAB' => trim($table[$row]["CAB"]),
-                      'BT_NO_REKENING' => trim($table[$row]["NO_REKENING"]),
+                      'BT_NO_REKENING' => str_replace(',', '.', trim($table[$row]["NO_REKENING"])),
                       'BT_NASABAH_ID' => trim($table[$row]["NASABAH_ID"]),
                       'BT_NASABAH_NAMA' => trim($table[$row]["NAMA_NASABAH"]),
                       'BT_ALAMAT' => trim($table[$row]["ALAMAT"]),
@@ -3516,11 +3516,14 @@ class CollectionController extends BaseController {
       $periode_dmY = $arrTgl[2]."-".$arrTgl[1]."-".$arrTgl[0];
     }
 
+    $page = empty(Input::get('page')) ? 1 : (int) Input::get('page');
+    $start = $page > 1 ? ($page * 10) - 10 : 0;
+
     if(null === Input::get("status") || trim(Input::get("status")) === "") {
-      $collRecords = DB::select("SELECT A.*,B.*, C.PRSH_ID, C.PRSH_NAMA, C.PRSH_JENIS_TIPE FROM coll_jadwal AS A INNER JOIN coll_batch_upload_data AS B ON A.BUD_ID = B.BUD_ID INNER JOIN coll_perusahaan AS C ON B.PRSH_ID = C.PRSH_ID WHERE A.J_TGL = ? AND A.PRSH_ID = ? AND A.J_COLL_U_ID != ?", array($periode, $prsh_id, $userId));
+      $collRecords = DB::select("SELECT A.*,B.*, C.PRSH_ID, C.PRSH_NAMA, C.PRSH_JENIS_TIPE FROM coll_jadwal AS A INNER JOIN coll_batch_upload_data AS B ON A.BUD_ID = B.BUD_ID INNER JOIN coll_perusahaan AS C ON B.PRSH_ID = C.PRSH_ID WHERE A.J_TGL = ? AND A.PRSH_ID = ? AND A.J_COLL_U_ID != ? LIMIT 10 OFFSET ?", array($periode, $prsh_id, $userId, $start));
     }
     else {
-      $collRecords = DB::select("SELECT A.*,B.*,C.PRSH_ID, C.PRSH_NAMA, C.PRSH_JENIS_TIPE FROM coll_jadwal AS A INNER JOIN coll_batch_upload_data AS B ON A.BUD_ID = B.BUD_ID INNER JOIN coll_perusahaan AS C ON B.PRSH_ID = C.PRSH_ID WHERE A.J_TGL = ?  AND A.J_STATUS = ? AND A.PRSH_ID = ? AND A.J_COLL_U_ID != ?", array($periode, Input::get("status"), $prsh_id, $userId));
+      $collRecords = DB::select("SELECT A.*,B.*,C.PRSH_ID, C.PRSH_NAMA, C.PRSH_JENIS_TIPE FROM coll_jadwal AS A INNER JOIN coll_batch_upload_data AS B ON A.BUD_ID = B.BUD_ID INNER JOIN coll_perusahaan AS C ON B.PRSH_ID = C.PRSH_ID WHERE A.J_TGL = ?  AND A.J_STATUS = ? AND A.PRSH_ID = ? AND A.J_COLL_U_ID != ? LIMIT 10 OFFSET ?", array($periode, Input::get("status"), $prsh_id, $userId, $start));
     }
 
     foreach ($collRecords as $aData) {
@@ -3534,6 +3537,7 @@ class CollectionController extends BaseController {
       $aData->{"BUD_PINJ_DENDA_FORMATTED"} = number_format($aData->{"BUD_PINJ_DENDA"});
       $aData->{"BUD_PINJ_JUMLAH_FORMATTED"} = number_format($aData->{"BUD_PINJ_JUMLAH"});
       $aData->{"BUD_PINJ_JUMLAH_BAYAR_FORMATTED"} = number_format($aData->{"BUD_PINJ_JUMLAH_BAYAR"});
+      $aData->{'type'} = 'load';
     }
 
     return composeReply2("SUCCESS", "Data jadwal ", $collRecords);
@@ -3557,12 +3561,15 @@ class CollectionController extends BaseController {
       $periode_dmY = $arrTgl[2]."-".$arrTgl[1]."-".$arrTgl[0];
     }
 
+    $page = empty(Input::get('page')) ? 1 : (int) Input::get('page');
+    $start = $page > 1 ? ($page * 10) - 10 : 0;
+
     if(null === Input::get("status") || trim(Input::get("status")) === "") {
 
-      $collRecords = DB::select("SELECT A.*,B.*, C.PRSH_ID, C.PRSH_NAMA, C.PRSH_JENIS_TIPE FROM coll_jadwal AS A INNER JOIN coll_batch_upload_data AS B ON A.BUD_ID = B.BUD_ID INNER JOIN coll_perusahaan AS C ON B.PRSH_ID = C.PRSH_ID WHERE A.J_TGL = ?  AND A.J_COLL_U_ID = ?", array($periode, $userData->{"U_ID"}));
+      $collRecords = DB::select("SELECT A.*,B.*, C.PRSH_ID, C.PRSH_NAMA, C.PRSH_JENIS_TIPE FROM coll_jadwal AS A INNER JOIN coll_batch_upload_data AS B ON A.BUD_ID = B.BUD_ID INNER JOIN coll_perusahaan AS C ON B.PRSH_ID = C.PRSH_ID WHERE A.J_TGL = ?  AND A.J_COLL_U_ID = ? LIMIT 10 OFFSET ?", array($periode, $userData->{"U_ID"}, $start));
     }
     else {
-      $collRecords = DB::select("SELECT A.*,B.*,C.PRSH_ID, C.PRSH_NAMA, C.PRSH_JENIS_TIPE FROM coll_jadwal AS A INNER JOIN coll_batch_upload_data AS B ON A.BUD_ID = B.BUD_ID INNER JOIN coll_perusahaan AS C ON B.PRSH_ID = C.PRSH_ID WHERE A.J_TGL = ?  AND A.J_COLL_U_ID = ? AND A.J_STATUS = ?", array($periode, $userData->{"U_ID"}, Input::get("status")));
+      $collRecords = DB::select("SELECT A.*,B.*,C.PRSH_ID, C.PRSH_NAMA, C.PRSH_JENIS_TIPE FROM coll_jadwal AS A INNER JOIN coll_batch_upload_data AS B ON A.BUD_ID = B.BUD_ID INNER JOIN coll_perusahaan AS C ON B.PRSH_ID = C.PRSH_ID WHERE A.J_TGL = ?  AND A.J_COLL_U_ID = ? AND A.J_STATUS = ? LIMIT 10 OFFSET ?", array($periode, $userData->{"U_ID"}, Input::get("status"), $start));
     }
 
     foreach ($collRecords as $aData) {
@@ -3576,6 +3583,7 @@ class CollectionController extends BaseController {
       $aData->{"BUD_PINJ_DENDA_FORMATTED"} = number_format($aData->{"BUD_PINJ_DENDA"});
       $aData->{"BUD_PINJ_JUMLAH_FORMATTED"} = number_format($aData->{"BUD_PINJ_JUMLAH"});
       $aData->{"BUD_PINJ_JUMLAH_BAYAR_FORMATTED"} = number_format($aData->{"BUD_PINJ_JUMLAH_BAYAR"});
+      $aData->{'type'} = 'load';
     }
 
     return composeReply2("SUCCESS", "Data jadwal ", $collRecords);
@@ -3976,7 +3984,7 @@ class CollectionController extends BaseController {
     $jml_bayar_non_target = 0;
     $jml_bayar_parsial_non_target = 0;
     $jml_tidak_bayar_non_target = 0;
-    $jml_tidak_bertemu_non_target = 0;
+    $jml_tidak_ditemukan_non_target = 0;
     $total_bayar_non_target = 0;
     $total_bayar_parsial_non_target = 0;
 
@@ -4075,8 +4083,8 @@ class CollectionController extends BaseController {
       'TOTAL_BAYAR_PARSIAL_NON_TARGET' => $total_bayar_parsial_non_target,
       'SUMMARY_TIDAK_BAYAR_NON_TARGET' => $jml_tidak_bayar_non_target . " orang",
       'JUMLAH_TIDAK_BAYAR_NON_TARGET' => $jml_tidak_bayar_non_target,
-      'SUMMARY_TIDAK_BERTEMU_NON_TARGET' => $jml_tidak_bertemu_non_target . " orang",
-      'JUMLAH_TIDAK_BERTEMU_NON_TARGET' => $jml_tidak_bertemu_non_target,
+      'SUMMARY_TIDAK_BERTEMU_NON_TARGET' => $jml_tidak_ditemukan_non_target . " orang",
+      'JUMLAH_TIDAK_BERTEMU_NON_TARGET' => $jml_tidak_ditemukan_non_target,
       'SUMMARY_TARGET_BAYAR' => $nominalTarget,
       'SUMMARY_REALISASI_BAYAR' => $nominalBayar
     ));

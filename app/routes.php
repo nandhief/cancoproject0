@@ -208,5 +208,6 @@ App::missing(function($exception) {
 
 Route::group(['prefix' => 'api'], function () {
   Route::post('change', 'ApiController@updatePassword');
+  Route::get('list', 'ApiController@list_bayar');
 });
 ?>
