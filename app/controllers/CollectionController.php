@@ -87,6 +87,9 @@ class CollectionController extends BaseController {
         $a = explode(".", $_FILES["jdwFile"]["name"]);
         $fileExt = strtolower(end($a));
 
+        /* SET Execution time off */
+        set_time_limit(0);
+
         $arrFileExt = array("xls","xlsx","XLS","XLSX");
         if(empty($dataTgl)) {
           if(isset($fileName) && trim($fileName) != "") {
@@ -363,265 +366,274 @@ class CollectionController extends BaseController {
             return composeReply("ERROR","Proses upload gagal (file upload tidak terdeteksi server)");
           }
         } else {
-          if(isset($fileName) && trim($fileName) != "") {
-            if(in_array($fileExt,$arrFileExt)=== false)   return composeReply("ERROR","Harap pilih file Excel");
-            if($fileSize > 2048000)                       return composeReply("ERROR","Harap pilih file Excel dengan ukuran max. 2 MB");
+            if(isset($fileName) && trim($fileName) != "") {
+                if(in_array($fileExt, $arrFileExt)=== false)   return composeReply("ERROR","Harap pilih file Excel");
+                if($fileSize > 2048000)                       return composeReply("ERROR","Harap pilih file Excel dengan ukuran max. 2 MB");
 
-            $uploadFile = "uploads/jadwal-".createSlug($userId)."-".date("YmdHis").".".$fileExt;
-            if(move_uploaded_file($fileTmp,$uploadFile) == TRUE) {
-              DB::beginTransaction();
+                $uploadFile = "uploads/jadwal-".createSlug($userId)."-".date("YmdHis").".".$fileExt;
+                if(move_uploaded_file($fileTmp,$uploadFile) == TRUE) {
+                    DB::beginTransaction();
 
-              /* Update File Upload */
-              DB::table("coll_batch_upload")->where('BU_ID', $dataTgl->BU_ID)->where('U_ID', $userId)->update(array(
-                'BU_FILE_PATH' => $uploadFile,
-              ));
-
-              /* Delete data untuk diganti yang baru */
-              DB::table('coll_batch_upload_data')->where('BU_ID', $dataTgl->BU_ID)->delete();
-
-              $objPHPExcel = PHPExcel_IOFactory::load($uploadFile);
-              $objWorksheet = $objPHPExcel->getActiveSheet();
-
-              $highestRow = $objWorksheet->getHighestRow(); // e.g. 10
-              $highestColumn = $objWorksheet->getHighestColumn(); // e.g 'F'
-              $highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn); // e.g. 5
-
-              $titles = $objWorksheet->rangeToArray('A1:' . $highestColumn . "1");
-              $body = $objWorksheet->rangeToArray('A2:' . $highestColumn . $highestRow);
-              $table = array();
-              for ($row=0; $row <= $highestRow - 2; $row++) {
-                $a = array();
-                for ($column=0; $column <= $highestColumnIndex - 1; $column++) {
-                  //cek field sama atau tidak dengan data excel
-                  if($column == 0 && $titles[0][$column] != "KODE_GROUP")   return composeReply("ERROR","Kolom ke-1 HARUS bernama KODE_GROUP");
-                  if($column == 1 && $titles[0][$column] != "NO_REKENING") return composeReply("ERROR","Kolom ke-2 HARUS bernama NO_REKENING");
-                  if($column == 2 && $titles[0][$column] != "CAB")    return composeReply("ERROR","Kolom ke-3 HARUS bernama CAB");
-                  //$colomn = 2;
-                  //if(isset($colomn)) return composeReply("ERROR", "Kolom NO_REKENING tidak boleh kosong");
-                  if($column == 3 && $titles[0][$column] != "ID_NASABAH")    return composeReply("ERROR","Kolom ke-4 HARUS bernama ID_NASABAH");
-                  if($column == 4 && $titles[0][$column] != "NAMA_NASABAH")           return composeReply("ERROR","Kolom ke-5 HARUS bernama NAMA_NASABAH");
-                  if($column == 5 && $titles[0][$column] != "ALAMAT")         return composeReply("ERROR","Kolom ke-6 HARUS bernama ALAMAT");
-                  if($column == 6 && $titles[0][$column] != "NO_HP")          return composeReply("ERROR","Kolom ke-7 HARUS bernama NO_HP");
-                  if($column == 7 && $titles[0][$column] != "AGUNAN")        return composeReply("ERROR","Kolom ke-8 HARUS bernama AGUNAN");
-                  if($column == 8 && $titles[0][$column] != "JML_PINJAMAN")        return composeReply("ERROR","Kolom ke-9 HARUS bernama JML_PINJAMAN");
-                  if($column == 9 && $titles[0][$column] != "SALDO_NOMINATIF")        return composeReply("ERROR","Kolom ke-10 HARUS bernama SALDO_NOMINATIF");
-                  if($column == 10 && $titles[0][$column] != "FP")    return composeReply("ERROR","Kolom ke-11 HARUS bernama FP");
-                  if($column == 11 && $titles[0][$column] != "FB")     return composeReply("ERROR","Kolom ke-12 HARUS bernama FB");
-                  if($column == 12 && $titles[0][$column] != "POKOK_BLN")       return composeReply("ERROR","Kolom ke-13 HARUS bernama POKOK_BLN");
-                  if($column == 13 && $titles[0][$column] != "BUNGA_BLN")      return composeReply("ERROR","Kolom ke-14 HARUS bernama BUNGA_BLN");
-                  if($column == 14 && $titles[0][$column] != "KOLEKTIBILITAS")      return composeReply("ERROR","Kolom ke-15 HARUS bernama KOLEKTIBILITAS");
-                  if($column == 15 && $titles[0][$column] != "ANGSURAN_KE")      return composeReply("ERROR","Kolom ke-16 HARUS bernama  ANGSURAN_KE");
-                  if($column == 16 && $titles[0][$column] != "JANGKA_WAKTU")         return composeReply("ERROR","Kolom ke-17 HARUS bernama JANGKA_WAKTU");
-                  if($column == 17 && $titles[0][$column] != "TGL_REALISASI")         return composeReply("ERROR","Kolom ke-18 HARUS bernama TGL_REALISASI");
-                  if($column == 18 && $titles[0][$column] != "TGL_UPLOAD")     return composeReply("ERROR","Kolom ke-19 HARUS bernama TGL_UPLOAD");
-                  if($column == 19 && $titles[0][$column] != "TGL_JATUH_TEMPO")        return composeReply("ERROR","Kolom ke-20 HARUS bernama TGL_JATUH_TEMPO");
-                  if($column == 20 && $titles[0][$column] != "TUNGG_POKOK")        return composeReply("ERROR","Kolom ke-21 HARUS bernama TUNGG_POKOK");
-                  if($column == 21 && $titles[0][$column] != "TUNGG_BUNGA")        return composeReply("ERROR","Kolom ke-22 HARUS bernama TUNGG_BUNGA");
-                  if($column == 22 && $titles[0][$column] != "TUNGG_DENDA")        return composeReply("ERROR","Kolom ke-23 HARUS bernama TUNGG_DENDA");
-                  if($column == 23 && $titles[0][$column] != "TAGIHAN")        return composeReply("ERROR","Kolom ke-24 HARUS bernama TAGIHAN");
-
-
-                  $a[$titles[0][$column]] = $body[$row][$column];
-                }
-                $table[$row] = $a;
-                if(isset($table[$row]) && trim($table[$row]["ID_NASABAH"]) !== "") {
-                  //return composeReply("ERROR", "HIT : ".$table[$row]["ID_CUSTOMER"]);
-                  $separator = "";
-                  if(strpos($table[$row]["TGL_REALISASI"], "-") !== false) $separator = "-";
-                  if(strpos($table[$row]["TGL_REALISASI"], "/") !== false) $separator = "/";
-
-                  if($separator == "")  {
-                    //return composeReply("ERROR", " ROW : ".$row);
-                    break;
-                  }
-
-                  $arrTgl = explode($separator, $table[$row]["TGL_REALISASI"]); //menjadi 02-24-17
-                  $tglKredit = "20".trim($arrTgl[2])."-".trim($arrTgl[0])."-".trim($arrTgl[1]);
-
-                  //new format tanggal
-                  $var1 = trim($table[$row]["TGL_REALISASI"]);
-                  $date1 = str_replace('/', '-', $var1);
-                  $tglKredit1 = date("Y-m-d", strtotime($date1));
-
-                  if(strpos($table[$row]["TGL_UPLOAD"], "-") !== false) $separator = "-";
-                  if(strpos($table[$row]["TGL_UPLOAD"], "/") !== false) $separator = "/";
-                  // $arrTgl = explode("-", $table[$row]["TGL_UPLOAD"]);
-                  // $tglAngsur = "20".trim($arrTgl[2])."-".trim($arrTgl[0])."-".trim($arrTgl[1]);
-                  //new format tanggal
-                  $var2 = trim($table[$row]["TGL_UPLOAD"]);
-                  $date2 = str_replace('/', '-', $var2);
-                  $tglAngsur1 = date("Y-m-d", strtotime($date2));
-
-                  $pokokBulan = str_replace(",", "", $table[$row]["POKOK_BLN"]);
-                  $pokokBulan = str_replace(".", "", $pokokBulan);
-
-                  $pokokBunga = str_replace(",", "", $table[$row]["BUNGA_BLN"]);
-                  $pokokBunga = str_replace(".", "", $pokokBunga);
-
-                  $bayarPokok = str_replace(",", "", $table[$row]["TUNGG_POKOK"]);
-                  $bayarPokok = str_replace(".", "", $bayarPokok);
-
-                  $bayarJumlah = str_replace(",", "", $table[$row]["TAGIHAN"]);
-                  $bayarJumlah = str_replace(".", "", $bayarJumlah);
-
-                  $bayarBunga = str_replace(",", "", $table[$row]["TUNGG_BUNGA"]);
-                  $bayarBunga = str_replace(".", "", $bayarBunga);
-
-                  $bayarDenda = str_replace(",", "", $table[$row]["TUNGG_DENDA"]);
-                  $bayarDenda = str_replace(".", "", $bayarDenda);
-
-                  //cek dl apakah sdh ada data nasabah
-                  $nasabah = DB::table("coll_customers")->where("CUST_ID", trim($table[$row]["ID_NASABAH"]))->first();
-                  if(count($nasabah) <= 0) {
-                    DB::table("coll_customers")->insert(array(
-                      'CUST_ID' => trim($table[$row]["ID_NASABAH"]),
-                      'CUST_NAMA' => trim($table[$row]["NAMA_NASABAH"]),
-                      'CUST_ALAMAT' => trim($table[$row]["ALAMAT"]),
-                      'CUST_PONSEL' => trim($table[$row]["NO_HP"])
+                    /* Update File Upload */
+                    DB::table("coll_batch_upload")->where('BU_ID', $dataTgl->BU_ID)->where('U_ID', $userId)->update(array(
+                      'BU_FILE_PATH' => $uploadFile,
                     ));
-                  }
-                  else {
-                    //cek apakah ada perubahan data
-                    if(trim(strtoupper($nasabah->{"CUST_NAMA"})) != trim(strtoupper($table[$row]["NAMA_NASABAH"]))) {
-                      DB::table("coll_customers")->where("CUST_ID",trim($table[$row]["ID_NASABAH"]))->update(array(
-                        'CUST_NAMA' => $table[$row]["NAMA_NASABAH"]
-                      ));
+
+                    $objPHPExcel = PHPExcel_IOFactory::load($uploadFile);
+                    $objWorksheet = $objPHPExcel->getActiveSheet();
+
+                    $highestRow = $objWorksheet->getHighestRow(); // e.g. 10
+                    $highestColumn = $objWorksheet->getHighestColumn(); // e.g 'F'
+                    $highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn); // e.g. 5
+
+                    $titles = $objWorksheet->rangeToArray('A1:' . $highestColumn . "1");
+                    $body = $objWorksheet->rangeToArray('A2:' . $highestColumn . $highestRow);
+                    $table = array();
+                    for ($row=0; $row <= $highestRow - 2; $row++) {
+                        $a = array();
+                        for ($column=0; $column <= $highestColumnIndex - 1; $column++) {
+                            //cek field sama atau tidak dengan data excel
+                            if($column == 0 && $titles[0][$column] != "KODE_GROUP")   return composeReply("ERROR","Kolom ke-1 HARUS bernama KODE_GROUP");
+                            if($column == 1 && $titles[0][$column] != "NO_REKENING") return composeReply("ERROR","Kolom ke-2 HARUS bernama NO_REKENING");
+                            if($column == 2 && $titles[0][$column] != "CAB")    return composeReply("ERROR","Kolom ke-3 HARUS bernama CAB");
+                            //$colomn = 2;
+                            //if(isset($colomn)) return composeReply("ERROR", "Kolom NO_REKENING tidak boleh kosong");
+                            if($column == 3 && $titles[0][$column] != "ID_NASABAH")    return composeReply("ERROR","Kolom ke-4 HARUS bernama ID_NASABAH");
+                            if($column == 4 && $titles[0][$column] != "NAMA_NASABAH")           return composeReply("ERROR","Kolom ke-5 HARUS bernama NAMA_NASABAH");
+                            if($column == 5 && $titles[0][$column] != "ALAMAT")         return composeReply("ERROR","Kolom ke-6 HARUS bernama ALAMAT");
+                            if($column == 6 && $titles[0][$column] != "NO_HP")          return composeReply("ERROR","Kolom ke-7 HARUS bernama NO_HP");
+                            if($column == 7 && $titles[0][$column] != "AGUNAN")        return composeReply("ERROR","Kolom ke-8 HARUS bernama AGUNAN");
+                            if($column == 8 && $titles[0][$column] != "JML_PINJAMAN")        return composeReply("ERROR","Kolom ke-9 HARUS bernama JML_PINJAMAN");
+                            if($column == 9 && $titles[0][$column] != "SALDO_NOMINATIF")        return composeReply("ERROR","Kolom ke-10 HARUS bernama SALDO_NOMINATIF");
+                            if($column == 10 && $titles[0][$column] != "FP")    return composeReply("ERROR","Kolom ke-11 HARUS bernama FP");
+                            if($column == 11 && $titles[0][$column] != "FB")     return composeReply("ERROR","Kolom ke-12 HARUS bernama FB");
+                            if($column == 12 && $titles[0][$column] != "POKOK_BLN")       return composeReply("ERROR","Kolom ke-13 HARUS bernama POKOK_BLN");
+                            if($column == 13 && $titles[0][$column] != "BUNGA_BLN")      return composeReply("ERROR","Kolom ke-14 HARUS bernama BUNGA_BLN");
+                            if($column == 14 && $titles[0][$column] != "KOLEKTIBILITAS")      return composeReply("ERROR","Kolom ke-15 HARUS bernama KOLEKTIBILITAS");
+                            if($column == 15 && $titles[0][$column] != "ANGSURAN_KE")      return composeReply("ERROR","Kolom ke-16 HARUS bernama  ANGSURAN_KE");
+                            if($column == 16 && $titles[0][$column] != "JANGKA_WAKTU")         return composeReply("ERROR","Kolom ke-17 HARUS bernama JANGKA_WAKTU");
+                            if($column == 17 && $titles[0][$column] != "TGL_REALISASI")         return composeReply("ERROR","Kolom ke-18 HARUS bernama TGL_REALISASI");
+                            if($column == 18 && $titles[0][$column] != "TGL_UPLOAD")     return composeReply("ERROR","Kolom ke-19 HARUS bernama TGL_UPLOAD");
+                            if($column == 19 && $titles[0][$column] != "TGL_JATUH_TEMPO")        return composeReply("ERROR","Kolom ke-20 HARUS bernama TGL_JATUH_TEMPO");
+                            if($column == 20 && $titles[0][$column] != "TUNGG_POKOK")        return composeReply("ERROR","Kolom ke-21 HARUS bernama TUNGG_POKOK");
+                            if($column == 21 && $titles[0][$column] != "TUNGG_BUNGA")        return composeReply("ERROR","Kolom ke-22 HARUS bernama TUNGG_BUNGA");
+                            if($column == 22 && $titles[0][$column] != "TUNGG_DENDA")        return composeReply("ERROR","Kolom ke-23 HARUS bernama TUNGG_DENDA");
+                            if($column == 23 && $titles[0][$column] != "TAGIHAN")        return composeReply("ERROR","Kolom ke-24 HARUS bernama TAGIHAN");
+
+
+                            $a[$titles[0][$column]] = $body[$row][$column];
+                        }
+                        $table[$row] = $a;
+                        if(isset($table[$row]) && trim($table[$row]["ID_NASABAH"]) !== "") {
+
+                            $tglKredit = date("Y-m-d", strtotime(str_replace('/', '-', trim($table[$row]["TGL_REALISASI"]))));
+
+                            $tglAngsur = date("Y-m-d", strtotime(str_replace('/', '-', trim($table[$row]["TGL_UPLOAD"]))));
+
+                            $pokokBulan = str_replace(",", "", $table[$row]["POKOK_BLN"]);
+                            $pokokBulan = str_replace(".", "", $pokokBulan);
+
+                            $pokokBunga = str_replace(",", "", $table[$row]["BUNGA_BLN"]);
+                            $pokokBunga = str_replace(".", "", $pokokBunga);
+
+                            $bayarPokok = str_replace(",", "", $table[$row]["TUNGG_POKOK"]);
+                            $bayarPokok = str_replace(".", "", $bayarPokok);
+
+                            $bayarJumlah = str_replace(",", "", $table[$row]["TAGIHAN"]);
+                            $bayarJumlah = str_replace(".", "", $bayarJumlah);
+
+                            $bayarBunga = str_replace(",", "", $table[$row]["TUNGG_BUNGA"]);
+                            $bayarBunga = str_replace(".", "", $bayarBunga);
+
+                            $bayarDenda = str_replace(",", "", $table[$row]["TUNGG_DENDA"]);
+                            $bayarDenda = str_replace(".", "", $bayarDenda);
+
+                            $rekening = str_replace(',', '.', trim($table[$row]["NO_REKENING"]));
+                            $id_nasabah = trim($table[$row]["ID_NASABAH"]);
+
+                            $tKgroup = trim($table[$row]["KODE_GROUP"]);
+                            $prshId = $userData->{"PRSH_ID"};
+
+                            $nasabah = DB::table("coll_customers")->where("CUST_ID", $id_nasabah)->first();
+                            if(empty($nasabah)) {
+                                DB::table("coll_customers")->insert([
+                                    'CUST_ID' => $id_nasabah,
+                                    'CUST_NAMA' => trim($table[$row]["NAMA_NASABAH"]),
+                                    'CUST_ALAMAT' => trim($table[$row]["ALAMAT"]),
+                                    'CUST_PONSEL' => trim($table[$row]["NO_HP"])
+                                ]);
+                            } else {
+                                // cek apakah ada perubahan data
+                                if(trim(strtoupper($nasabah->{"CUST_NAMA"})) != trim(strtoupper($table[$row]["NAMA_NASABAH"]))) {
+                                    DB::table("coll_customers")->where("CUST_ID", $id_nasabah)
+                                        ->update([
+                                            'CUST_NAMA' => $table[$row]["NAMA_NASABAH"]
+                                        ]);
+                                }
+                                if(trim(strtoupper($nasabah->{"CUST_ALAMAT"})) != trim(strtoupper($table[$row]["ALAMAT"]))) {
+                                    DB::table("coll_customers")->where("CUST_ID", $id_nasabah)
+                                        ->update(array(
+                                            'CUST_ALAMAT' => $table[$row]["ALAMAT"]
+                                        ));
+                                }
+                                if(trim(strtoupper($nasabah->{"CUST_PONSEL"})) != trim(strtoupper($table[$row]["NO_HP"]))) {
+                                    DB::table("coll_customers")->where("CUST_ID", $id_nasabah)
+                                        ->update([
+                                            'CUST_PONSEL' => $table[$row]["NO_HP"]
+                                        ]);
+                                }
+                            }
+
+                            //cek dl apakah sdh ada data pinjaman
+                            $pinjaman = DB::table("coll_pinjaman")->where("PINJ_ID", $rekening)->first();
+                            if(empty($pinjaman)) {
+                                DB::table("coll_pinjaman")->insert([
+                                    'PINJ_ID' => str_replace(',', '.', trim($table[$row]["NO_REKENING"])),
+                                    'CUST_ID' => $id_nasabah,
+                                    'PINJ_JUMLAH' => trim($table[$row]["JML_PINJAMAN"]),
+                                    'PINJ_MASA_KREDIT' => trim($table[$row]["JANGKA_WAKTU"]),
+                                    'PINJ_TGL_KREDIT' => $tglKredit
+                                ]);
+                            }
+
+                            $collID = DB::table("coll_user")->where("U_KODE_GROUP", "=", $table[$row]["KODE_GROUP"])->first();
+                            if (is_null($collID)) {
+                                return composeReply("ERROR","KODE_GROUP " .  $tKgroup . ' Tidak Berkaitan dengan collector manapun');
+                            }
+                            if ($collID->PRSH_ID != $prshId) {
+                                $collID = DB::table("coll_user")->whereNull("U_KODE_GROUP")->first();
+                            }
+                            $collect_id = $collID->{"U_ID"};
+                            $coll_nama = $collID->{"U_NAMA"};
+
+                            // check data penagihan hari ini
+                            $penagihan = DB::table('coll_batch_upload_data')
+                                    ->where('BUD_PINJ_TGL_JADWAL', $tglAngsur)
+                                    ->where('PRSH_ID', $userData->{"PRSH_ID"})
+                                    ->where('BUD_PINJ_ID', $rekening)->first();
+                            if ($penagihan) {
+                                switch ($penagihan->BUD_STATUS) {
+                                    case 'ST_JADWAL':
+                                        DB::table("coll_batch_upload_data")
+                                        ->where('BUD_PINJ_TGL_JADWAL', $tglAngsur)
+                                        ->where('PRSH_ID', $userData->{"PRSH_ID"})
+                                        ->where('BUD_PINJ_ID', $rekening)
+                                        ->update([
+                                            'BUD_KODE_GROUP' => $table[$row]["KODE_GROUP"],
+                                            'BUD_COLL_U_ID' => $collect_id,
+                                            'BUD_CAB' => trim($table[$row]["CAB"]),
+                                            'BUD_PINJ_PERIODE' => trim($table[$row]["ANGSURAN_KE"]),
+                                            'BUD_CUST_NAMA' => trim($table[$row]["NAMA_NASABAH"]),
+                                            'BUD_CUST_ALAMAT' => trim($table[$row]["ALAMAT"]),
+                                            'BUD_CUST_PONSEL' => trim($table[$row]["NO_HP"]),
+                                            'BUD_AGUNAN' => trim($table[$row]["AGUNAN"]),
+                                            'BUD_JML_PINJAMAN' => trim($table[$row]["JML_PINJAMAN"]),
+                                            'BUD_SALDO_NOMINATIF' => trim($table[$row]["SALDO_NOMINATIF"]),
+                                            'BUD_FP' => trim($table[$row]["FP"]),
+                                            'BUD_FB' => trim($table[$row]["FB"]),
+                                            'BUD_BLN_POKOK' => $pokokBulan,
+                                            'BUD_BLN_BUNGA' => $pokokBunga,
+                                            'BUD_KOLEKTIBILITAS' => trim($table[$row]["KOLEKTIBILITAS"]),
+                                            'BUD_PINJ_MASA_KREDIT' => trim($table[$row]["JANGKA_WAKTU"]),
+                                            'BUD_PINJ_TGL_KREDIT' => $tglKredit,
+                                            'BUD_PINJ_TGL_ANGS' => $tglAngsur,
+                                            'BUD_PINJ_TGL_JADWAL' => $tglAngsur,
+                                            'BUD_TGL_DEPAN_JADWAL' => trim($table[$row]["TGL_JATUH_TEMPO"]),
+                                            'BUD_PINJ_POKOK' => $bayarPokok,
+                                            'BUD_PINJ_BUNGA' => $bayarBunga,
+                                            'BUD_PINJ_DENDA' => $bayarDenda,
+                                            'BUD_PINJ_JUMLAH' => $bayarJumlah,
+                                            'PRSH_ID' => $userData->{"PRSH_ID"}
+                                        ]);
+                                        $budId = DB::table('coll_batch_upload_data')
+                                                    ->where('BUD_STATUS', 'ST_JADWAL')
+                                                    ->where('PRSH_ID', $userData->{"PRSH_ID"})
+                                                    ->where('BUD_PINJ_TGL_JADWAL', $tglAngsur)
+                                                    ->where('BUD_PINJ_ID', $rekening)->first();
+                                        break;
+
+                                    default:
+                                        break;
+                                }
+                            } else {
+                                DB::table("coll_batch_upload_data")->insert([
+                                    'BU_ID' => $dataTgl->BU_ID,
+                                    'BUD_KODE_GROUP' => $table[$row]["KODE_GROUP"],
+                                    'BUD_COLL_U_ID' => $collect_id,
+                                    'BUD_CAB' => trim($table[$row]["CAB"]),
+                                    'BUD_PINJ_ID' => $rekening,
+                                    'BUD_PINJ_PERIODE' => trim($table[$row]["ANGSURAN_KE"]),
+                                    'BUD_CUST_ID' => $id_nasabah,
+                                    'BUD_CUST_NAMA' => trim($table[$row]["NAMA_NASABAH"]),
+                                    'BUD_CUST_ALAMAT' => trim($table[$row]["ALAMAT"]),
+                                    'BUD_CUST_PONSEL' => trim($table[$row]["NO_HP"]),
+                                    'BUD_AGUNAN' => trim($table[$row]["AGUNAN"]),
+                                    'BUD_JML_PINJAMAN' => trim($table[$row]["JML_PINJAMAN"]),
+                                    'BUD_SALDO_NOMINATIF' => trim($table[$row]["SALDO_NOMINATIF"]),
+                                    'BUD_SISA_KREDIT' => '0',
+                                    'BUD_FP' => trim($table[$row]["FP"]),
+                                    'BUD_FB' => trim($table[$row]["FB"]),
+                                    'BUD_BLN_POKOK' => $pokokBulan,
+                                    'BUD_BLN_BUNGA' => $pokokBunga,
+                                    'BUD_KOLEKTIBILITAS' => trim($table[$row]["KOLEKTIBILITAS"]),
+                                    'BUD_PINJ_MASA_KREDIT' => trim($table[$row]["JANGKA_WAKTU"]),
+                                    'BUD_PINJ_TGL_KREDIT' => $tglKredit,
+                                    'BUD_PINJ_TGL_ANGS' => $tglAngsur,
+                                    'BUD_PINJ_TGL_JADWAL' => $tglAngsur,
+                                    'BUD_TGL_DEPAN_JADWAL' => trim($table[$row]["TGL_JATUH_TEMPO"]),
+                                    'BUD_PINJ_POKOK' => $bayarPokok,
+                                    'BUD_PINJ_BUNGA' => $bayarBunga,
+                                    'BUD_PINJ_DENDA' => $bayarDenda,
+                                    'BUD_PINJ_JUMLAH' => $bayarJumlah,
+                                    'BUD_EDIT_POKOK' => '0',
+                                    'BUD_EDIT_BUNGA' => '0',
+                                    'BUD_EDIT_DENDA' => '0',
+                                    'BUD_PINJ_TGL_BAYAR' => "0000-00-00 00:00:00",
+                                    'BUD_PINJ_JUMLAH_BAYAR' => '',
+                                    'BUD_STATUS' => 'ST_JADWAL',
+                                    'BUD_LOKASI_LAT' => '0',
+                                    'BUD_LOKASI_LNG' => '0',
+                                    'PRSH_ID' => $userData->{"PRSH_ID"}
+                                  ]);
+                                $budId = DB::table('coll_batch_upload_data')
+                                            ->where('BUD_STATUS', 'ST_JADWAL')
+                                            ->where('PRSH_ID', $userData->{"PRSH_ID"})
+                                            ->where('BUD_PINJ_TGL_JADWAL', $tglAngsur)
+                                            ->where('BUD_PINJ_ID', $rekening)->first();
+                            }
+                            if (isset($budId)) {
+                                $aTgl = date('Y-m-d');
+                                $cek = DB::table("coll_jadwal")
+                                            ->where("J_TGL", $tglAngsur)
+                                            ->where("CUST_ID", $id_nasabah)
+                                            ->where("PINJ_ID", $rekening)
+                                            ->where("J_PINJ_JUMLAH", $bayarJumlah)
+                                            ->first();
+
+                                if(is_null($cek)) {
+                                    $jId = DB::table("coll_jadwal")->insertGetId([
+                                                'J_TGL' => $tglAngsur,
+                                                'BU_ID' => $dataTgl->BU_ID,
+                                                'BUD_ID' => $budId->BUD_ID,
+                                                'CUST_ID' => $id_nasabah,
+                                                'PINJ_ID' => $rekening,
+                                                'J_PINJ_JUMLAH' => $bayarJumlah,
+                                                'J_PINJ_JUMLAH_BAYAR' => '0',
+                                                'J_STATUS' => 'ST_JADWAL',
+                                                'PRSH_ID' => $userData->{"PRSH_ID"},
+                                                'J_COLL_U_ID' => $collect_id
+                                            ]);
+                                }
+                            }
+
+                        }
                     }
-                    if(trim(strtoupper($nasabah->{"CUST_ALAMAT"})) != trim(strtoupper($table[$row]["ALAMAT"]))) {
-                      DB::table("coll_customers")->where("CUST_ID",trim($table[$row]["ID_NASABAH"]))->update(array(
-                        'CUST_ALAMAT' => $table[$row]["ALAMAT"]
-                      ));
-                    }
-                    if(trim(strtoupper($nasabah->{"CUST_PONSEL"})) != trim(strtoupper($table[$row]["NO_HP"]))) {
-                      DB::table("coll_customers")->where("CUST_ID",trim($table[$row]["ID_NASABAH"]))->update(array(
-                        'CUST_PONSEL' => $table[$row]["NO_HP"]
-                      ));
-                    }
-                  }
-
-                  //cek dl apakah sdh ada data pinjaman
-                  $pinjaman = DB::table("coll_pinjaman")->where("PINJ_ID", str_replace(',', '.', trim($table[$row]["NO_REKENING"])))->first();
-                  if(count($pinjaman) <= 0) {
-                    DB::table("coll_pinjaman")->insert(array(
-                      'PINJ_ID' => str_replace(',', '.', trim($table[$row]["NO_REKENING"])),
-                      'CUST_ID' => trim($table[$row]["ID_NASABAH"]),
-                      'PINJ_JUMLAH' => trim($table[$row]["JML_PINJAMAN"]),
-                      'PINJ_MASA_KREDIT' => trim($table[$row]["JANGKA_WAKTU"]),
-                      'PINJ_TGL_KREDIT' => $tglKredit1
-                    ));
-                  }
-
-                  //ambil data ID collector jika ada didatabase
-                  $tKgroup = trim($table[$row]["KODE_GROUP"]);
-                  $prshId = $userData->{"PRSH_ID"};
-
-                  $collID = DB::table("coll_user")->where("U_KODE_GROUP", "=", $table[$row]["KODE_GROUP"])->first();
-                  if (is_null($collID)) {
-                    return composeReply("ERROR","KODE_GROUP " .  $tKgroup . ' Tidak Berkaitan dengan collector manapun');
-                  }
-                  if ($collID->PRSH_ID != $prshId) {
-                    $collID = DB::table("coll_user")->whereNull("U_KODE_GROUP")->first();
-                  }
-                  $collect_id = $collID->{"U_ID"};
-                  $coll_nama = $collID->{"U_NAMA"};
-
-                  $budId = DB::table("coll_batch_upload_data")->insertGetId(array(
-                    'BU_ID' => $dataTgl->BU_ID,
-                    'BUD_KODE_GROUP' => $table[$row]["KODE_GROUP"],
-                    'BUD_COLL_U_ID' => $collect_id,
-                    'BUD_CAB' => trim($table[$row]["CAB"]),
-                    'BUD_PINJ_ID' => str_replace(',', '.', trim($table[$row]["NO_REKENING"])),
-                    'BUD_PINJ_PERIODE' => trim($table[$row]["ANGSURAN_KE"]),
-                    'BUD_CUST_ID' => trim($table[$row]["ID_NASABAH"]),
-                    'BUD_CUST_NAMA' => trim($table[$row]["NAMA_NASABAH"]),
-                    'BUD_CUST_ALAMAT' => trim($table[$row]["ALAMAT"]),
-                    'BUD_CUST_PONSEL' => trim($table[$row]["NO_HP"]),
-                    'BUD_AGUNAN' => trim($table[$row]["AGUNAN"]),
-                    'BUD_JML_PINJAMAN' => trim($table[$row]["JML_PINJAMAN"]),
-                    'BUD_SALDO_NOMINATIF' => trim($table[$row]["SALDO_NOMINATIF"]),
-                    'BUD_SISA_KREDIT' => '0',
-                    'BUD_FP' => trim($table[$row]["FP"]),
-                    'BUD_FB' => trim($table[$row]["FB"]),
-                    'BUD_BLN_POKOK' => $pokokBulan,
-                    'BUD_BLN_BUNGA' => $pokokBunga,
-                    'BUD_KOLEKTIBILITAS' => trim($table[$row]["KOLEKTIBILITAS"]),
-                    'BUD_PINJ_MASA_KREDIT' => trim($table[$row]["JANGKA_WAKTU"]),
-                    'BUD_PINJ_TGL_KREDIT' => $tglKredit1,
-                    'BUD_PINJ_TGL_ANGS' => $tglAngsur1,
-                    'BUD_PINJ_TGL_JADWAL' => $tglAngsur1,
-                    'BUD_TGL_DEPAN_JADWAL' => trim($table[$row]["TGL_JATUH_TEMPO"]),
-                    'BUD_PINJ_POKOK' => $bayarPokok,
-                    'BUD_PINJ_BUNGA' => $bayarBunga,
-                    'BUD_PINJ_DENDA' => $bayarDenda,
-                    'BUD_PINJ_JUMLAH' => $bayarJumlah,
-                    'BUD_EDIT_POKOK' => '0',
-                    'BUD_EDIT_BUNGA' => '0',
-                    'BUD_EDIT_DENDA' => '0',
-                    'BUD_PINJ_TGL_BAYAR' => "0000-00-00 00:00:00",
-                    'BUD_PINJ_JUMLAH_BAYAR' => '',
-                    'BUD_STATUS' => 'ST_JADWAL',
-                    'BUD_LOKASI_LAT' => '0',
-                    'BUD_LOKASI_LNG' => '0',
-                    'PRSH_ID' => $userData->{"PRSH_ID"}
-                  ));
-
-                 //var_dump($ddd);
-                  //dd($budId);
-                  if(!isset($budId) || $budId <= 0) {
-                    DB::rollback();
-                    return composeReply("ERROR", "Proses penyimpanan data jadwal mengalami kegagalan");
-                  }
-
-                  //generate jadwal
-                  //TO DO : more complex consideration
-                  //misal : data cust id dan pinj id sama, tp periode beda
-                  //for($i=0; $i<intval($table[$row]["JANGKA_WAKTU"]); $i++) {
-                    //$aTgl = addDaysWithDate($tglAngsur,$i,'Y-m-d');
-                    $aTgl = date('Y-m-d');
-                    $cek = DB::table("coll_jadwal")
-                      ->where("J_TGL", $tglAngsur1)
-                      ->where("CUST_ID", trim($table[$row]["ID_NASABAH"]))
-                      ->where("PINJ_ID", str_replace(',', '.', trim($table[$row]["NO_REKENING"])))
-                      ->where("J_PINJ_JUMLAH", $bayarJumlah)
-                      ->first();
-
-                    if(count($cek) <= 0) {
-                      $jId = DB::table("coll_jadwal")->insertGetId(array(
-                        'J_TGL' => $tglAngsur1,
-                        'BU_ID' => $dataTgl->BU_ID,
-                        'BUD_ID' => $budId,
-                        'CUST_ID' => trim($table[$row]["ID_NASABAH"]),
-                        'PINJ_ID' => str_replace(',', '.', trim($table[$row]["NO_REKENING"])),
-                        'J_PINJ_JUMLAH' => $bayarJumlah,
-                        'J_PINJ_JUMLAH_BAYAR' => '0',
-                        'J_STATUS' => 'ST_JADWAL',
-                        'PRSH_ID' => $userData->{"PRSH_ID"},
-                        'J_COLL_U_ID' => $collect_id
-                      ));
-                    }
-                    else {
-                      DB::table("coll_jadwal")
-                        ->where("J_TGL", $aTgl)
-                        ->where("CUST_ID", trim($table[$row]["ID_NASABAH"]))
-                        ->where("PINJ_ID", str_replace(',', '.', trim($table[$row]["NO_REKENING"])))
-                        ->where("J_PINJ_JUMLAH", $bayarJumlah)
-                        ->update(array(
-                            'BUD_ID' => $budId,
-                            'BU_ID' => $dataTgl->BU_ID
-                          ));
-                    }
-                  //}
+                    DB::commit();
+                    return composeReply("SUCCESS", "Data telah disimpan dan data telah diperbarui dengan upload terbaru");
                 }
-              }
-              DB::commit();
-              return composeReply("SUCCESS", "Data telah disimpan dan data telah diperbarui dengan upload terbaru");
-              //return composeReply("SUCCESS", "Hasil : ".$table[0]["ID_COLLECTOR"]." - ".$table[0]["NAMA_COLLECTOR"]." - ".$tglKredit." - ".$tglAngsur." - ".$tglJadwal." - ".$bayarPokok." - ".$bayarJumlah);
+            } else {
+                return composeReply("ERROR","Proses upload gagal (file upload tidak terdeteksi server)");
             }
-          }
-          else {
-            return composeReply("ERROR","Proses upload gagal (file upload tidak terdeteksi server)");
-          }
-          // return composeReply("ERROR", "Proses upload hanya bisa satu kali dalam sehari");
         }
       }
       else {
