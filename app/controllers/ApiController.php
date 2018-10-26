@@ -73,7 +73,7 @@ class ApiController extends BaseController
                             FROM coll_jadwal AS A
                             INNER JOIN coll_batch_upload_data AS B ON A.BUD_ID = B.BUD_ID
                             INNER JOIN coll_perusahaan AS C ON B.PRSH_ID = C.PRSH_ID
-                            WHERE A.J_TGL = ?  AND A.J_STATUS = ? AND A.PRSH_ID = ? AND A.J_COLL_U_ID != ?)
+                            WHERE A.J_TGL = ?  AND A.J_STATUS = ? AND A.PRSH_ID = ? AND B.BUD_COLL_U_ID = ?)
                         LIMIT 10 OFFSET ?", [
                           $periode, $user->U_ID, $status1, $periode, $status2, $user->PRSH_ID, $user->U_ID, $start
                         ]);

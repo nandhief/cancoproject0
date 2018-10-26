@@ -327,6 +327,7 @@ class CollectionController extends BaseController {
                       ->where("CUST_ID", trim($table[$row]["ID_NASABAH"]))
                       ->where("PINJ_ID", str_replace(',', '.', trim($table[$row]["NO_REKENING"])))
                       ->where("J_PINJ_JUMLAH", $bayarJumlah)
+                      ->where("PRSH_ID", $userData->{"PRSH_ID"})
                       ->first();
 
                     if(count($cek) <= 0) {
@@ -608,6 +609,7 @@ class CollectionController extends BaseController {
                                             ->where("CUST_ID", $id_nasabah)
                                             ->where("PINJ_ID", $rekening)
                                             ->where("J_PINJ_JUMLAH", $bayarJumlah)
+                                            ->where("PRSH_ID", $userData->{"PRSH_ID"})
                                             ->first();
 
                                 if(is_null($cek)) {
@@ -3999,6 +4001,7 @@ class CollectionController extends BaseController {
     $jml_tidak_ditemukan_non_target = 0;
     $total_bayar_non_target = 0;
     $total_bayar_parsial_non_target = 0;
+    $nominal_bayar_non_target = 0;
 
     if(null === Input::get("periode") || trim(Input::get("periode")) === "") {
       $periode = date("Y-m-d");
@@ -4016,28 +4019,29 @@ class CollectionController extends BaseController {
 
     $collRecords = DB::select("SELECT * FROM coll_jadwal WHERE J_TGL = ?  AND J_COLL_U_ID = ?", array($periode, $userData->{"U_ID"}));
     $collRecordsAll = DB::select("SELECT * FROM coll_jadwal WHERE J_TGL = ? AND J_STATUS = 'ST_JADWAL' AND PRSH_ID = ? AND J_COLL_U_ID != ?", array($periode, $prsh_id, Input::get("userId")));
-    $collRecordsNonTarget = DB::select("SELECT * FROM coll_jadwal WHERE J_TGL = ? AND PRSH_ID = ?", array($periode, $prsh_id));
-
+    $collRecordsNonTarget = DB::select("SELECT * FROM coll_jadwal A INNER JOIN coll_batch_upload_data B ON A.BUD_ID = B.BUD_ID WHERE A.J_TGL = ? AND A.PRSH_ID = ? AND B.BUD_COLL_U_ID = ?", array($periode, $prsh_id, $userData->U_ID));
     foreach($collRecordsAll as $fullData) {
       if($fullData->{"J_STATUS"} == "ST_JADWAL") $jmlNonTarget++;
     }
 
     foreach ($collRecordsNonTarget as $data) {
-      if($data->{"J_STATUS"} == "ST_BAYAR_NON_TARGET") {
+      if($data->{"J_STATUS"} == "ST_BAYAR_NON_TARGET" && $data->J_COLL_U_ID != $userData->U_ID) {
         $jml_bayar_non_target++;
         $total_bayar_non_target += $data->J_PINJ_JUMLAH_BAYAR;
       }
-      if($data->{"J_STATUS"} == "ST_BAYAR_PARSIAL_NON_TARGET") {
+      if($data->{"J_STATUS"} == "ST_BAYAR_PARSIAL_NON_TARGET" && $data->J_COLL_U_ID != $userData->U_ID) {
         $jml_bayar_parsial_non_target++;
         $total_bayar_parsial_non_target += $data->J_PINJ_JUMLAH_BAYAR;
       }
-      if($data->{"J_STATUS"} == "ST_TIDAK_BAYAR_NON_TARGET") {
+      if($data->{"J_STATUS"} == "ST_TIDAK_BAYAR_NON_TARGET" && $data->J_COLL_U_ID != $userData->U_ID) {
         $jml_tidak_bayar_non_target++;
       }
-      if($data->{"J_STATUS"} == "ST_TIDAK_DITEMUKAN_NON_TARGET") {
+      if($data->{"J_STATUS"} == "ST_TIDAK_DITEMUKAN_NON_TARGET" && $data->J_COLL_U_ID != $userData->U_ID) {
         $jml_tidak_ditemukan_non_target++;
       }
     }
+
+    $nominal_bayar_non_target = floatval($total_bayar_non_target + $total_bayar_parsial_non_target);
 
     foreach ($collRecords as $aData) {
       //if($aData->{"BUD_STATUS"} == "ST_JADWAL") $jmlStatusJadwal++;
@@ -4068,8 +4072,8 @@ class CollectionController extends BaseController {
       //$nominalBayar += floatval($aData->{"BUD_PINJ_JUMLAH_BAYAR"});
 
       if($aData->{"J_STATUS"} != "-" && $aData->{"J_STATUS"} != "ST_BAYAR")  $nominalTarget += floatval($aData->{"J_PINJ_JUMLAH"});
-      $nominalBayar += floatval($aData->{"J_PINJ_JUMLAH_BAYAR"});
     }
+    $nominalBayar = floatval($total_bayar + $total_bayar_parsial);
 
     return composeReply2("SUCCESS", "Summary data", array(
       /*'BATCH_UPLOAD_ID' => $latestBatchUpload[0]->{"BU_ID"},*/
@@ -4098,7 +4102,8 @@ class CollectionController extends BaseController {
       'SUMMARY_TIDAK_BERTEMU_NON_TARGET' => $jml_tidak_ditemukan_non_target . " orang",
       'JUMLAH_TIDAK_BERTEMU_NON_TARGET' => $jml_tidak_ditemukan_non_target,
       'SUMMARY_TARGET_BAYAR' => $nominalTarget,
-      'SUMMARY_REALISASI_BAYAR' => $nominalBayar
+      'SUMMARY_REALISASI_BAYAR' => $nominalBayar,
+      'SUMMARY_REALISASI_BAYAR_NON_TARGET' => $nominal_bayar_non_target,
     ));
   }
 
