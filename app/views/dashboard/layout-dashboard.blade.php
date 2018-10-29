@@ -39,19 +39,19 @@
   <script type="text/javascript" src="<?php echo asset_url(); ?>/assets/js/plugins/loaders/blockui.min.js"></script>
   <!-- /core JS files -->
 
-  <!-- Theme JS files -->  
+  <!-- Theme JS files -->
   <script type="text/javascript" src="<?php echo asset_url(); ?>/assets/js/plugins/forms/styling/switchery.min.js"></script>
   <script type="text/javascript" src="<?php echo asset_url(); ?>/assets/js/plugins/forms/styling/uniform.min.js"></script>
   <script type="text/javascript" src="<?php echo asset_url(); ?>/assets/js/plugins/forms/selects/bootstrap_multiselect.js"></script>
   <script type="text/javascript" src="<?php echo asset_url(); ?>/assets/js/plugins/forms/selects/bootstrap_select.min.js"></script>
   <script type="text/javascript" src="<?php echo asset_url(); ?>/assets/js/plugins/ui/moment/moment.min.js"></script>
-  <script type="text/javascript" src="<?php echo asset_url(); ?>/assets/js/core/libraries/jquery_ui/interactions.min.js"></script>  
+  <script type="text/javascript" src="<?php echo asset_url(); ?>/assets/js/core/libraries/jquery_ui/interactions.min.js"></script>
   <script type="text/javascript" src="<?php echo asset_url(); ?>/assets/js/core/libraries/jquery_ui/touch.min.js"></script>
   <script type="text/javascript" src="<?php echo asset_url(); ?>/assets/js/plugins/forms/selects/select2.min.js"></script>
- 
+
   <script type="text/javascript" src="<?php echo asset_url(); ?>/assets/js/jquery.scrollTo-2.1.2/jquery.scrollTo.min.js"></script>
   <script type="text/javascript" src="<?php echo asset_url(); ?>/assets/js/core/app.js"></script>
-  
+
   <script type="text/javascript" src="<?php echo asset_url(); ?>/assets/js/jquery.form.js"></script>
 
   <script type="text/javascript" src="<?php echo asset_url(); ?>/assets/js/autoNumeric.js"></script>
@@ -59,7 +59,7 @@
 
   <!-- Toastr -->
   <script type="text/javascript" src="<?php echo asset_url(); ?>/assets/js/toastr/toastr.js"></script>
-  <link type="text/css" rel="stylesheet" href="<?php echo asset_url(); ?>/assets/js/toastr/toastr.css" />     
+  <link type="text/css" rel="stylesheet" href="<?php echo asset_url(); ?>/assets/js/toastr/toastr.css" />
 
   <!-- sweet alert-->
   <script src="<?php echo asset_url(); ?>/assets/js/sweetalert/sweetalert.min.js"></script>
@@ -71,7 +71,7 @@
 
   <!--pick-a-time -->
   <script type="text/javascript" src="<?php echo asset_url(); ?>/assets/js/plugins/pickers/pickadate/picker.js"></script>
-  <script type="text/javascript" src="<?php echo asset_url(); ?>/assets/js/plugins/pickers/pickadate/picker.time.js"></script>  
+  <script type="text/javascript" src="<?php echo asset_url(); ?>/assets/js/plugins/pickers/pickadate/picker.time.js"></script>
   <script type="text/javascript" src="<?php echo asset_url(); ?>/assets/js/plugins/pickers/pickadate/picker.date.js"></script>
   <script type="text/javascript" src="<?php echo asset_url(); ?>/assets/js/plugins/pickers/pickadate/legacy.js"></script>
 
@@ -93,7 +93,7 @@
   <!-- tags input -->
   <script type="text/javascript" src="<?php echo asset_url(); ?>/assets/js/plugins/forms/tags/tagsinput.min.js"></script>
 
-  <script type="text/javascript">   
+  <script type="text/javascript">
     var gModalContactCallback = "";
 
     $(document).ready(function() {
@@ -127,7 +127,7 @@
     function isNumeric(n) {
       return !isNaN(parseFloat(n)) && isFinite(n);
     }
-    
+
     function isEmail(elem){
       var emailExp = /^[\w\-\.\+]+\@[a-zA-Z0-9\.\-]+\.[a-zA-z0-9]{2,4}$/;
       if(elem.value.match(emailExp)){
@@ -140,12 +140,12 @@
         return false;
       }
     }
-    
+
     function getResultStatus(result) {
       var resultStatus = "";
       var data = JSON.parse(result);
       resultStatus = data["STATUS"];
-      
+
       return resultStatus;
     }
 
@@ -153,10 +153,10 @@
       var resultMessage = "";
       var data = JSON.parse(result);
       resultMessage = data["MESSAGE"];
-      
-      return resultMessage;     
+
+      return resultMessage;
     }
-       
+
     function formatDate(d) {
       var dd = d.getDate();
       if ( dd < 10 ) dd = '0' + dd;
@@ -170,7 +170,7 @@
 
       return  mm +'/'+ dd + '/'+ yy;
     }
-    
+
     function formatDate_DB(d) {
       var dd = d.getDate();
       if ( dd < 10 ) dd = '0' + dd;
@@ -182,7 +182,7 @@
 
       return  yy +'-'+ mm + '-'+ dd;
     }
-    
+
     function dateYMD(dateDMY) {
       var hasil = "0000-00-00";
       var kompTgl = dateDMY.split("-");
@@ -207,21 +207,21 @@
       else { //DD-MM-YYYY
         var tgl = kompTgl[0];
         var thn = kompTgl[2];
-        if(thn.length == 2)  thn = "20" + thn; 
+        if(thn.length == 2)  thn = "20" + thn;
       }
 
       hasil = thn + "-" + bln + "-" + tgl;
       return hasil;
-    } 
+    }
 
     //UPDATE 11-Mar-15
-    Date.prototype.yyyymmdd = function() {         
+    Date.prototype.yyyymmdd = function() {
       var yyyy = this.getFullYear().toString();
-      var mm = (this.getMonth()+1).toString(); // getMonth() is zero-based         
-      var dd  = this.getDate().toString();             
-                              
+      var mm = (this.getMonth()+1).toString(); // getMonth() is zero-based
+      var dd  = this.getDate().toString();
+
       return yyyy + '-' + (mm[1]?mm:"0"+mm[0]) + '-' + (dd[1]?dd:"0"+dd[0]);
-    }; 
+    };
 
     function removeDuplicates(arr) {
       var obj = {};
@@ -234,7 +234,7 @@
       }
       return arr;
     }
-  </script>   
+  </script>
 
   <!-- iOS overlay -->
   <script src="<?php echo asset_url(); ?>/assets/js/overlay/iosOverlay.js"></script>
@@ -261,7 +261,7 @@
         zIndex: 2e9, // The z-index (defaults to 2000000000)
         top: 'auto', // Top position relative to parent in px
         left: 'auto' // Left position relative to parent in px
-      };        
+      };
       var spinner = new Spinner(opts).spin(target);
       gOverlay = iosOverlay({
         text: screenText,
@@ -271,7 +271,7 @@
     }
 
     var gOverlay;
-  </script> 
+  </script>
 
   <script type="text/javascript">
     <?php if (!$ctlUserData->U_GANTIPASS): ?>
@@ -294,18 +294,18 @@
 
       if(ctType != "" && ctName != "") {
         createOverlay("Processing...");
-        $.ajax({  
+        $.ajax({
           type  : "POST",
           url   : "<?php echo asset_url(); ?>/contacts",
           data  : "ctType=" + encodeURI(ctType) + "&ctName=" + encodeURI(ctName) + "&ctEmail=" + encodeURI(ctEmail) + "&ctPhone=" + encodeURI(ctPhone),
-          success : function(result) { 
+          success : function(result) {
             gOverlay.hide();
             var data = JSON.parse(result);
 
-            if(data["STATUS"] == "SUCCESS") {            
+            if(data["STATUS"] == "SUCCESS") {
               toastr.success(data["MESSAGE"]);
-              if(gModalContactCallback != "") {                
-                setTimeout(function(){ 
+              if(gModalContactCallback != "") {
+                setTimeout(function(){
                   window.location = "<?php echo asset_url(); ?>/" + gModalContactCallback;
                 }, 100);
               }
@@ -328,19 +328,19 @@
                 html: true
               },
               function(){
-                setTimeout(function(){ 
+                setTimeout(function(){
                   window.location = "<?php echo asset_url(); ?>/administrator/pricing";
-                }, 500);              
+                }, 500);
               });
               */
             }
           },
-          error : function(error) {   
+          error : function(error) {
             gOverlay.hide();
             alert("Gangguan pada server/jaringan\r\n" + error);
           }
         });
-      }    
+      }
     }
   </script>
 </head>
@@ -434,7 +434,7 @@
               </div>
             </div>
          <?php }
-          ?>          
+          ?>
           <!-- Main navigation -->
           <div class="sidebar-category sidebar-category-visible">
             <div class="category-content no-padding" style="color: white;">
@@ -444,33 +444,33 @@
                   ?>
                   <li class="navigation-header" style="color: white"><span>COLLECTION</span> <i class="icon-menu" title="Collection"></i></li>
                   <li <?php if(isset($ctlNavMenu) && $ctlNavMenu == "mCollDashboard") echo "class='active'"; ?>>
-                    <a href="<?php echo asset_url(); ?>/dashboard"><i class="icon-meter-fast"  style="color: white"></i> 
-                      <span  style="color: white">Dashboard</span>                     
+                    <a href="<?php echo asset_url(); ?>/dashboard"><i class="icon-meter-fast"  style="color: white"></i>
+                      <span  style="color: white">Dashboard</span>
                     </a>
-                  </li>               
+                  </li>
                   <li <?php if(isset($ctlNavMenu) && $ctlNavMenu == "mCollData") echo "class='active'"; ?>>
-                    <a href="<?php echo asset_url(); ?>/collection/collector"><i class=" icon-users4"  style="color: white"></i> 
-                      <span  style="color: white">Data Collector</span>                     
+                    <a href="<?php echo asset_url(); ?>/collection/collector"><i class=" icon-users4"  style="color: white"></i>
+                      <span  style="color: white">Data Collector</span>
                     </a>
                   </li>
                   <li <?php if(isset($ctlNavMenu) && $ctlNavMenu == "mCollJadwal") echo "class='active'"; ?>>
-                    <a href="<?php echo asset_url(); ?>/collection/jadwal-penagihan"><i class=" icon-calendar2"  style="color: white"></i> 
-                      <span  style="color: white">Jadwal Penagihan</span>                     
+                    <a href="<?php echo asset_url(); ?>/collection/jadwal-penagihan"><i class=" icon-calendar2"  style="color: white"></i>
+                      <span  style="color: white">Jadwal Penagihan</span>
                     </a>
                   </li>
                   <li <?php if(isset($ctlNavMenu) && $ctlNavMenu == "mCollTabungan") echo "class='active'"; ?>>
-                    <a href="<?php echo asset_url(); ?>/collection/tabungan"><i class=" icon-calendar2"  style="color: white"></i> 
-                      <span  style="color: white">Tabungan</span>                     
+                    <a href="<?php echo asset_url(); ?>/tabungan"><i class=" icon-calendar2"  style="color: white"></i>
+                      <span  style="color: white">Tabungan</span>
                     </a>
                   </li>
                   <li <?php if(isset($ctlNavMenu) && $ctlNavMenu == "mCollMonitoring") echo "class='active'"; ?>>
-                    <a href="<?php echo asset_url(); ?>/collection/monitoring"><i class=" icon-location4"  style="color: white"></i> 
-                      <span  style="color: white">Monitoring</span>                     
+                    <a href="<?php echo asset_url(); ?>/collection/monitoring"><i class=" icon-location4"  style="color: white"></i>
+                      <span  style="color: white">Monitoring</span>
                     </a>
                   </li>
                   <li <?php if(isset($ctlNavMenu) && $ctlNavMenu == "mCollLaporan") echo "class='active'"; ?>>
-                    <a href="<?php echo asset_url(); ?>/collection/laporan"><i class="icon-clipboard5"  style="color: white"></i> 
-                      <span  style="color: white">Laporan</span>                     
+                    <a href="<?php echo asset_url(); ?>/collection/laporan"><i class="icon-clipboard5"  style="color: white"></i>
+                      <span  style="color: white">Laporan</span>
                     </a>
                   </li>
                   <?php
@@ -480,77 +480,77 @@
                 <li class="navigation-header"  style="color: white"><span>General</span> <i class="icon-menu" title="General"></i></li>
                 <?php
                 if($ctlUserData->{"U_GROUP_ROLE"} == "GR_SUPERVISOR") {
-                  ?>                  
+                  ?>
                   <li <?php if(isset($ctlNavMenu) && $ctlNavMenu == "mSettings") echo "class='active'"; ?>>
-                    <a href="<?php echo asset_url(); ?>/settings"><i class="icon-wrench3"  style="color: white"></i> 
-                      <span  style="color: white">Pengaturan</span>                     
+                    <a href="<?php echo asset_url(); ?>/settings"><i class="icon-wrench3"  style="color: white"></i>
+                      <span  style="color: white">Pengaturan</span>
                     </a>
-                  </li>                  
+                  </li>
                   <?php
                 }
-                
+
                 if($ctlUserData->{"U_GROUP_ROLE"} == "GR_ADMINISTRATOR") {
                   ?>
                   <li <?php if(isset($ctlNavMenu) && $ctlNavMenu == "mCollDashboard") echo "class='active'"; ?>>
-                    <a href="<?php echo asset_url(); ?>/dashboard/admin"><i class="icon-meter-fast"  style="color: white"></i> 
-                      <span  style="color: white">Dashboard</span>                     
+                    <a href="<?php echo asset_url(); ?>/dashboard/admin"><i class="icon-meter-fast"  style="color: white"></i>
+                      <span  style="color: white">Dashboard</span>
                     </a>
                   </li>
                   <li <?php if(isset($ctlNavMenu) && $ctlNavMenu == "mCompMgmt") echo "class='active'"; ?>>
-                    <a href="<?php echo asset_url(); ?>/company"><i class="icon-office"  style="color: white"></i> 
-                      <span  style="color: white">Manajemen Perusahaan</span>                     
+                    <a href="<?php echo asset_url(); ?>/company"><i class="icon-office"  style="color: white"></i>
+                      <span  style="color: white">Manajemen Perusahaan</span>
                     </a>
                   </li>
                   <?php if($ctlUserData->{"U_SUPERUSER"} === "S_USER") { ?>
                   <li <?php if(isset($ctlNavMenu) && $ctlNavMenu == "mUserMgmt") echo "class='active'"; ?>>
-                    <a href="<?php echo asset_url(); ?>/admin"><i class="icon-users"  style="color: white"></i> 
-                      <span  style="color: white">Manajemen User</span>                     
+                    <a href="<?php echo asset_url(); ?>/admin"><i class="icon-users"  style="color: white"></i>
+                      <span  style="color: white">Manajemen User</span>
                     </a>
                   </li>
                   <?php } else { ?>
                   <li <?php if(isset($ctlNavMenu) && $ctlNavMenu == "mUserMgmt") echo "class='active'"; ?>>
-                    <a href="<?php echo asset_url(); ?>/user"><i class="icon-users"  style="color: white"></i> 
-                      <span  style="color: white">Manajemen User</span>                     
+                    <a href="<?php echo asset_url(); ?>/user"><i class="icon-users"  style="color: white"></i>
+                      <span  style="color: white">Manajemen User</span>
                     </a>
                   </li>
                   <?php } ?>
 
-                  <li class="navigation-header"  style="color: white"><span>COLLECTION INFORMATION</span> <i class="icon-menu" title="General"></i></li> 
+                  <li class="navigation-header"  style="color: white"><span>COLLECTION INFORMATION</span> <i class="icon-menu" title="General"></i></li>
 
                   <li <?php if(isset($ctlNavMenu) && $ctlNavMenu == "mCollJadwal") echo "class='active'"; ?>>
-                    <a href="<?php echo asset_url(); ?>/admin/collection/jadwal"><i class=" icon-calendar2"  style="color: white"></i> 
-                      <span  style="color: white">List Data Penagihan</span>                     
+                    <a href="<?php echo asset_url(); ?>/admin/collection/jadwal"><i class=" icon-calendar2"  style="color: white"></i>
+                      <span  style="color: white">List Data Penagihan</span>
                     </a>
                   </li>
 
                   <li <?php if(isset($ctlNavMenu) && $ctlNavMenu == "mCollTabungan") echo "class='active'"; ?>>
-                    <a href="<?php echo asset_url(); ?>/admin/collection/tabungan"><i class=" icon-calendar2"  style="color: white"></i> 
-                      <span  style="color: white">List Data Tabungan</span>                     
+                    <a href="<?php echo asset_url(); ?>/admin/collection/tabungan"><i class=" icon-calendar2"  style="color: white"></i>
+                      <span  style="color: white">List Data Tabungan</span>
                     </a>
                   </li>
 
                   <li <?php if(isset($ctlNavMenu) && $ctlNavMenu == "mCollMonitoring") echo "class='active'"; ?>>
-                    <a href="<?php echo asset_url(); ?>/admin/collection/monitoring"><i class=" icon-location4"  style="color: white"></i> 
-                      <span  style="color: white">Monitoring Collector</span>                     
+                    <a href="<?php echo asset_url(); ?>/admin/collection/monitoring"><i class=" icon-location4"  style="color: white"></i>
+                      <span  style="color: white">Monitoring Collector</span>
                     </a>
                   </li>
                   <li <?php if(isset($ctlNavMenu) && $ctlNavMenu == "mCollLaporan") echo "class='active'"; ?>>
-                    <a href="<?php echo asset_url(); ?>/admin/laporan"><i class="icon-clipboard5"  style="color: white"></i> 
-                      <span  style="color: white">Laporan Perusahaan</span>                     
+                    <a href="<?php echo asset_url(); ?>/admin/laporan"><i class="icon-clipboard5"  style="color: white"></i>
+                      <span  style="color: white">Laporan Perusahaan</span>
                     </a>
-                  </li>  
-                  <li class="navigation-header"  style="color: white"><span>SETTING INFORMATION</span> <i class="icon-menu" title="General"></i></li>              
+                  </li>
+                  <li class="navigation-header"  style="color: white"><span>SETTING INFORMATION</span> <i class="icon-menu" title="General"></i></li>
                   <li <?php if(isset($ctlNavMenu) && $ctlNavMenu == "mAdmSettings") echo "class='active'"; ?>>
-                    <a href="<?php echo asset_url(); ?>/adm/settings"><i class="icon-cogs"  style="color: white"></i> 
-                      <span  style="color: white">Pengaturan</span>                     
+                    <a href="<?php echo asset_url(); ?>/adm/settings"><i class="icon-cogs"  style="color: white"></i>
+                      <span  style="color: white">Pengaturan</span>
                     </a>
                   </li>
                   <?php
                 }
-                ?>                                                
+                ?>
                 <li <?php if(isset($ctlNavMenu) && $ctlNavMenu == "mProfil") echo "class='active'"; ?>>
-                  <a href="<?php echo asset_url(); ?>/profil"><i class=" icon-profile"  style="color: white"></i> 
-                    <span  style="color: white">Profil</span>                     
+                  <a href="<?php echo asset_url(); ?>/profil"><i class=" icon-profile"  style="color: white"></i>
+                    <span  style="color: white">Profil</span>
                   </a>
                 </li>
               </ul>
@@ -582,7 +582,7 @@
               <p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
               <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.</p>
               -->
-              <form class="form-horizontal" method="post" id="formContact" name="formContact" action="">    
+              <form class="form-horizontal" method="post" id="formContact" name="formContact" action="">
                 <div class="form-group">
                   <label class="col-lg-4 control-label text-semibold">Contact Type</label>
                   <div class="col-lg-8">
@@ -596,7 +596,7 @@
                           <?php
                         }
                       }
-                      ?>                
+                      ?>
                     </select>
                   </div>
                 </div>
@@ -608,7 +608,7 @@
                       <span class="input-group-addon"><i class="icon-vcard"></i></span>
                       <input type="text" id="ctName" class="form-control" placeholder="Contact name...">
                     </div>
-                  </div>            
+                  </div>
                 </div>
 
                 <div class="form-group">
@@ -618,7 +618,7 @@
                       <span class="input-group-addon"><i class=" icon-phone2"></i></span>
                       <input type="text" id="ctPhone" class="form-control" placeholder="Contact phone...">
                     </div>
-                  </div>            
+                  </div>
                 </div>
 
                 <div class="form-group">
@@ -628,7 +628,7 @@
                       <span class="input-group-addon"><i class=" icon-mention"></i></span>
                       <input type="text" id="ctEmail" class="form-control" placeholder="Contact email...">
                     </div>
-                  </div>            
+                  </div>
                 </div>
               </form>
             </div>

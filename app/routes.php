@@ -142,7 +142,6 @@ Route::post("/settings", "SettingController@updateSettings");
 
 Route::get("/ref/{refCategory}", "CollectionController@getReference");
 
-
 //admin settings
 Route::get("/adm/settings", "SettingController@formAdmSettings");
 Route::post("/adm/settings", "SettingController@updateAdmSettings");
@@ -168,46 +167,21 @@ Route::get('/login/api', 'LoginController@mobileLogin');
 Route::post('/login/api', 'LoginController@mobileLogin');
 //api check token
 Route::get('/login/checktoken', 'LoginController@mobileCheckToken');
-//update profil new mobile
-//Route::get("/collection/profile/update", "ProfileController@profileMobile");
 Route::put("/collection/profile/update", "ProfileController@profileUpdateMobile");
 
-//Route::get("/server-time", function() {
-//  echo tglIndo(date("Y-m-d H:i:s"), "SHORT");
-//});
 Route::get("/server-time", "DashboardController@tesTgl2");
 
-Route::get('/pdf', function(){
-  $fpdf = new Fpdf();
-  $fpdf->AddPage();
-  $fpdf->SetFont('Arial','B',16);
-  $fpdf->Cell(40,10,'Hello World!');
-  $fpdf->Output();
-  exit;
-
-  //Fpdf::AddPage();
-  //Fpdf::SetFont('Arial','B',16);
-  //Fpdf::Cell(40,10,'Hello World!');
-  //Fpdf::Output();
-  //exit;
-});
-/*
-App::missing(function($exception) {
-  //return Response::view('errors.missing', array(), 404);
-  //return "Missing configuration";
-
-  //$url = Request::fullUrl();
-  //$userAgent = Request::header('user-agent');
-  //Log::warning("404 for URL: $url requested by user agent: $userAgent");
-  //return Response::view('errors.not-found', array(), 404);
-
-  Session::flush();
-  return Redirect::to('login');
-});
-*/
+/**
+ * Tabungan
+ */
+Route::get('tabungan', 'TabunganController@index');
+Route::post('tabungan/store', 'TabunganController@store');
+Route::get('tabungan/{tgl}', 'TabunganController@show');
 
 Route::group(['prefix' => 'api'], function () {
   Route::post('change', 'ApiController@updatePassword');
   Route::get('list', 'ApiController@list_bayar');
+  Route::get('search', 'ApiController@search');
+  Route::post('tabungan', 'ApiController@tabungan');
 });
 ?>
