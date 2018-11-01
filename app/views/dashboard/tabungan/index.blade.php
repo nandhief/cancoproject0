@@ -59,19 +59,6 @@
     </div>
     <div class="panel-body">
       <div class="row">
-        <div class="col-lg-4">
-          <div class="input-group">
-            <input type="text" class="form-control datepicker" id="dari" data-value="<?= date_format(date_create(Input::get('dari')), 'Y/m/d') ?>">
-            <div class="input-group-addon">s/d</div>
-            <input type="text" class="form-control datepicker" id="sampai" data-value="<?= date_format(date_create(Input::get('sampai')), 'Y/m/d') ?>">
-            <span class="input-group-btn">
-              <button class="btn btn-sm btn-info filterPeriode">Tampilkan</button>
-            </span>
-          </div>
-        </div>
-        <div class="col-lg-8">&nbsp;</div>
-      </div>
-      <div class="row">
         <div class="col-lg-12">
           <table class="table datatable-basic" style="font-size:90%;">
             <thead>
@@ -91,6 +78,37 @@
                   <td><?= $tabungan->JUMLAH ?></td>
                   <td><?= $tabungan->TOTAL ?></td>
                   <td><a href="<?= asset_url() . '/tabungan/' . $tabungan->TGL ?>" class="btn btn-primary btn-sm"><i class="fa fa-eye"></i></a></td>
+              </tr>
+              <?php endforeach ?>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="panel panel-flat border-top-primary">
+    <div class="panel-heading">
+      <h5 class="panel-title text-semibold" style="color: #bb0a0a !important">Data Nasabah Tabungan</h5>
+    </div>
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-lg-12">
+          <table class="table datatable-basic" style="font-size:90%;">
+            <thead>
+              <tr>
+                <th style="text-align: center" width="5%">No</th>
+                <th>CAB</th>
+                <th>No Rek</th>
+                <th>Nama Nasabah</th>
+              </tr>
+            </thead>
+            <tbody>
+              <?php foreach ($nasabah as $key => $value) : ?>
+              <tr>
+                  <td><?= $key+1 ?></td>
+                  <td><?= $value->CAB ?></td>
+                  <td><?= $value->REK ?></td>
+                  <td><?= $value->CUST_NAMA ?></td>
               </tr>
               <?php endforeach ?>
             </tbody>
@@ -212,8 +230,10 @@
     }
   }
 
-  function showDetail(buId) {
-    window.location = "<?= asset_url(); ?>/tabungan/detail/" + buId;
-  }
+    $('.filterPeriode').on('click', function () {
+      var dari = $('#dari').val();
+      var sampai = $('#sampai').val();
+      window.location = "<?php echo asset_url(); ?>/tabungan?dari=" + dari + "&sampai=" + sampai;
+    });
 </script>
 @stop

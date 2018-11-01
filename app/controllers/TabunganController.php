@@ -9,14 +9,20 @@ class TabunganController extends BaseController {
 				Session::flush();
 				return Redirect::to('login')->with('ctlError','Please login to access system');
 			}
-			$user = DB::table('coll_user')->where('U_ID', Session::get('SESSION_USER_ID', ''))->first();
+            $user = DB::table('coll_user')->where('U_ID', Session::get('SESSION_USER_ID', ''))->first();
             $tabungans = DB::select('SELECT DATE(TGL_SETORAN) TGL, COUNT(*) JUMLAH, SUM(SETORAN) TOTAL
                 FROM coll_tabungan_history
-                GROUP BY DATE(TGL_SETORAN)
-            ');
+                WHERE PRSH_ID = ?
+                GROUP BY DATE(CREATED_AT)', [
+                    $user->PRSH_ID
+                ]);
+            $nasabah = DB::select('SELECT * FROM coll_tabungan ct INNER JOIN coll_customers cc ON ct.CUST_ID = cc.CUST_ID WHERE ct.PRSH_ID = ?', [
+                $user->PRSH_ID
+            ]);
             return View::make('dashboard.tabungan.index')
                     ->with("ctlUserData", $user)
                     ->with('tabungans', $tabungans)
+                    ->with('nasabah', $nasabah)
                     ->with("ctlNavMenu", "mCollTabungan");
         } else {
 			Session::flush();
@@ -99,6 +105,7 @@ class TabunganController extends BaseController {
                                     'CUST_NAMA' => trim($table[$row]["NAMA_NASABAH"]),
                                     'CUST_ALAMAT' => trim($table[$row]["ALAMAT"]),
                                 ));
+                                $nasabah = DB::table("coll_customers")->where("CUST_ID", trim($table[$row]["NASABAH_ID"]))->first();
                             } else {
                                 /* Update Jika Ada Perubahan */
                                 if(trim(strtoupper($nasabah->{"CUST_NAMA"})) != trim(strtoupper($table[$row]["NAMA_NASABAH"]))) {

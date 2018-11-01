@@ -183,5 +183,7 @@ Route::group(['prefix' => 'api'], function () {
   Route::get('list', 'ApiController@list_bayar');
   Route::get('search', 'ApiController@search');
   Route::post('tabungan', 'ApiController@tabungan');
+  Route::get('tabungan/summary', 'ApiController@summary_tabungan');
+  Route::get('tabungan/history', 'ApiController@history');
 });
 ?>

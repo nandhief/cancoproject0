@@ -107,8 +107,8 @@ class ApiController extends BaseController
                         FROM coll_customers cc
                         INNER JOIN coll_tabungan ct ON ct.CUST_ID = cc.CUST_ID
                         INNER JOIN coll_perusahaan cp ON ct.PRSH_ID = cp.PRSH_ID
-                        WHERE (cc.CUST_NAMA = ? OR ct.REK = ?) AND ct.PRSH_ID = ?', [
-                            $search, $search, $user->PRSH_ID
+                        WHERE (cc.CUST_NAMA LIKE ? OR ct.REK = ?) AND ct.PRSH_ID = ?', [
+                            '%'.$search.'%', $search, $user->PRSH_ID
                         ]);
         }
     }
@@ -144,5 +144,60 @@ class ApiController extends BaseController
         $data = DB::table('coll_tabungan_history')->where('TH_ID', $tab_history)->first();
         return composeReply2('SUCCESS', 'Detail Nasabah Menabung', $data);
     }
+  }
+
+  public function history()
+  {
+    if(empty(Input::get("userId"))) return composeReply2("ERROR", "Invalid user ID", "ACTION_LOGIN");
+    if(empty(Input::get("loginToken"))) return composeReply2("ERROR", "Invalid login token", "ACTION_LOGIN");
+    if(!isLoginValid(Input::get('userId'), Input::get('loginToken'))) return composeReply2("ERROR", "Invalid login token", "ACTION_LOGIN");
+    $user = DB::table('coll_user')->where('U_ID', Input::get("userId"))->first();
+    $filter = empty(Input::get('periode')) ? date('Y-m-d') : Input::get('periode');
+    $page = empty(Input::get('page')) ? 1 : (int) Input::get('page');
+    $start = $page > 1 ? ($page * 10) - 10 : 0;
+    $tab_history = DB::select('SELECT *
+        FROM coll_tabungan_history cth
+        INNER JOIN coll_tabungan ct ON ct.ID = cth.T_ID
+        WHERE cth.PRSH_ID = ? AND cth.COLL_ID = ? AND DATE(cth.TGL_SETORAN) = ?
+        LIMIT 10 OFFSET ?', [
+            $user->PRSH_ID,
+            $user->U_ID,
+            $filter,
+            $start,
+        ]);
+    foreach ($tab_history as $key => $value) {
+        $value->{'type'} = 'load';
+    }
+    return composeReply2('SUCCESS', 'Detail History Tabungan', $tab_history);
+  }
+
+  public function summary_tabungan()
+  {
+    if(empty(Input::get("userId"))) return composeReply2("ERROR", "Invalid user ID", "ACTION_LOGIN");
+    if(empty(Input::get("loginToken"))) return composeReply2("ERROR", "Invalid login token", "ACTION_LOGIN");
+    if(!isLoginValid(Input::get('userId'), Input::get('loginToken'))) return composeReply2("ERROR", "Invalid login token", "ACTION_LOGIN");
+    $user = DB::table('coll_user')->where('U_ID', Input::get("userId"))->first();
+    $filter = empty(Input::get('periode')) ? date('Y-m-d') : Input::get('periode');
+    $jumlah = 0;
+    $total = 0;
+    $summary = DB::select('SELECT COUNT(*) JUMLAH, SUM(SETORAN) TOTAL FROM coll_tabungan_history WHERE COLL_ID = ? AND DATE(TGL_SETORAN) = ? AND PRSH_ID = ? GROUP BY COLL_ID', [
+        $user->U_ID,
+        $filter,
+        $user->PRSH_ID
+    ]);
+    if (empty($summary)) {
+        $data = [
+            'JUMLAH' => $jumlah,
+            'TOTAL' => $total,
+        ];
+    } else {
+        foreach ($summary as $key => $value) {
+            $data = [
+                'JUMLAH' => (int) $value->JUMLAH,
+                'TOTAL' => (int) $value->TOTAL,
+            ];
+        }
+    }
+    return composeReply2('SUCCESS', 'Summary History Tabungan', $data);
   }
 }

@@ -37,6 +37,7 @@
               <tr>
                 <th>Kode Cabang</th>
                 <th>Kode Group</th>
+                <th>User Big Id</th>
                 <th>ID Collector</th>
                 <th>Nama Collector</th>
                 <th>No Rekening</th>
@@ -54,6 +55,7 @@
               <tr>
                   <td><?= $tabungan->CAB ?></td>
                   <td><?= $tabungan->KODE_GROUP ?></td>
+                  <td><?= $tabungan->USERBIGID ?></td>
                   <td><?= $tabungan->COLL_ID ?></td>
                   <td><?= $tabungan->U_NAMA ?></td>
                   <td><?= $tabungan->REK ?></td>
