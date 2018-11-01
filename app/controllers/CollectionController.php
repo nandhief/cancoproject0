@@ -3790,7 +3790,7 @@ class CollectionController extends BaseController {
   }
 
   public function apiUpdateJadwalX() {
-      if(null === Input::get("userId") || trim(Input::get("userId")) === "")          return composeReply2("ERROR", "Invalid user ID");
+    if(null === Input::get("userId") || trim(Input::get("userId")) === "")          return composeReply2("ERROR", "Invalid user ID");
     if(null === Input::get("loginToken") || trim(Input::get("loginToken")) === "")  return composeReply2("ERROR", "Invalid login token");
     if(!isLoginValid(Input::get('userId'), Input::get('loginToken')))               return composeReply2("ERROR", "Invalid login token");
 
@@ -3913,7 +3913,8 @@ class CollectionController extends BaseController {
             ->where("J_TGL", "=", $dateNow)
             ->update(array(
               'J_STATUS' => $statusPenagihan,
-              'J_PINJ_JUMLAH_BAYAR' => $jmlBayar
+              'J_PINJ_JUMLAH_BAYAR' => $jmlBayar,
+              'J_COLL_U_ID' => Input::get("userId"),
             ));
 
           if($statusPenagihan == "ST_BAYAR_NON_TARGET") {
@@ -3927,7 +3928,7 @@ class CollectionController extends BaseController {
             ->where("BUD_ID", Input::get("budId"))
             ->where("J_TGL",">", Input::get('periode'))
             ->update(array(
-              'J_STATUS' => $nextStatus
+              'J_STATUS' => $nextStatus,
             ));
 
           $noNota = DB::table("coll_user")->where("U_ID", Input::get("userId"))->update(array(
@@ -3946,10 +3947,8 @@ class CollectionController extends BaseController {
                   'CIS_LOKASI_LNG' => Input::get("longitude")
                 ));
               }
-
               return composeReply2("SUCCESS", "Data check in start tersimpan");
-            }
-            else {
+            } else {
               return composeReply2("ERROR", "Tidak ada data jadwal per ".tglIndo(Input::get("periode"), "SHORT"));
             }
 
@@ -3958,8 +3957,7 @@ class CollectionController extends BaseController {
               'UPDATED_STATUS_INFO' => getReferenceInfo("STATUS_COLLECTION", Input::get("status")),
               'UPDATED_STATUS' => Input::get("status")
             ));
-          }
-          else {
+          } else {
             return composeReply2("ERROR", "Tidak terjadi perubahan data atau data gagal disimpan");
           }
 
