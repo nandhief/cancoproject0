@@ -4023,18 +4023,18 @@ class CollectionController extends BaseController {
     }
 
     foreach ($collRecordsNonTarget as $data) {
-      if($data->{"J_STATUS"} == "ST_BAYAR_NON_TARGET" && $data->J_COLL_U_ID != $userData->U_ID) {
+      if($data->{"J_STATUS"} == "ST_BAYAR_NON_TARGET" && $data->J_COLL_U_ID == $userData->U_ID) {
         $jml_bayar_non_target++;
         $total_bayar_non_target += $data->J_PINJ_JUMLAH_BAYAR;
       }
-      if($data->{"J_STATUS"} == "ST_BAYAR_PARSIAL_NON_TARGET" && $data->J_COLL_U_ID != $userData->U_ID) {
+      if($data->{"J_STATUS"} == "ST_BAYAR_PARSIAL_NON_TARGET" && $data->J_COLL_U_ID == $userData->U_ID) {
         $jml_bayar_parsial_non_target++;
         $total_bayar_parsial_non_target += $data->J_PINJ_JUMLAH_BAYAR;
       }
-      if($data->{"J_STATUS"} == "ST_TIDAK_BAYAR_NON_TARGET" && $data->J_COLL_U_ID != $userData->U_ID) {
+      if($data->{"J_STATUS"} == "ST_TIDAK_BAYAR_NON_TARGET" && $data->J_COLL_U_ID == $userData->U_ID) {
         $jml_tidak_bayar_non_target++;
       }
-      if($data->{"J_STATUS"} == "ST_TIDAK_DITEMUKAN_NON_TARGET" && $data->J_COLL_U_ID != $userData->U_ID) {
+      if($data->{"J_STATUS"} == "ST_TIDAK_DITEMUKAN_NON_TARGET" && $data->J_COLL_U_ID == $userData->U_ID) {
         $jml_tidak_ditemukan_non_target++;
       }
     }
