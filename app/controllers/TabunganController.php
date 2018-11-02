@@ -38,7 +38,7 @@ class TabunganController extends BaseController {
 				return Redirect::to('login')->with('ctlError','Please login to access system');
 			}
 			$user = DB::table('coll_user')->where('U_ID', Session::get('SESSION_USER_ID', ''))->first();
-            $tgl = DB::table('coll_batch_upload')->where('BU_TGL', date('Y-m-d'))->where('PRSH_ID', $user->PRSH_ID)->first();
+            $tgl = DB::table('coll_batch_upload')->where('BU_TGL', date('Y-m-d'))->where('PRSH_ID', $user->PRSH_ID)->where('BU_TYPE', 'BU_TABUNGAN')->first();
             if (isset($_FILES['tabungan'])) {
                 $files = $_FILES['tabungan'];
                 $filename = $files['name'];
@@ -62,14 +62,14 @@ class TabunganController extends BaseController {
                             'BU_TYPE' => 'BU_TABUNGAN'
                         ]);
                     } else {
-                        DB::table('coll_batch_upload')->where('BU_TGL', date('Y-m-d'))->where('PRSH_ID', $user->PRSH_ID)->update([
+                        DB::table('coll_batch_upload')->where('BU_TGL', date('Y-m-d'))->where('PRSH_ID', $user->PRSH_ID)->where('BU_TYPE', 'BU_TABUNGAN')->update([
                             'BU_TGL' => date("Y-m-d"),
                             'BU_FILE_PATH' => $upload,
                             'PRSH_ID' => $user->PRSH_ID,
                             'U_ID' => $user->U_ID,
                             'BU_TYPE' => 'BU_TABUNGAN'
                         ]);
-                        $bud_id = DB::table('coll_batch_upload')->where('BU_TGL', date('Y-m-d'))->where('PRSH_ID', $user->PRSH_ID)->first()->BU_ID;
+                        $bud_id = DB::table('coll_batch_upload')->where('BU_TGL', date('Y-m-d'))->where('PRSH_ID', $user->PRSH_ID)->where('BU_TYPE', 'BU_TABUNGAN')->first()->BU_ID;
                     }
                     if(!isset($bud_id) || $bud_id <= 0) {
                         DB::rollback();
@@ -92,7 +92,8 @@ class TabunganController extends BaseController {
                             if($column == 1 && $titles[0][$column] != "NO_REKENING") return composeReply("ERROR","Kolom ke-2 HARUS bernama NO_REKENING");
                             if($column == 2 && $titles[0][$column] != "NASABAH_ID") return composeReply("ERROR","Kolom ke-3 HARUS bernama ID_NASABAH");
                             if($column == 3 && $titles[0][$column] != "NAMA_NASABAH") return composeReply("ERROR","Kolom ke-4 HARUS bernama NAMA_NASABAH");
-                            if($column == 4 && $titles[0][$column] != "ALAMAT") return composeReply("ERROR","Kolom ke-5 HARUS bernama ALAMAT");
+                            if($column == 4 && $titles[0][$column] != "PONSEL") return composeReply("ERROR","Kolom ke-5 HARUS bernama PONSEL");
+                            if($column == 5 && $titles[0][$column] != "ALAMAT") return composeReply("ERROR","Kolom ke-6 HARUS bernama ALAMAT");
                             $data[$titles[0][$column]] = $body[$row][$column];
                         }
                         $table[$row] = $data;
@@ -104,6 +105,7 @@ class TabunganController extends BaseController {
                                     'CUST_ID' => trim($table[$row]["NASABAH_ID"]),
                                     'CUST_NAMA' => trim($table[$row]["NAMA_NASABAH"]),
                                     'CUST_ALAMAT' => trim($table[$row]["ALAMAT"]),
+                                    'CUST_PONSEL' => trim($table[$row]["PONSEL"]),
                                 ));
                                 $nasabah = DB::table("coll_customers")->where("CUST_ID", trim($table[$row]["NASABAH_ID"]))->first();
                             } else {
@@ -116,6 +118,11 @@ class TabunganController extends BaseController {
                                 if(trim(strtoupper($nasabah->{"CUST_ALAMAT"})) != trim(strtoupper($table[$row]["ALAMAT"]))) {
                                     DB::table("coll_customers")->where("CUST_ID",trim($table[$row]["NASABAH_ID"]))->update(array(
                                         'CUST_ALAMAT' => $table[$row]["ALAMAT"]
+                                    ));
+                                }
+                                if(trim(strtoupper($nasabah->{"CUST_PONSEL"})) != trim(strtoupper($table[$row]["PONSEL"]))) {
+                                    DB::table("coll_customers")->where("CUST_ID",trim($table[$row]["NASABAH_ID"]))->update(array(
+                                        'CUST_PONSEL' => $table[$row]["PONSEL"]
                                     ));
                                 }
                             }

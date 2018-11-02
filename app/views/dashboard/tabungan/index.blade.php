@@ -100,6 +100,7 @@
                 <th>CAB</th>
                 <th>No Rek</th>
                 <th>Nama Nasabah</th>
+                <th>Telp Nasabah</th>
               </tr>
             </thead>
             <tbody>
@@ -109,6 +110,7 @@
                   <td><?= $value->CAB ?></td>
                   <td><?= $value->REK ?></td>
                   <td><?= $value->CUST_NAMA ?></td>
+                  <td><?= $value->CUST_PONSEL ?></td>
               </tr>
               <?php endforeach ?>
             </tbody>

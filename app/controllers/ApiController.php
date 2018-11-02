@@ -33,7 +33,13 @@ class ApiController extends BaseController
     $page = empty(Input::get('page')) ? 1 : (int) Input::get('page');
     $start = $page > 1 ? ($page * 10) - 10 : 0;
 
-    $schedules = DB::select("SELECT A.*,B.*,C.PRSH_ID, C.PRSH_NAMA, C.PRSH_JENIS_TIPE FROM coll_jadwal AS A INNER JOIN coll_batch_upload_data AS B ON A.BUD_ID = B.BUD_ID INNER JOIN coll_perusahaan AS C ON B.PRSH_ID = C.PRSH_ID WHERE A.J_TGL = ?  AND A.J_COLL_U_ID = ? AND A.J_STATUS = ? LIMIT 10 OFFSET ?", array($periode, $user->U_ID, Input::get("status"), $start));
+    $schedules = DB::select("SELECT A.*,B.*,C.PRSH_ID, C.PRSH_NAMA, C.PRSH_JENIS_TIPE
+        FROM coll_jadwal AS A
+        INNER JOIN coll_batch_upload_data AS B ON A.BUD_ID = B.BUD_ID
+        INNER JOIN coll_perusahaan AS C ON B.PRSH_ID = C.PRSH_ID
+        WHERE A.J_TGL = ?  AND A.J_COLL_U_ID = ? AND A.J_STATUS = ? LIMIT 10 OFFSET ?", array(
+            $periode, $user->U_ID, Input::get("status"), $start
+        ));
     foreach ($schedules as $data) {
       $data->{"BUD_STATUS_INFO"} = getReferenceInfo("STATUS_COLLECTION", $data->{"BUD_STATUS"});
       $data->{"BUD_PINJ_TGL_KREDIT_FORMATTED"} = tglIndo($data->{"BUD_PINJ_TGL_KREDIT"},"SHORT");
@@ -158,6 +164,7 @@ class ApiController extends BaseController
     $tab_history = DB::select('SELECT *
         FROM coll_tabungan_history cth
         INNER JOIN coll_tabungan ct ON ct.ID = cth.T_ID
+        INNER JOIN coll_customers cc ON cc.CUST_ID = cth.NASABAH_ID
         WHERE cth.PRSH_ID = ? AND cth.COLL_ID = ? AND DATE(cth.TGL_SETORAN) = ?
         LIMIT 10 OFFSET ?', [
             $user->PRSH_ID,
@@ -180,11 +187,14 @@ class ApiController extends BaseController
     $filter = empty(Input::get('periode')) ? date('Y-m-d') : Input::get('periode');
     $jumlah = 0;
     $total = 0;
-    $summary = DB::select('SELECT COUNT(*) JUMLAH, SUM(SETORAN) TOTAL FROM coll_tabungan_history WHERE COLL_ID = ? AND DATE(TGL_SETORAN) = ? AND PRSH_ID = ? GROUP BY COLL_ID', [
-        $user->U_ID,
-        $filter,
-        $user->PRSH_ID
-    ]);
+    $summary = DB::select('SELECT COUNT(*) JUMLAH, SUM(SETORAN) TOTAL
+        FROM coll_tabungan_history
+        WHERE COLL_ID = ? AND DATE(TGL_SETORAN) = ? AND PRSH_ID = ?
+        GROUP BY COLL_ID', [
+            $user->U_ID,
+            $filter,
+            $user->PRSH_ID
+        ]);
     if (empty($summary)) {
         $data = [
             'JUMLAH' => $jumlah,
