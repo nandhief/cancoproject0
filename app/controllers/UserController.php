@@ -204,6 +204,10 @@ class UserController extends BaseController {
 	                $kode = 'Kode Group Tabungan';
                     $key = 'U_KODE_TABUNGAN';
                     break;
+                case 'userBigId':
+	                $kode = 'User Big ID';
+                    $key = 'USERBIGID';
+                    break;
                 default:
 	                $kode = '';
                     $key = '';

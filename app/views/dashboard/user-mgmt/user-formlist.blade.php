@@ -177,7 +177,7 @@
           <div class="col-lg-4">
             <div class="input-group">
               <span class="input-group-addon"><i class="icon-gear"></i></span>
-              <input type="text" class="form-control" id="userKodeGroup" name="userKodeGroup" placeholder="Kode Group Pinjaman...">
+              <input type="text" class="form-control" onkeyup="this.value = this.value.toUpperCase();" id="userKodeGroup" name="userKodeGroup" placeholder="Kode Group Pinjaman...">
             </div>
           </div>
         </div>
@@ -187,7 +187,7 @@
           <div class="col-lg-4">
             <div class="input-group">
               <span class="input-group-addon"><i class="icon-gear"></i></span>
-              <input type="text" class="form-control" id="userKodeTabungan" name="userKodeTabungan" placeholder="Kode Group Tabungan...">
+              <input type="text" class="form-control" onkeyup="this.value = this.value.toUpperCase();" id="userKodeTabungan" name="userKodeTabungan" placeholder="Kode Group Tabungan...">
             </div>
           </div>
         </div>
@@ -350,7 +350,7 @@
               <div class="col-lg-8">
                 <div class="input-group">
                   <span class="input-group-addon"><i class="icon-user"></i></span>
-                  <input type="text" id="userBigIdEdit" class="form-control" readonly>
+                  <input type="text" id="userBigIdEdit" class="form-control" onkeypress="return hanyaAngka(event)" data-bigid="">
                 </div>
               </div>
             </div>
@@ -381,8 +381,8 @@
                 <div class="input-group">
                   <span class="input-group-addon"><i class="icon-phone2"></i></span>
                   <input type="text" id="userPonselEdit" class="form-control" onkeypress="return hanyaAngka(event)" data-ponsel="">
-                  <p style="color: red;">* isikan cuma bernilai angka.</p>
                 </div>
+                <p style="color: red;">* isikan cuma bernilai angka.</p>
               </div>
             </div>
 
@@ -400,8 +400,8 @@
               <label class="col-lg-4 control-label text-semibold">Kode Group Pinjaman</label>
               <div class="col-lg-8">
                 <div class="input-group">
-                  <span class="input-group-addon"><i class="icon-mention"></i></span>
-                  <input type="text" class="form-control" id="userKodeEdit" name="userKodeEdit" placeholder="Kode Group Pinjaman..." data-pinjaman="">
+                  <span class="input-group-addon"><i class="icon-gear"></i></span>
+                  <input type="text" class="form-control" onkeyup="this.value = this.value.toUpperCase();" id="userKodeEdit" name="userKodeEdit" placeholder="Kode Group Pinjaman..." data-pinjaman="">
                 </div>
               </div>
             </div>
@@ -410,8 +410,8 @@
               <label class="col-lg-4 control-label text-semibold">Kode Group Tabungan</label>
               <div class="col-lg-8">
                 <div class="input-group">
-                  <span class="input-group-addon"><i class="icon-mention"></i></span>
-                  <input type="text" class="form-control" id="userKodeTabunganEdit" name="userKodeTabunganEdit" placeholder="Kode Group Tabungan..." data-tabungan="">
+                  <span class="input-group-addon"><i class="icon-gear"></i></span>
+                  <input type="text" class="form-control" onkeyup="this.value = this.value.toUpperCase();" id="userKodeTabunganEdit" name="userKodeTabunganEdit" placeholder="Kode Group Tabungan..." data-tabungan="">
                 </div>
               </div>
             </div>
@@ -787,6 +787,7 @@
           $('#mdlUser_Edit').on('shown.bs.modal', function() {
             $("#userIdEdit").val(data["PAYLOAD"]["U_ID"]);
             $("#userBigIdEdit").val(data["PAYLOAD"]["USERBIGID"]);
+            $("#userBigIdEdit").data('bigid', data["PAYLOAD"]["USERBIGID"]);
             $("#userNamaEdit").val(data["PAYLOAD"]["U_NAMA"]);
             $("#userPonselEdit").val(data["PAYLOAD"]["U_TELPON"]);
             $("#userPonselEdit").data('ponsel', data["PAYLOAD"]["U_TELPON"]);
@@ -1072,6 +1073,20 @@
         });
       }
     });
+    $('#userBigIdEdit').blur(function () {
+        if ($(this).val().length > 0 && $(this).val() != $(this).data('bigid')) {
+            checkKode({
+            userPrsh: $("#userPrshEdit").val(),
+            key: 'userBigId',
+            value: $(this).val()
+            });
+        }
+    });
+    $('#userBigIdEdit').blur(function () {
+      if ($(this).val().length > 0) {
+        checkKode();
+      }
+    });
     $('#userPonselEdit').blur(function () {
       if ($(this).val().length >= 10 && $(this).val() != $(this).data('ponsel')) {
         check({
@@ -1112,7 +1127,7 @@
     });
 
    var saveData = function(){
-    var userBigIdX = $("#userBigId").val();
+    var EditX = $("#userBigId").val();
     var userIdX = $("#userId").val();
     var userPassX = $('#userPass').val();
     var userNamaX = $("#userNama").val();

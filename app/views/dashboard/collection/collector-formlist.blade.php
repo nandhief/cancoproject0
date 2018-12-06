@@ -202,7 +202,7 @@
           <label class="col-lg-2 control-label text-semibold">Kode Group Pinjaman</label>
           <div class="col-lg-4">
             <div class="input-group">
-              <span class="input-group-addon"><i class="icon-mention"></i></span>
+              <span class="input-group-addon"><i class="icon-gear"></i></span>
               <input type="text" class="form-control" onkeyup="this.value = this.value.toUpperCase();" id="userKode" name="userKode" placeholder="Kode group user pinjaman...">
             </div>
           </div>
@@ -213,7 +213,7 @@
           <div class="col-lg-4">
             <div class="input-group">
               <span class="input-group-addon"><i class="icon-gear"></i></span>
-              <input type="text" class="form-control" id="userKodeTabungan" name="userKodeTabungan" placeholder="Kode Group Tabungan...">
+              <input type="text" class="form-control" onkeyup="this.value = this.value.toUpperCase();" id="userKodeTabungan" name="userKodeTabungan" placeholder="Kode Group Tabungan...">
             </div>
           </div>
         </div>
@@ -351,7 +351,7 @@
             <div class="col-lg-8">
               <div class="input-group">
                 <span class="input-group-addon"><i class="icon-user"></i></span>
-                <input type="text" id="userBigIdEdit" class="form-control" onkeypress="return hanyaAngka(event)" readonly>
+                <input type="text" id="userBigIdEdit" class="form-control" onkeypress="return hanyaAngka(event)" data-bigid="">
               </div>
             </div>
           </div>
@@ -401,7 +401,7 @@
             <div class="col-lg-8">
               <div class="input-group">
                 <span class="input-group-addon"><i class="icon-mention"></i></span>
-                <input type="text" class="form-control" id="userKodeEdit" name="userKodeEdit" placeholder="Kode Group user..." data-pinjaman="">
+                <input type="text" class="form-control" onkeyup="this.value = this.value.toUpperCase();" id="userKodeEdit" name="userKodeEdit" placeholder="Kode Group user..." data-pinjaman="">
               </div>
             </div>
           </div>
@@ -411,7 +411,7 @@
               <div class="col-lg-8">
                 <div class="input-group">
                   <span class="input-group-addon"><i class="icon-mention"></i></span>
-                  <input type="text" class="form-control" id="userKodeTabunganEdit" name="userKodeTabunganEdit" placeholder="Kode Group Tabungan..." data-tabungan="">
+                  <input type="text" class="form-control" onkeyup="this.value = this.value.toUpperCase();" id="userKodeTabunganEdit" name="userKodeTabunganEdit" placeholder="Kode Group Tabungan..." data-tabungan="">
                 </div>
               </div>
             </div>
@@ -945,6 +945,15 @@
         checkUser();
     }
   });
+  $('#userBigIdEdit').blur(function () {
+    if ($(this).val().length > 0 && $(this).val() != $(this).data('bigid')) {
+        checkKode({
+          userPrsh: '<?= $ctlUserData->PRSH_ID; ?>',
+          key: 'userBigId',
+          value: $(this).val()
+        });
+    }
+  });
   $('#userId').blur(function () {
     if ($(this).val().length > 0) {
       check({
@@ -1322,6 +1331,7 @@
           $('#mdlUser_Edit').on('shown.bs.modal', function() {
             $("#userIdEdit").val(data["PAYLOAD"]["U_ID"]);
             $("#userBigIdEdit").val(data["PAYLOAD"]["USERBIGID"]);
+            $("#userBigIdEdit").data('bigid', data["PAYLOAD"]["USERBIGID"]);
             $("#userNamaEdit").val(data["PAYLOAD"]["U_NAMA"]);
             $("#userPonselEdit").val(data["PAYLOAD"]["U_TELPON"]);
             $("#userEmailEdit").val(data["PAYLOAD"]["U_EMAIL"]);
