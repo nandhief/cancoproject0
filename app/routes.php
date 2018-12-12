@@ -176,14 +176,30 @@ Route::get("/server-time", "DashboardController@tesTgl2");
  */
 Route::get('tabungan', 'TabunganController@index');
 Route::post('tabungan/store', 'TabunganController@store');
+Route::post('tabungan/update', 'TabunganController@update');
+Route::get('tabungan/laporan/view', 'TabunganController@report_view');
+Route::get('tabungan/laporan/download', 'TabunganController@report_download');
 Route::get('tabungan/{tgl}', 'TabunganController@show');
+
+/**
+ * Marketing
+ */
+Route::get('marketing', 'MarketingController@index');
 
 Route::group(['prefix' => 'api'], function () {
   Route::post('change', 'ApiController@updatePassword');
   Route::get('list', 'ApiController@list_bayar');
   Route::get('search', 'ApiController@search');
+  /**
+   * Api Tabungan
+   */
   Route::post('tabungan', 'ApiController@tabungan');
   Route::get('tabungan/summary', 'ApiController@summary_tabungan');
   Route::get('tabungan/history', 'ApiController@history');
+  /**
+   * Api Marketing
+   */
+  Route::get('marketing', 'MarketingController@api_index');
+  Route::post('marketing', 'MarketingController@api_store');
 });
 ?>
