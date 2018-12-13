@@ -125,22 +125,23 @@ class ApiController extends BaseController
   {
     if(empty(Input::get("userId"))) return composeReply2("ERROR", "Invalid user ID", "ACTION_LOGIN");
     if(empty(Input::get("loginToken"))) return composeReply2("ERROR", "Invalid login token", "ACTION_LOGIN");
-    if(!isLoginValid(Input::get('userId'), Input::get('loginToken'))) return composeReply2("ERROR", "Invalid login token", "ACTION_LOGIN");
+    if(!isLoginValid(Input::get('userId'), Input::get('loginToken'))) return composeReply2("ERROR", "Invalid login", "ACTION_LOGIN");
     $user = DB::table('coll_user')->where('U_ID', Input::get("userId"))->first();
     $rekening = Input::get('no_rek');
     $tabungan = DB::table('coll_tabungan')->where('REK', $rekening)->where('PRSH_ID', $user->PRSH_ID)->first();
-    $nasabah = DB::table('coll_customers')->where('CUST_ID', $tabungan->CUST_ID)->first();
     $get_nota = DB::table('coll_tabungan_history')->orderBy('NO_NOTA', 'desc')->first();
     $nota = empty($get_nota) ? 1 : ((int) $get_nota->NO_NOTA) + 1;
     if ($tabungan) {
+        if ($tabungan->SETOR_MINIMUM > (int) Input::get('setoran')) return composeReply2("ERROR", "Setor minimal tabungan " . $tabungan->CUST_NAMA . ' adalah ' . $tabungan->SETOR_MINIMUM, "ACTION_POST_TABUNGAN");
         $tab_history = DB::table('coll_tabungan_history')->insertGetId([
             'T_ID' => $tabungan->ID,
             'PRSH_ID' => $user->PRSH_ID,
             'KODE_GROUP' => $user->U_KODE_TABUNGAN,
             'COLL_ID' => $user->U_ID,
-            'NASABAH_ID' => $nasabah->CUST_ID,
-            'NASABAH_NAMA' => $nasabah->CUST_NAMA,
-            'NASABAH_ALAMAT' => $nasabah->CUST_ALAMAT,
+            'NO_REK' => $tabungan->REK,
+            'NASABAH_ID' => $tabungan->CUST_ID,
+            'NASABAH_NAMA' => $tabungan->CUST_NAMA,
+            'NASABAH_ALAMAT' => $tabungan->CUST_ALAMAT,
             'SETORAN' => Input::get('setoran'),
             'KETERANGAN' => Input::get('keterangan'),
             'NO_NOTA' => $nota,

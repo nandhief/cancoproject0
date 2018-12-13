@@ -86,6 +86,42 @@
       </div>
     </div>
   </div>
+  <div class="panel panel-flat">
+    <div class="panel-heading">
+      <h5 class="panel-title text-semibold" style="color: #bb0a0a !important">Unggah File Daftar Nasabah Yang Dinonaktifkan</h5>
+      <div class="heading-elements">
+        <ul class="icons-list">
+          <li><a href="<?= asset_url(); ?>/assets/documents/sample_tabungan_nonaktif.xlsx"><i class="  icon-download4"></i> Download File Contoh</a> </li>
+          <li> <a data-action="collapse"></a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="panel-body collapse">
+      <p class="content-group">
+        Unggah file Excel berisi daftar nasabah yang dinonaktikan.
+      </p>
+
+      <p class="content-group">
+        Harap pastikan isi dan format file sudah benar. Setelah diunggah, nasabah akan sinkron dengan aplikasi mobile petugas lapangan.
+      </p>
+
+      <form class="form-horizontal" enctype="multipart/form-data" method="post" id="formUploadDataUpdate" name="formUploadDataUpdate" action="<?= asset_url(); ?>/tabungan/update">
+        <div class="form-group">
+          <div class="col-lg-4">
+            <input type="file" class="file-input" data-show-preview="false" data-show-upload="false" id="tabungan" name="tabungan" placeholder="File format Excel...">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="col-lg-4">
+            <button  onClick="updateContent()" class="btn bg-blue-theme btn-block">Unggah File<i class="fa fa-upload position-right"></i></button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <div class="panel panel-flat border-top-primary">
     <div class="panel-heading">
       <h5 class="panel-title text-semibold" style="color: #bb0a0a !important">Data Nasabah Tabungan</h5>
@@ -101,6 +137,8 @@
                 <th>No Rek</th>
                 <th>Nama Nasabah</th>
                 <th>Telp Nasabah</th>
+                <th>Setor Minimal</th>
+                <th>Status</th>
               </tr>
             </thead>
             <tbody>
@@ -111,6 +149,8 @@
                   <td><?= $value->REK ?></td>
                   <td><?= $value->CUST_NAMA ?></td>
                   <td><?= $value->CUST_PONSEL ?></td>
+                  <td><?= number_format($value->SETOR_MINIMUM, 0,',','.') ?></td>
+                  <td class="<?= $value->TUTUP ? 'bg-danger' : 'bg-success' ?>"<?= $value->TUTUP ? '' : ' onclick="return update(\'' . $value->REK . '\')" style="cursor:pointer;"' ?>><?= $value->TUTUP ? 'TUTUP' : 'AKTIF' ?></td>
               </tr>
               <?php endforeach ?>
             </tbody>
@@ -231,6 +271,95 @@
       });
     }
   }
+
+  function updateContent() {
+    if(!gBusy) {
+      gBusy = true;
+      //- content action form
+      var optFormContentUpdate = {
+        //console.log();
+        beforeSubmit  : function(e) {
+          $(".btn").attr("disabled","");
+          createOverlay("Mohon Tunggu...");
+          return true;
+        },
+        resetForm : false,
+        success : function(result) {
+          gBusy = false;
+          gOverlay.hide();
+          var data = JSON.parse(result);
+          $(".btn").removeAttr("disabled");
+          if(data["STATUS"] == "SUCCESS") {
+            toastr.success(data["MESSAGE"]);
+            setTimeout(function(){
+              window.location = "<?= asset_url(); ?>/tabungan";
+            }, 500);
+          }
+          else {
+            swal({
+              title: "GAGAL",
+              text: data["MESSAGE"],
+              type: "error",
+              showCancelButton: false,
+              confirmButtonColor: "#DD6B55",
+              confirmButtonText: "OK",
+              closeOnConfirm: true,
+              html: true
+            },
+            function(){
+              setTimeout(function(){
+                window.location = "<?= asset_url(); ?>/tabungan";
+              }, 500);
+            });
+          }
+        },
+        error : function(e) {
+          gBusy = false;
+          gOverlay.hide();
+
+          toastr.error("Proses <b>GAGAL</b>");
+          $(".btn").removeAttr("disabled");
+          window.location = "<?= asset_url(); ?>/tabungan";
+        }
+      };
+      $('#formUploadDataUpdate').submit(function() {
+        $(this).ajaxSubmit(optFormContentUpdate);
+        return false;
+      });
+    }
+  }
+
+    function update(rek) {
+        swal({
+            type: 'warning',
+            title: 'Yakin Nonaktikan tabungan',
+            text: 'NO REKENING ' + rek,
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Ya",
+            cancelButtonText: "Tidak",
+            closeOnConfirm: true,
+            html: true
+        }, function () {
+            createOverlay("Mohon Tunggu...");
+            $.ajax({
+                type: 'POST',
+                url: '<?= asset_url() ?>/tabungan/update',
+                data: {
+                    NO_REKENING: rek
+                },
+                beforeSend: function () {
+                    $(this).attr('disabled', true)
+                },
+                success: function (response) {
+                    gOverlay.hide();
+                    var data = JSON.parse(response)
+                    toastr.success(data.MESSAGE);
+                    window.location = "<?= asset_url() ?>/tabungan"
+                }
+            });
+        })
+    }
 
     $('.filterPeriode').on('click', function () {
       var dari = $('#dari').val();
