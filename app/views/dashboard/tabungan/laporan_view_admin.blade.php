@@ -66,8 +66,8 @@
       </div>
     </div>
     <div class="panel-footer">
-      <a href="<?= asset_url(); ?>/collection/laporan" class="btn btn-warning"><i class="fa fa-fw fa-reply"></i>Kembali</a>
-      <a href="<?= asset_url(); ?>/tabungan/laporan/download?<?= Request::server('QUERY_STRING') ?>" class="btn btn-primary"><i class="fa fa-fw fa-download"></i>Unduh File</a>
+      <a href="<?= asset_url(); ?>/admin/laporan" class="btn btn-warning"><i class="fa fa-fw fa-reply"></i>Kembali</a>
+      <a href="<?= asset_url(); ?>/admin/tabungan/laporan/download?<?= Request::server('QUERY_STRING') ?>" class="btn btn-primary"><i class="fa fa-fw fa-download"></i>Unduh File</a>
     </div>
   </div>
 </div>

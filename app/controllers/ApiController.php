@@ -132,6 +132,7 @@ class ApiController extends BaseController
     $get_nota = DB::table('coll_tabungan_history')->orderBy('NO_NOTA', 'desc')->first();
     $nota = empty($get_nota) ? 1 : ((int) $get_nota->NO_NOTA) + 1;
     if ($tabungan) {
+        if ($tabungan->TUTUP) return composeReply2("ERROR", "Maaf nasabah " . $tabungan->CUST_NAMA . ' sudah ditutup', "ACTION_POST_TABUNGAN");
         if ($tabungan->SETOR_MINIMUM > (int) Input::get('setoran')) return composeReply2("ERROR", "Setor minimal tabungan " . $tabungan->CUST_NAMA . ' adalah ' . $tabungan->SETOR_MINIMUM, "ACTION_POST_TABUNGAN");
         $tab_history = DB::table('coll_tabungan_history')->insertGetId([
             'T_ID' => $tabungan->ID,

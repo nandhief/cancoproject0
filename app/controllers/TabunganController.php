@@ -471,6 +471,196 @@ class TabunganController extends BaseController {
 		}
     }
 
+    public function report_view_admin()
+    {
+        if (Session::has('SESSION_USER_ID') && Session::has('SESSION_LOGIN_TOKEN')) {
+			if(!isLoginValid(Session::get('SESSION_USER_ID'), Session::get('SESSION_LOGIN_TOKEN'))) {
+				Session::flush();
+				return Redirect::to('login')->with('ctlError','Please login to access system');
+            }
+            $userId = Session::get('SESSION_USER_ID', '');
+            $user = DB::table('coll_user')->where('U_ID', $userId)->first();
+            if (Input::get('type') == 'admin') {
+                empty(Input::get('laporanTglAwal')) ? ($awal = date('Y-m') . '-01') : ($awal = date_format(date_create(Input::get('laporanTglAwal')), 'Y-m-d'));
+                empty(Input::get('laporanTglAkhir')) ? ($akhir = date('Y-m-d')) : ($akhir = date_format(date_create(Input::get('laporanTglAkhir')), 'Y-m-d'));
+                if (Input::get('bpr') == 'ALL') {
+                    $tabungan = $this->query_report_admin($awal, $akhir);
+                } else {
+                    $tabungan = $this->query_report_admin($awal, $akhir, Input::get('bpr'));
+                }
+            }
+            return View::make('dashboard.tabungan.laporan_view_admin')
+                    ->with("ctlUserData", $user)
+                    ->with('tabungans', $tabungan)
+                    ->with("ctlNavMenu", "mCollLaporan");
+        } else {
+			Session::flush();
+			return Redirect::to('login')->with('ctlError','Harap login terlebih dahulu');
+		}
+    }
+
+    public function report_download_admin()
+    {
+        if (Session::has('SESSION_USER_ID') && Session::has('SESSION_LOGIN_TOKEN')) {
+			if(!isLoginValid(Session::get('SESSION_USER_ID'), Session::get('SESSION_LOGIN_TOKEN'))) {
+				Session::flush();
+				return Redirect::to('login')->with('ctlError','Please login to access system');
+            }
+            $userId = Session::get('SESSION_USER_ID', '');
+            $user = DB::table('coll_user')->where('U_ID',$userId)->first();
+            if (Input::get('type') == 'admin') {
+                empty(Input::get('laporanTglAwal')) ? ($awal = date('Y-m') . '-01') : ($awal = date_format(date_create(Input::get('laporanTglAwal')), 'Y-m-d'));
+                empty(Input::get('laporanTglAkhir')) ? ($akhir = date('Y-m-d')) : ($akhir = date_format(date_create(Input::get('laporanTglAkhir')), 'Y-m-d'));
+                if (Input::get('bpr') == 'ALL') {
+                    $tabungan = $this->query_report_admin($awal, $akhir);
+                } else {
+                    $tabungan = $this->query_report_admin($awal, $akhir, Input::get('bpr'));
+                }
+            }
+            Excel::create('Pintech Mobile App Report Tabungan', function($excel) use($user, $awal, $akhir, $tabungan) {
+                $excel->setTitle('Pintech Mobile App System Report ' . $awal . " Sampai " . $akhir);
+                $excel->setCreator('Pintech Mobile App System')->setCompany('PINTECH');
+                $excel->setDescription('Laporan Tabungan');
+                $excel->sheet('Sheet 1', function ($sheet) use ($user, $awal, $akhir, $tabungan) {
+                    $sheet->setOrientation('landscape');
+                    $sheet->setCellValue('N1', PHPExcel_Shared_Date::PHPToExcel( gmmktime(0, 0, 0, date('m'), date('d'), date('Y')) ));
+                    $sheet->getStyle('N1')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_DATE_XLSX15);
+                    $sheet->setCellValue('A1', "PINTECH MOBILE APP REPORT " . $awal . "-" . $akhir);
+                    $sheet->mergeCells('A1:N1');
+                    $sheet->getRowDimension('1')->setRowHeight(30);
+                    $sheet->getColumnDimension('A')->setWidth(50);
+                    $sheet->setCellValue('A2', "TANGGAL");
+                    $sheet->getRowDimension('2')->setRowHeight(30);
+                    $sheet->getColumnDimension('A')->setWidth(30);
+                    $sheet->setCellValue('B2', "USER ID");
+                    $sheet->getColumnDimension('B')->setWidth(35);
+                    $sheet->setCellValue('C2', "NAMA COLLECTOR");
+                    $sheet->getColumnDimension('C')->setWidth(30);
+                    $sheet->setCellValue('D2', "KODE GROUP");
+                    $sheet->getColumnDimension('D')->setWidth(30);
+                    $sheet->setCellValue('E2', "CAB");
+                    $sheet->getColumnDimension('E')->setWidth(30);
+                    $sheet->setCellValue('F2', "NO REKENING");
+                    $sheet->getColumnDimension('F')->setWidth(35);
+                    $sheet->setCellValue('G2', "ID NASABAH");
+                    $sheet->getColumnDimension('G')->setWidth(35);
+                    $sheet->setCellValue('H2', "NAMA NASABAH");
+                    $sheet->getColumnDimension('H')->setWidth(50);
+                    $sheet->setCellValue('I2', "ALAMAT");
+                    $sheet->getColumnDimension('I')->setWidth(70);
+                    $sheet->setCellValue('J2', "HP");
+                    $sheet->getColumnDimension('J')->setWidth(20);
+                    $sheet->setCellValue('K2', "SETORAN");
+                    $sheet->getColumnDimension('K')->setWidth(30);
+                    $sheet->setCellValue('L2', "TANGGAL SETORAN");
+                    $sheet->getColumnDimension('L')->setWidth(30);
+                    $sheet->setCellValue('M2', "WAKTU");
+                    $sheet->getColumnDimension('M')->setWidth(100);
+                    $sheet->setCellValue('N2', "KETERANGAN");
+                    $sheet->getColumnDimension('M')->setWidth(100);
+                    $sheet->getStyle('A2:N2')->getFont()->setBold(true);
+                    $row = 3;
+                    $tgl = '';
+                    foreach ($tabungan as $key => $value) {
+                        if ($tgl == date('Y-m-d', strtotime($value->TGL_SETORAN))) {
+                            $sheet->setCellValue('A' . $row, '');
+                        } else {
+                            $sheet->setCellValue('A' . $row, tglIndo(date('Y-m-d', strtotime($value->TGL_SETORAN)), "SHORT"));
+                            $sheet->getStyle('A')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+                            $sheet->getStyle('A' . $row)->getFont()->setBold(true);
+                        }
+                        $tgl = date('Y-m-d', strtotime($value->TGL_SETORAN));
+
+                        /*  */
+                        $sheet->getStyle('B')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+                        $sheet->setCellValue('B' . $row, $value->{"USERBIGID"});
+                        $sheet->getStyle('C')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+                        $sheet->setCellValue('C' . $row, $value->{"U_NAMA"});
+                        $sheet->getStyle('D')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+                        $sheet->setCellValue('D' . $row, $value->{"COLLECT_KODE"});
+                        $sheet->getStyle('E')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+                        $sheet->setCellValue('E' . $row, $value->{"CAB"});
+                        $sheet->getStyle('F')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+                        $sheet->setCellValue('F' . $row, $value->{"REK"});
+                        $sheet->getStyle('G')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+                        $sheet->setCellValue('G' . $row, $value->{"CUST_ID"});
+                        $sheet->getStyle('H')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+                        $sheet->setCellValue('H' . $row, $value->{"CUST_NAMA"});
+                        $sheet->getStyle('I')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+                        $sheet->setCellValue('I' . $row, $value->{"CUST_ALAMAT"});
+                        $sheet->getStyle('J')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+                        $sheet->setCellValue('J' . $row, $value->{"CUST_PONSEL"});
+                        $sheet->getStyle('K')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+                        $sheet->setCellValue('K' . $row, $value->{"SETORAN"});
+                        $sheet->getStyle('L')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+                        $sheet->setCellValue('L' . $row, date('d-m-Y', strtotime($value->{"TGL_SETORAN"})));
+                        $sheet->getStyle('M')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+                        $sheet->setCellValue('M' . $row, date('H:i:s', strtotime($value->{"TGL_SETORAN"})));
+                        $sheet->getStyle('N')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+                        $sheet->setCellValue('N' . $row, $value->{"KETERANGAN"});
+                        $row++;
+                    }
+                    $sheet->getStyle('A1:N1')->applyFromArray([
+                        'font' => [
+                            'bold' => true,
+                            'size' => 12,
+                        ],
+                        'alignment' => [
+                            'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+                            'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER,
+                        ],
+                    ]);
+                    $sheet->getStyle('A2:N2')->applyFromArray([
+                        'font' => [
+                            'bold' => true,
+                            'size' => 12,
+                        ],
+                        'alignment' => [
+                            'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+                            'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER,
+                        ],
+                        'borders' => [
+                            'top' => [
+                                'style' => PHPExcel_Style_Border::BORDER_THICK,
+                            ],
+                            'bottom' => [
+                                'style' => PHPExcel_Style_Border::BORDER_THICK,
+                            ],
+                        ],
+                        'fill' => [
+                            'type' => PHPExcel_Style_Fill::FILL_GRADIENT_LINEAR,
+                            'rotation' => 90,
+                            'startcolor' => [
+                                'argb' => 'FFA0A0A0'
+                            ],
+                            'endcolor' => [
+                                'argb' => 'FFFFFFFF'
+                            ],
+                        ],
+                    ]);
+                    $sheet->getStyle('A2')->applyFromArray([
+                        'borders' => [
+                            'left' => [
+                                'style' => PHPExcel_Style_Border::BORDER_THIN,
+                            ],
+                        ],
+                    ]);
+                    $sheet->getStyle('N2')->applyFromArray([
+                        'borders' => [
+                            'right' => [
+                                'style' => PHPExcel_Style_Border::BORDER_THIN,
+                            ],
+                        ],
+                    ]);
+                });
+                $excel->setActiveSheetIndex(0);
+            })->download('xlsx');
+        } else {
+			Session::flush();
+			return Redirect::to('login')->with('ctlError','Harap login terlebih dahulu');
+		}
+    }
+
     public function query_report($awal, $akhir, $prsh, $collect = null)
     {
         $tabungan = [];
@@ -498,6 +688,36 @@ class TabunganController extends BaseController {
                 $akhir,
                 $prsh,
                 $collect,
+            ]);
+        }
+        return $tabungan;
+    }
+
+    public function query_report_admin($awal, $akhir, $prsh = null)
+    {
+        $tabungan = [];
+        if (is_null($prsh)) {
+            $tabungan = DB::select('SELECT cth.TH_ID, ct.USERBIGID TARGET_BIGID, ct.USERID TARGET, ct.KODE_GROUP,
+                cth.COLL_ID, cth.KODE_GROUP COLLECT_KODE, ct.REK, ct.CUST_ID, ct.CUST_NAMA,
+                ct.CUST_PONSEL, ct.CUST_ALAMAT, cth.TGL_SETORAN, cth.SETORAN, cu.*, ct.CAB, cth.KETERANGAN
+                FROM coll_tabungan_history cth
+                INNER JOIN coll_tabungan ct ON ct.ID = cth.T_ID
+                INNER JOIN coll_user cu ON cth.COLL_ID = cu.U_ID
+                WHERE (DATE(cth.TGL_SETORAN) BETWEEN ? AND ?)', [
+                $awal,
+                $akhir,
+            ]);
+        } else {
+            $tabungan = DB::select('SELECT cth.TH_ID, ct.USERBIGID TARGET_BIGID, ct.USERID TARGET, ct.KODE_GROUP,
+                cth.COLL_ID, cth.KODE_GROUP COLLECT_KODE, ct.REK, ct.CUST_ID, ct.CUST_NAMA,
+                ct.CUST_PONSEL, ct.CUST_ALAMAT, cth.TGL_SETORAN, cth.SETORAN, cu.*, ct.CAB, cth.KETERANGAN
+                FROM coll_tabungan_history cth
+                INNER JOIN coll_tabungan ct ON ct.ID = cth.T_ID
+                INNER JOIN coll_user cu ON cth.COLL_ID = cu.U_ID
+                WHERE (DATE(cth.TGL_SETORAN) BETWEEN ? AND ?) AND cth.PRSH_ID = ?', [
+                $awal,
+                $akhir,
+                $prsh,
             ]);
         }
         return $tabungan;
