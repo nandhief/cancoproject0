@@ -199,26 +199,6 @@
         </div>
 
         <div class="form-group">
-          <label class="col-lg-2 control-label text-semibold">Kode Group Pinjaman</label>
-          <div class="col-lg-4">
-            <div class="input-group">
-              <span class="input-group-addon"><i class="icon-gear"></i></span>
-              <input type="text" class="form-control" onkeyup="this.value = this.value.toUpperCase();" id="userKode" name="userKode" placeholder="Kode group user pinjaman...">
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label class="col-lg-2 control-label text-semibold">Kode Group Tabungan</label>
-          <div class="col-lg-4">
-            <div class="input-group">
-              <span class="input-group-addon"><i class="icon-gear"></i></span>
-              <input type="text" class="form-control" onkeyup="this.value = this.value.toUpperCase();" id="userKodeTabungan" name="userKodeTabungan" placeholder="Kode Group Tabungan...">
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group">
           <label class="col-lg-2 control-label text-semibold">Collect Pinjaman</label>
           <div class="col-lg-4">
             <div class="input-group">
@@ -242,6 +222,26 @@
                 <option value="1">Collect Tabungan</option>
               </select>
               <!-- <input type="text" class="form-control" id="prshTipe" name="prshTipe" placeholder="Tipe Perusahaan..."> -->
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-lg-2 control-label text-semibold">Kode Group Pinjaman</label>
+          <div class="col-lg-4">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="icon-gear"></i></span>
+              <input type="text" class="form-control" onkeyup="this.value = this.value.toUpperCase();" id="userKode" name="userKode" placeholder="Kode group user pinjaman...">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-lg-2 control-label text-semibold">Kode Group Tabungan</label>
+          <div class="col-lg-4">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="icon-gear"></i></span>
+              <input type="text" class="form-control" onkeyup="this.value = this.value.toUpperCase();" id="userKodeTabungan" name="userKodeTabungan" placeholder="Kode Group Tabungan...">
             </div>
           </div>
         </div>
@@ -314,11 +314,11 @@
                         <i class="icon-menu7"></i> &nbsp;<span class="caret"></span>
                       </button>
                       <ul class="dropdown-menu dropdown-menu-right" style="background-color:#bb0a0a;">
-                        <li><a href="javascript:showDetail('<?php echo $aData->{"U_ID"}; ?>')"><i class="fa fa-ellipsis-h"></i> Detail</a></li>
-                        <li><a href="javascript:editData('<?php echo $aData->{"U_ID"}; ?>')"><i class="fa fa-edit"></i> Ubah</a></li>
-                        <li><a href="javascript:resetPassword('<?php echo $aData->{"U_ID"}; ?>')"><i class="fa fa-retweet"></i> Reset Password</a></li>
-                        <li><a href="javascript:gantiPassword('<?php echo $aData->{"U_ID"}; ?>')"><i class="fa fa-retweet"></i> Ganti Password</a></li>
-                        <li><a href="javascript:deleteData('<?php echo $aData->{"U_ID"}; ?>')"><i class="fa fa-remove"></i> Hapus</a></li>
+                        <li><a href="javascript:showDetail('<?php echo $aData->{"U_ID"}; ?>')" style="color: #fff;"><i class="fa fa-ellipsis-h"></i> Detail</a></li>
+                        <li><a href="javascript:editData('<?php echo $aData->{"U_ID"}; ?>')" style="color: #fff;"><i class="fa fa-edit"></i> Ubah</a></li>
+                        <li><a href="javascript:resetPassword('<?php echo $aData->{"U_ID"}; ?>')" style="color: #fff;"><i class="fa fa-retweet"></i> Reset Password</a></li>
+                        <li><a href="javascript:gantiPassword('<?php echo $aData->{"U_ID"}; ?>')" style="color: #fff;"><i class="fa fa-retweet"></i> Ganti Password</a></li>
+                        <li><a href="javascript:deleteData('<?php echo $aData->{"U_ID"}; ?>')" style="color: #fff;"><i class="fa fa-remove"></i> Hapus</a></li>
                       </ul>
                     </div>
                   </td>
@@ -1092,20 +1092,25 @@
       $('#userEmail').focus();
       return false;
     }
-    if (!$('#userKode').val().length) {
-      required('Kolom Kode Group Pinjaman');
-      $('#userKode').focus();
-      return false;
+    if ($("#status_collect").val() == 0) {
+        required('Kolom Kode Group');
+        $('#userKode').focus();
+        return false;
     }
-    if (!$('#userKodeTabungan').val().length) {
-      required('Kolom Kode Group Tabungan');
-      $('#userKodeTabungan').focus();
-      return false;
+    if (!$('#userKode').val().length) {
+        required('Kolom Kode Group');
+        $('#userKode').focus();
+        return false;
+    }
+    if ($("#status_tab").val() != 0 && !('#userKodeTabungan').val().length) {
+        required('Kolom Kode Tabungan');
+        $('#userKodeTabungan').focus();
+        return false;
     }
 
     //console.log(userBigIdX);
 
-    if(userIdX != "" && userBigIdX != "" && userPassX != "" && userNamaX != "" && userPonselX != "" && userGroupX != "" && userPrshX != "" && userEmailX != "" && userKodeX != "" && userStatusCollectX != "" && userStatusTabX != "") {
+    if(userIdX != "" && userBigIdX != "" && userPassX != "" && userNamaX != "" && userPonselX != "" && userGroupX != "" && userPrshX != "" && userEmailX != "" && userKodeX != "" && userStatusCollectX != "") {
       createOverlay("Mohon Tunggu...");
       $.ajax({
         type  : "POST",

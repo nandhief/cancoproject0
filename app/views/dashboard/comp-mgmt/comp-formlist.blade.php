@@ -262,8 +262,8 @@
                         <i class="icon-menu7"></i> &nbsp;<span class="caret"></span>
                       </button>
                       <ul class="dropdown-menu dropdown-menu-right" style="background-color:#bb0a0a;">
-                        <li><a href="javascript:editData('<?php echo $aData->{"PRSH_ID"}; ?>')"><i class="fa fa-edit"></i> Ubah</a></li>
-                        <li><a href="javascript:deleteData('<?php echo $aData->{"PRSH_ID"}; ?>')"><i class="fa fa-remove"></i> Hapus</a></li>
+                        <li><a href="javascript:editData('<?php echo $aData->{"PRSH_ID"}; ?>')" style="color: #fff;"><i class="fa fa-edit"></i> Ubah</a></li>
+                        <li><a href="javascript:deleteData('<?php echo $aData->{"PRSH_ID"}; ?>')" style="color: #fff;"><i class="fa fa-remove"></i> Hapus</a></li>
                       </ul>
                     </div>
                   </td>

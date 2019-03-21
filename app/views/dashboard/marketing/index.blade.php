@@ -31,6 +31,7 @@
                                     <th>NO KTP</th>
                                     <th>NAMA</th>
                                     <th>TANGGAL</th>
+                                    <th>KETERANGAN</th>
                                     <th data-orderable="false">AKSI</th>
                                 </tr>
                             </thead>
@@ -41,7 +42,17 @@
                                     <td><?= $value->KTP ?></td>
                                     <td><?= $value->NAMA ?></td>
                                     <td><?= $value->updated_at ?></td>
-                                    <td></td>
+                                    <td><?= $value->KETERANGAN ?></td>
+                                    <td>
+                                        <?php if (is_null($value->PROSES)) { ?>
+                                            <button class="btn btn-success btn-xs" onclick="return proses('<?= $value->ID ?>', 1)"><i class="fa fa-check"></i> Terima</button>
+                                            <button class="btn btn-danger btn-xs" onclick="return proses('<?= $value->ID ?>', 0)"><i class="fa fa-remove"></i> Tolak</button>
+                                        <?php } elseif ($value->PROSES === 0) { ?>
+                                            <div class="label label-danger" style="padding: 5px;"><i class="fa fa-remove"></i> Tolak</div>
+                                        <?php } elseif ($value->PROSES === 1) { ?>
+                                            <div class="label label-success" style="padding: 5px;"><i class="fa fa-check"></i> Diterima</div>
+                                        <?php } ?>
+                                    </td>
                                 </tr>
                                 <?php endforeach ?>
                             </tbody>
@@ -64,6 +75,7 @@
                                     <th>NO KTP</th>
                                     <th>NAMA</th>
                                     <th>TANGGAL</th>
+                                    <th>KETERANGAN</th>
                                     <th data-orderable="false">AKSI</th>
                                 </tr>
                             </thead>
@@ -74,7 +86,17 @@
                                     <td><?= $value->KTP ?></td>
                                     <td><?= $value->NAMA ?></td>
                                     <td><?= $value->updated_at ?></td>
-                                    <td></td>
+                                    <td><?= $value->KETERANGAN ?></td>
+                                    <td>
+                                        <?php if (is_null($value->PROSES)) { ?>
+                                            <button class="btn btn-success btn-xs" onclick="return proses('<?= $value->ID ?>', 1)"><i class="fa fa-check"></i> Terima</button>
+                                            <button class="btn btn-danger btn-xs" onclick="return proses('<?= $value->ID ?>', 0)"><i class="fa fa-remove"></i> Tolak</button>
+                                        <?php } elseif ($value->PROSES === 0) { ?>
+                                            <div class="label label-danger" style="padding: 5px;"><i class="fa fa-remove"></i> Tolak</div>
+                                        <?php } elseif ($value->PROSES === 1) { ?>
+                                            <div class="label label-success" style="padding: 5px;"><i class="fa fa-check"></i> Diterima</div>
+                                        <?php } ?>
+                                    </td>
                                 </tr>
                                 <?php endforeach ?>
                             </tbody>
@@ -97,6 +119,7 @@
                                     <th>NO KTP</th>
                                     <th>NAMA</th>
                                     <th>TANGGAL</th>
+                                    <th>KETERANGAN</th>
                                     <th data-orderable="false">AKSI</th>
                                 </tr>
                             </thead>
@@ -107,7 +130,17 @@
                                     <td><?= $value->KTP ?></td>
                                     <td><?= $value->NAMA ?></td>
                                     <td><?= $value->updated_at ?></td>
-                                    <td></td>
+                                    <td><?= $value->KETERANGAN ?></td>
+                                    <td>
+                                        <?php if (is_null($value->PROSES)) { ?>
+                                            <button class="btn btn-success btn-xs" onclick="return proses('<?= $value->ID ?>', 1)"><i class="fa fa-check"></i> Terima</button>
+                                            <button class="btn btn-danger btn-xs" onclick="return proses('<?= $value->ID ?>', 0)"><i class="fa fa-remove"></i> Tolak</button>
+                                        <?php } elseif ($value->PROSES === 0) { ?>
+                                            <div class="label label-danger" style="padding: 5px;"><i class="fa fa-remove"></i> Tolak</div>
+                                        <?php } elseif ($value->PROSES === 1) { ?>
+                                            <div class="label label-success" style="padding: 5px;"><i class="fa fa-check"></i> Diterima</div>
+                                        <?php } ?>
+                                    </td>
                                 </tr>
                                 <?php endforeach ?>
                             </tbody>
@@ -130,6 +163,7 @@
                                     <th>NO KTP</th>
                                     <th>NAMA</th>
                                     <th>TANGGAL</th>
+                                    <th>KETERANGAN</th>
                                     <th data-orderable="false">AKSI</th>
                                 </tr>
                             </thead>
@@ -140,7 +174,14 @@
                                     <td><?= $value->KTP ?></td>
                                     <td><?= $value->NAMA ?></td>
                                     <td><?= $value->updated_at ?></td>
-                                    <td></td>
+                                    <td><?= $value->KETERANGAN ?></td>
+                                    <td>
+                                        <?php if ($value->PROSES === 0) { ?>
+                                            <div class="label label-danger" style="padding: 5px;"><i class="fa fa-remove"></i> Tolak</div>
+                                        <?php } elseif ($value->PROSES === 1) { ?>
+                                            <div class="label label-success" style="padding: 5px;"><i class="fa fa-check"></i> Diterima</div>
+                                        <?php } ?>
+                                    </td>
                                 </tr>
                                 <?php endforeach ?>
                             </tbody>
@@ -168,12 +209,6 @@
             search: '<span>Search &nbsp;</span> _INPUT_',
             lengthMenu: '<span>Show &nbsp;</span> _MENU_',
             paginate: { 'first': 'First', 'last': 'Last', 'next': '&rarr;', 'previous': '&larr;' }
-        },
-        drawCallback: function () {
-            $(this).find('tbody tr').slice(-4).find('.dropdown, .btn-group').addClass('dropup');
-        },
-        preDrawCallback: function() {
-            $(this).find('tbody tr').slice(-4).find('.dropdown, .btn-group').removeClass('dropup');
         }
     });
 
@@ -181,15 +216,53 @@
     $('.datatable-basic').DataTable({
         stateSave: true,
         "order": [[ 0, "desc" ]],
-        scrollY:        "300px",
-        scrollX:        true,
+        scrollY: "300px",
+        scrollX: true,
         scrollCollapse: true,
-        paging:         true,
+        paging: true,
         fixedColumns:   {
-          leftColumns: 1,
-          rightColumns: 1
+            leftColumns: 1,
+            rightColumns: 1
         }
     });
+    window.proses = function proses(id, proses) {
+        $.ajax({
+            url: '<?= asset_url() ?>/marketing',
+            type: 'POST',
+            data: {
+                id: id,
+                proses: proses
+            },
+            beforeSend: () =>{
+                $(this).attr('disabled', true)
+            },
+            success: (response) => {
+                $(this).attr('disabled', false)
+                swal({
+                    type: 'success',
+                    title: response.MESSAGE
+                },
+                function(){
+                    setTimeout(function(){
+                        window.location = "<?= asset_url() ?>/marketing";
+                    }, 500);
+                });
+            },
+            error: (response) => {
+                console.log(response)
+                $(this).attr('disabled', false)
+                swal({
+                    type: 'error',
+                    title: 'Gagal ' + response
+                },
+                function(){
+                    setTimeout(function(){
+                        window.location = "<?= asset_url() ?>/marketing";
+                    }, 500);
+                });
+            }
+        })
+    }
   });
 </script>
 @stop

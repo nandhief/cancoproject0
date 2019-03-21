@@ -218,7 +218,7 @@
       var sampai = $('#sampai').val();
       window.location = "<?php echo asset_url(); ?>/collection/jadwal-penagihan?dari=" + dari + "&sampai=" + sampai;
     });
-    
+
     // Table setup
     // ------------------------------
     // Setting datatable defaults

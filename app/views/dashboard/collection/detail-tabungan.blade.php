@@ -15,7 +15,7 @@
     </div>
     //-->
   </div>
- 
+
   <div class="breadcrumb-line">
     <ul class="breadcrumb">
       <li><a href="<?php echo asset_url(); ?>"><i class="icon-home2 position-left"></i> Beranda</a></li>
@@ -52,7 +52,7 @@
       <h5 class="panel-title text-semibold" style="color: #bb0a0a !important">Detil Jadwal Tabungan ID#<?php echo $ctlBuId; ?></h5>
       <!--
       <div class="heading-elements">
-        <ul class="icons-list">  
+        <ul class="icons-list">
           <li><a href="javascript:addPayment()"><i class=" icon-plus2"></i> New Payment</a></li>
           <li><a data-action="collapse"></a></li>
         </ul>
@@ -93,7 +93,7 @@
                   <tr>
                      <td style="text-align: center;"><?php echo $aData->{"BT_CAB"}; ?></td>
                     <td style="text-align: center;"><?php echo $aData->{"BT_KODE_GROUP"}; ?></td>
-                    <td style="text-align:center" ><?php echo $aData->{"U_ID"}; ?></td>
+                    <td style="text-align:center" ><?php echo $aData->{"USERBIGID"}; ?></td>
                     <td style="text-align:left" ><?php echo $aData->{"U_NAMA"}; ?></td>
                     <td style="text-align:center" ><?php echo $aData->{"BT_NO_REKENING"}; ?></td>
                     <td style="text-align:center" ><?php echo $aData->{"R_INFO"}; ?></td>
@@ -112,7 +112,7 @@
                     <td style="text-align:center" ><?php echo date("d-M-Y H:i:s", strtotime($aData->{"TGL_SETORAN"})); ?></td>
                     <?php } ?>
                     <td style="text-align:center" ><?php echo $aData->{"BT_KETERANGAN"}; ?></td>
-                    <td style="text-align:center;vertical-align:top;">                      
+                    <td style="text-align:center;vertical-align:top;">
                       <?php
                       if(trim($aData->{"BT_PATH_IMAGE"}) != "-" && trim($aData->{"BT_PATH_IMAGE"}) != "") {
                         ?>
@@ -147,10 +147,10 @@
             </tbody>
           </table>
         </div>
-      </div>        
+      </div>
     </div>
   </div>
-</div>  
+</div>
 
 <div class="footer text-muted"></div>
 
@@ -170,9 +170,9 @@
     // ------------------------------
     // Setting datatable defaults
     $.extend( $.fn.dataTable.defaults, {
-        autoWidth: false,        
+        autoWidth: false,
         /*
-        columnDefs: [{ 
+        columnDefs: [{
             orderable: false,
             width: '80px',
             targets: [ 3 ]
@@ -213,7 +213,7 @@
     // Enable Select2 select for the length option
     $('.dataTables_length select').select2({
         minimumResultsForSearch: "-1"
-    });     
+    });
   });
 
 </script>

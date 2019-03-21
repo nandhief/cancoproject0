@@ -152,7 +152,7 @@
           </div>
         </div>
 
-        <div class="form-group">
+        {{-- <div class="form-group">
           <label class="col-lg-2 control-label text-semibold">Kode Group                                                                                                                     </label>
           <div class="col-lg-4">
             <div class="input-group">
@@ -160,7 +160,7 @@
               <input type="text" class="form-control" id="userKode" name="userKode" placeholder="Kode Group user..." onkeyup="this.value = this.value.toUpperCase()">
             </div>
           </div>
-        </div>
+        </div> --}}
 
         <div class="form-group">
           <label class="col-lg-2 control-label text-semibold">Group Role</label>
@@ -223,8 +223,8 @@
                           <?php echo strtoupper(getReferenceInfo("USER_STATUS",$aData->{"U_STATUS"})); ?> &nbsp;<span class="caret"></span>
                         </button>
                         <ul class="custom dropdown-menu dropdown-menu-right" style="background-color:#4caf50;">
-                          <li><a href="javascript:setStatus('AKTIF','<?php echo $aData->{"U_ID"}; ?>')"><i class="fa fa-check"></i> Aktif</a></li>
-                          <li><a href="javascript:setStatus('NON_AKTIF','<?php echo $aData->{"U_ID"}; ?>')"><i class="fa fa-remove"></i> Non-Aktif</a></li>
+                          <li><a href="javascript:setStatus('AKTIF','<?php echo $aData->{"U_ID"}; ?>')" style="color: #fff;"><i class="fa fa-check"></i> Aktif</a></li>
+                          <li><a href="javascript:setStatus('NON_AKTIF','<?php echo $aData->{"U_ID"}; ?>')" style="color: #fff;"><i class="fa fa-remove"></i> Non-Aktif</a></li>
                           <!--li><a href="javascript:setStatus('SUSPEND','<?php echo $aData->{"U_ID"}; ?>')"><i class="fa fa-ban"></i> Suspend</a></li-->
                         </ul>
                       </div>
@@ -237,10 +237,10 @@
                         <i class="icon-menu7"></i> &nbsp;<span class="caret"></span>
                       </button>
                       <ul class="dropdown-menu dropdown-menu-right" style="background-color:#bb0a0a;">
-                        <li><a href="javascript:editData('<?php echo $aData->{"U_ID"}; ?>')"><i class="fa fa-edit"></i> Ubah</a></li>
-                        <li><a href="javascript:resetPassword('<?php echo $aData->{"U_ID"}; ?>')"><i class="fa fa-retweet"></i> Reset Password</a></li>
-                        <li><a href="javascript:gantiPassword('<?php echo $aData->{"U_ID"}; ?>')"><i class="fa fa-retweet"></i> Ganti Password</a></li>
-                        <li><a href="javascript:deleteData('<?php echo $aData->{"U_ID"}; ?>')"><i class="fa fa-remove"></i> Hapus</a></li>
+                        <li><a href="javascript:editData('<?php echo $aData->{"U_ID"}; ?>')" style="color: #fff;"><i class="fa fa-edit"></i> Ubah</a></li>
+                        <li><a href="javascript:resetPassword('<?php echo $aData->{"U_ID"}; ?>')" style="color: #fff;"><i class="fa fa-retweet"></i> Reset Password</a></li>
+                        <li><a href="javascript:gantiPassword('<?php echo $aData->{"U_ID"}; ?>')" style="color: #fff;"><i class="fa fa-retweet"></i> Ganti Password</a></li>
+                        <li><a href="javascript:deleteData('<?php echo $aData->{"U_ID"}; ?>')" style="color: #fff;"><i class="fa fa-remove"></i> Hapus</a></li>
                         <?php
                         if($aData->{"U_GROUP_ROLE"} == "GR_COLLECTOR" && $aData->{"U_LOGIN_TOKEN"} != "" && $aData->{"U_LOGIN_TOKEN"} != "-") {
                           ?>

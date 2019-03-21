@@ -121,6 +121,49 @@ class ApiController extends BaseController
     return composeReply2('SUCCESS', 'Cari Nasabah', $customer);
   }
 
+  public function search_penagihan()
+  {
+    if(empty(Input::get("userId"))) return composeReply2("ERROR", "Invalid user ID", "ACTION_LOGIN");
+    if(empty(Input::get("loginToken"))) return composeReply2("ERROR", "Invalid login token", "ACTION_LOGIN");
+    if(!isLoginValid(Input::get('userId'), Input::get('loginToken'))) return composeReply2("ERROR", "Invalid login token", "ACTION_LOGIN");
+    $user = DB::table('coll_user')->where('U_ID', Input::get("userId"))->first();
+    $customer = [];
+    $periode = Input::get('periode') ?? date('Y-m-d');
+    $status = Input::get('status');
+    $type = Input::get('type');
+    if (!empty(Input::get('q'))) {
+        $search = Input::get('q');
+        if (!empty($search)) {
+            switch ($type) {
+                case 'target':
+                    $customer = DB::select('SELECT A.*,B.*, C.PRSH_ID, C.PRSH_NAMA, C.PRSH_JENIS_TIPE FROM coll_jadwal AS A INNER JOIN coll_batch_upload_data AS B ON A.BUD_ID = B.BUD_ID INNER JOIN coll_perusahaan AS C ON B.PRSH_ID = C.PRSH_ID WHERE A.J_TGL = ?  AND A.J_COLL_U_ID = ? AND (B.BUD_CUST_NAMA LIKE ? OR B.BUD_PINJ_ID = ?) AND A.J_STATUS = ?', [
+                        $periode, $user->{"U_ID"}, '%'.$search.'%', $search, $status,
+                    ]);
+                    break;
+                case 'non_target':
+                    $customer = DB::select('SELECT A.*,B.*, C.PRSH_ID, C.PRSH_NAMA, C.PRSH_JENIS_TIPE FROM coll_jadwal AS A INNER JOIN coll_batch_upload_data AS B ON A.BUD_ID = B.BUD_ID INNER JOIN coll_perusahaan AS C ON B.PRSH_ID = C.PRSH_ID WHERE A.J_TGL = ?  AND A.J_COLL_U_ID != ? AND (B.BUD_CUST_NAMA LIKE ? OR B.BUD_PINJ_ID = ?) AND A.J_STATUS = ?', [
+                        $periode, $user->{"U_ID"}, '%'.$search.'%', $search, $status,
+                    ]);
+                    break;
+            }
+            foreach ($customer as $aData) {
+                $aData->{"BUD_STATUS_INFO"} = getReferenceInfo("STATUS_COLLECTION", $aData->{"BUD_STATUS"});
+                $aData->{"BUD_PINJ_TGL_KREDIT_FORMATTED"} = tglIndo($aData->{"BUD_PINJ_TGL_KREDIT"},"SHORT");
+                $aData->{"BUD_PINJ_TGL_ANGS_FORMATTED"} = tglIndo($aData->{"BUD_PINJ_TGL_ANGS"},"SHORT");
+                $aData->{"BUD_PINJ_TGL_JADWAL_FORMATTED"} = tglIndo($aData->{"BUD_PINJ_TGL_JADWAL"},"SHORT");
+                $aData->{"BUD_PINJ_TGL_BAYAR_FORMATTED"} = tglIndo($aData->{"BUD_PINJ_TGL_BAYAR"},"SHORT");
+                $aData->{"BUD_PINJ_POKOK_FORMATTED"} = number_format($aData->{"BUD_PINJ_POKOK"});
+                $aData->{"BUD_PINJ_BUNGA_FORMATTED"} = number_format($aData->{"BUD_PINJ_BUNGA"});
+                $aData->{"BUD_PINJ_DENDA_FORMATTED"} = number_format($aData->{"BUD_PINJ_DENDA"});
+                $aData->{"BUD_PINJ_JUMLAH_FORMATTED"} = number_format($aData->{"BUD_PINJ_JUMLAH"});
+                $aData->{"BUD_PINJ_JUMLAH_BAYAR_FORMATTED"} = number_format($aData->{"BUD_PINJ_JUMLAH_BAYAR"});
+                $aData->{'type'} = 'load';
+            }
+        }
+    }
+    return composeReply2('SUCCESS', 'Cari Nasabah Penagihan ' . str_replace('_', ' ', str_replace('ST_', '', $status)), $customer);
+  }
+
   public function tabungan()
   {
     if(empty(Input::get("userId"))) return composeReply2("ERROR", "Invalid user ID", "ACTION_LOGIN");

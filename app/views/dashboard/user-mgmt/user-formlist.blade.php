@@ -173,29 +173,10 @@
         </div>
 
         <div class="form-group">
-          <label class="col-lg-2 control-label text-semibold">Kode Group Pinjaman</label>
-          <div class="col-lg-4">
-            <div class="input-group">
-              <span class="input-group-addon"><i class="icon-gear"></i></span>
-              <input type="text" class="form-control" onkeyup="this.value = this.value.toUpperCase();" id="userKodeGroup" name="userKodeGroup" placeholder="Kode Group Pinjaman...">
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label class="col-lg-2 control-label text-semibold">Kode Group Tabungan</label>
-          <div class="col-lg-4">
-            <div class="input-group">
-              <span class="input-group-addon"><i class="icon-gear"></i></span>
-              <input type="text" class="form-control" onkeyup="this.value = this.value.toUpperCase();" id="userKodeTabungan" name="userKodeTabungan" placeholder="Kode Group Tabungan...">
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group">
           <label class="col-lg-2 control-label text-semibold">Group Role</label>
           <div class="col-lg-4">
             <select class="form-control" name="userGroup" id="userGroup">
+                <option value="GR_DIREKSI">Direksi</option>
                 <option value="GR_SUPERVISOR">Supervisor</option>
                 <option value="GR_COLLECTOR">Collector</option>
             </select>
@@ -219,6 +200,26 @@
                 <option value="0">-- Tidak ada Tipe --</option>
                 <option value="1">Collect Tabungan</option>
             </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-lg-2 control-label text-semibold">Kode Group Pinjaman</label>
+          <div class="col-lg-4">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="icon-gear"></i></span>
+              <input type="text" class="form-control" onkeyup="this.value = this.value.toUpperCase();" id="userKodeGroup" name="userKodeGroup" placeholder="Kode Group Pinjaman...">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-lg-2 control-label text-semibold">Kode Group Tabungan</label>
+          <div class="col-lg-4">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="icon-gear"></i></span>
+              <input type="text" class="form-control" onkeyup="this.value = this.value.toUpperCase();" id="userKodeTabungan" name="userKodeTabungan" placeholder="Kode Group Tabungan...">
+            </div>
           </div>
         </div>
 
@@ -277,8 +278,8 @@
                           <?php echo strtoupper(getReferenceInfo("USER_STATUS",$aData->{"U_STATUS"})); ?> &nbsp;<span class="caret"></span>
                         </button>
                         <ul class="custom dropdown-menu dropdown-menu-right" style="background-color:#4caf50;">
-                          <li><a href="javascript:setStatus('AKTIF','<?php echo $aData->{"U_ID"}; ?>')"><i class="fa fa-check"></i> Aktif</a></li>
-                          <li><a href="javascript:setStatus('NON_AKTIF','<?php echo $aData->{"U_ID"}; ?>')"><i class="fa fa-remove"></i> Non-Aktif</a></li>
+                          <li><a href="javascript:setStatus('AKTIF','<?php echo $aData->{"U_ID"}; ?>')" style="color: #fff;"><i class="fa fa-check"></i> Aktif</a></li>
+                          <li><a href="javascript:setStatus('NON_AKTIF','<?php echo $aData->{"U_ID"}; ?>')" style="color: #fff;"><i class="fa fa-remove"></i> Non-Aktif</a></li>
                           <!--li><a href="javascript:setStatus('SUSPEND','<?php echo $aData->{"U_ID"}; ?>')"><i class="fa fa-ban"></i> Suspend</a></li-->
                         </ul>
                       </div>
@@ -291,10 +292,10 @@
                         <i class="icon-menu7"></i> &nbsp;<span class="caret"></span>
                       </button>
                       <ul class="dropdown-menu dropdown-menu-right" style="background-color:#bb0a0a;">
-                        <li><a href="javascript:editData('<?php echo $aData->{"U_ID"}; ?>')"><i class="fa fa-edit"></i> Ubah</a></li>
-                        <li><a href="javascript:resetPassword('<?php echo $aData->{"U_ID"}; ?>')"><i class="fa fa-retweet"></i> Reset Password</a></li>
-                        <li><a href="javascript:gantiPassword('<?php echo $aData->{"U_ID"}; ?>')"><i class="fa fa-retweet"></i> Ganti Password</a></li>
-                        <li><a href="javascript:deleteData('<?php echo $aData->{"U_ID"}; ?>')"><i class="fa fa-remove"></i> Hapus</a></li>
+                        <li><a href="javascript:editData('<?php echo $aData->{"U_ID"}; ?>')" style="color: #fff;"><i class="fa fa-edit"></i> Ubah</a></li>
+                        <li><a href="javascript:resetPassword('<?php echo $aData->{"U_ID"}; ?>')" style="color: #fff;"><i class="fa fa-retweet"></i> Reset Password</a></li>
+                        <li><a href="javascript:gantiPassword('<?php echo $aData->{"U_ID"}; ?>')" style="color: #fff;"><i class="fa fa-retweet"></i> Ganti Password</a></li>
+                        <li><a href="javascript:deleteData('<?php echo $aData->{"U_ID"}; ?>')" style="color: #fff;"><i class="fa fa-remove"></i> Hapus</a></li>
                         <?php
                         if($aData->{"U_GROUP_ROLE"} == "GR_COLLECTOR" && $aData->{"U_LOGIN_TOKEN"} != "" && $aData->{"U_LOGIN_TOKEN"} != "-") {
                           ?>
@@ -344,6 +345,8 @@
                 </select>
               </div>
             </div>
+
+            <input type="hidden" id="roleEdit">
 
              <div class="form-group">
               <label class="col-lg-4 control-label text-semibold">User ID</label>
@@ -420,6 +423,7 @@
               <label class="col-lg-4 control-label text-semibold">Group Role</label>
               <div class="col-lg-8">
                 <select class="form-control" id="userGroupEdit">
+                  <option value="GR_DIREKSI">Direksi</option>
                   <option value="GR_SUPERVISOR">Supervisor</option>
                   <option value="GR_COLLECTOR">Collector</option>
                 </select>
@@ -786,6 +790,7 @@
         if(data["STATUS"] == "SUCCESS") {
           $('#mdlUser_Edit').on('shown.bs.modal', function() {
             $("#userIdEdit").val(data["PAYLOAD"]["U_ID"]);
+            $("#roleEdit").val(data["PAYLOAD"]["U_GROUP_ROLE"]);
             $("#userBigIdEdit").val(data["PAYLOAD"]["USERBIGID"]);
             $("#userBigIdEdit").data('bigid', data["PAYLOAD"]["USERBIGID"]);
             $("#userNamaEdit").val(data["PAYLOAD"]["U_NAMA"]);
@@ -837,7 +842,7 @@
       var userTab = $("#status_tabE").val();
 
       /* Validation */
-      if (!$('#userBigIdEdit').val().length) {
+      if ((!$('#userBigIdEdit').val().length) && ($('#roleEdit').val() != 'GR_DIREKSI')) {
         required('Kolom User ID');
         $('#userBigIdEdit').focus();
         return false;
@@ -865,12 +870,12 @@
         $('#userEmailEdit').focus();
         return false;
       }
-      if (!$('#userKodeEdit').val().length) {
+      if ((!$('#userKodeEdit').val().length) && ($('#status_collectE').val() == 1) && ($('#roleEdit').val() != 'GR_DIREKSI')) {
         required('Kolom Kode Group Pinjaman');
         $('#userKodeEdit').focus();
         return false;
       }
-      if (!$('#userKodeTabunganEdit').val().length) {
+      if ((!$('#userKodeTabunganEdit').val().length) && ($('#status_tabE').val() == 1) && ($('#roleEdit').val() != 'GR_DIREKSI')) {
         required('Kolom Kode Group Tabungan');
         $('#userKodeTabunganEdit').focus();
         return false;
@@ -879,19 +884,6 @@
         required('Kolom Kode Group');
         $('#userGroupEdit').focus();
         return false;
-      } else {
-        if ($('#userGroupEdit').val() == 'GR_COLLECTOR') {
-          if (!$("#status_collectE").val().length) {
-            required('Kolom Status Collect');
-            $('#status_collectE').focus();
-            return false;
-          }
-          if (!$("#status_tabE").val().length) {
-            required('Kolom Status Tab');
-            $('#status_tabE').focus();
-            return false;
-          }
-        }
       }
 
       //console.log(userKodeGroup);
@@ -1127,7 +1119,7 @@
     });
 
    var saveData = function(){
-    var EditX = $("#userBigId").val();
+    var userBigIdX = $("#userBigId").val();
     var userIdX = $("#userId").val();
     var userPassX = $('#userPass').val();
     var userNamaX = $("#userNama").val();
@@ -1179,31 +1171,21 @@
       $('#userEmail').focus();
       return false;
     }
-    if (!$('#userKodeGroup').val().length) {
-      required('Kolom Kode Group');
-      $('#userKodeGroup').focus();
-      return false;
-    }
-    if (!$('#userKodeTabungan').val().length) {
-      required('Kolom Kode Tabungan');
-      $('#userKodeTabungan').focus();
-      return false;
-    }
     if (!$('#userGroup').val().length) {
-      required('Kolom Kode Group');
+      required('Kolom Group Role');
       $('#userGroup').focus();
       return false;
     } else {
       if ($('#userGroup').val() == 'GR_COLLECTOR') {
-        if (!$("#status_collect").val().length) {
-          required('Kolom Status Collect');
-          $('#status_collect').focus();
-          return false;
+        if ($("#status_collect").val() != 0 && !$('#userKodeGroup').val().length) {
+          required('Kolom Kode Group');
+            $('#userKodeGroup').focus();
+            return false;
         }
-        if (!$("#status_tab").val().length) {
-          required('Kolom Status Tab');
-          $('#status_tab').focus();
-          return false;
+        if ($("#status_tab").val() != 0 && !('#userKodeTabungan').val().length) {
+          required('Kolom Kode Tabungan');
+            $('#userKodeTabungan').focus();
+            return false;
         }
       }
     }
@@ -1217,8 +1199,6 @@
     var upperCaseLetters = /[A-Z]/g;
     var numbers = /[0-9]/g;
     var emailValidate = /^([a-zA-Z0-9_.+-])+@(([a-zA-Z0-9-])+.)+([a-zA-Z0-9]{2,4})+$/;
-
-    if(userBigIdX != "" && userIdX != "" && userPassX != "" && userNamaX != "" && userPonselX != "" && userGroupX != "" && userPrshX != "" && userEmailX != "" && userKodeGroupX != "") {
       createOverlay("Mohon Tunggu...");
       $.ajax({
         type  : "POST",
@@ -1258,10 +1238,6 @@
           alert("Gangguan pada server/jaringan\r\n" + error);
         }
       });
-    }
-    else {
-      toastr.error("Harap isi data dengan lengkap, dan pastikan password yang anda masukkan kombinasi karakter,email dengan format email");
-    }
   }
 
   var deleteData = function(slug){

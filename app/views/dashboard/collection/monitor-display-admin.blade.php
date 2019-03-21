@@ -193,7 +193,7 @@
     script_tag.setAttribute("src","https://maps.google.com/maps/api/js?key=<?php echo getSetting('GOOGLE_MAPS_API_KEY'); ?>&callback=gMapsCallback");
     (document.getElementsByTagName("head")[0] || document.documentElement).appendChild(script_tag);
   }
-      
+
   function initialize(){
     console.log("initialize");
     infoWindow = new google.maps.InfoWindow;
@@ -211,22 +211,22 @@
       map: gMap,
       suppressMarkers: true
     });
-    // your first call to get & process inital data    
+    // your first call to get & process inital data
     locateCollector("<?php echo asset_url(); ?>/collection/monitoring/position", processXML);
   }
 
   function processXML(data) {
-    //console.log("processXML");
+    console.log(data);
     var xml = data.responseXML;
     var markers = xml.documentElement.getElementsByTagName("marker");
     if(markers.length > 0) {
-      var optCollector = "<option value=''>-- Pilih data penagihan --</option>";  
+      var optCollector = "<option value=''>-- Pilih data penagihan --</option>";
     }
     else {
       var optCollector = "<option value=''>-- Tidak ada data check-in --</option>";
     }
 
-    resetMarkers();    
+    resetMarkers();
 
     var lastCollId = "";
     var lastMarker;
@@ -237,17 +237,17 @@
       if(type == "collector" || type == "check-in_start") {
         var latPos = parseFloat(markers[i].getAttribute("COLL_POSISI_LAT"));
         var longPos = parseFloat(markers[i].getAttribute("COLL_POSISI_LNG"));
-   
+
         //optCollector += "<option value='" + i + "'>" + markers[i].getAttribute("CUST_NAMA") + " - Collector : " + markers[i].getAttribute("COLL_NAMA") + "/" + markers[i].getAttribute("COLL_ID") + "</option>";
         if(type == "collector")       optCollector += "<option value='" + i + "'>" + markers[i].getAttribute("COLL_NAMA") + "/" + markers[i].getAttribute("COLL_ID") + " - Customer : " + markers[i].getAttribute("CUST_NAMA") + "</option>";
         if(type == "check-in_start")  optCollector += "<option value='" + i + "'>" + markers[i].getAttribute("COLL_NAMA") + "/" + markers[i].getAttribute("COLL_ID") + " - " + markers[i].getAttribute("CUST_NAMA") + "</option>";
 
-        var point = new google.maps.LatLng(latPos,longPos);        
+        var point = new google.maps.LatLng(latPos,longPos);
         var html = "<b>" + markers[i].getAttribute("CUST_NAMA") + "</b>";
         html += "<br>" + markers[i].getAttribute("COLL_NAMA") + " /" + markers[i].getAttribute("COLL_ID");
         html += "<br>" + markers[i].getAttribute("COLL_STATUS_INFO") + " @" + markers[i].getAttribute("COLL_STATUS_WAKTU")
         if(type == "collector") html += "<br>" + markers[i].getAttribute("SELISIH");
-        
+
         if(lastCollId == "")  {
           lastCollId = markers[i].getAttribute("COLL_ID");
           lastMarker = marker;
@@ -262,18 +262,18 @@
             if(uniqueCollectorCounter > 7)  uniqueCollectorCounter = 0;
           }
           else { //collector masih sama -> draw route
-            if(!!lastMarker) {       
-              //console.log("Collector masih " + lastCollId + " - lastMarker : " + lastMarker.getPosition() + " - marker : " + marker.getPosition() + " - Cust : " + markers[i].getAttribute("CUST_NAMA"));            
+            if(!!lastMarker) {
+              //console.log("Collector masih " + lastCollId + " - lastMarker : " + lastMarker.getPosition() + " - marker : " + marker.getPosition() + " - Cust : " + markers[i].getAttribute("CUST_NAMA"));
             }
           }
         }
 
         //var icon = customIcons[type] || {};
         if(type == "collector") {
-          var icon = customIcons[uniqueCollectorCounter] || {};          
+          var icon = customIcons[uniqueCollectorCounter] || {};
         }
         if(type == "check-in_start") {
-          var icon = checkInStartIcon[0] || {};        
+          var icon = checkInStartIcon[0] || {};
         }
 
         var marker = new google.maps.Marker({
@@ -286,13 +286,13 @@
 
       //store marker object in a new array
       gMarkersArray.push(marker);
-      bindInfoWindow(marker, infoWindow, html);      
+      bindInfoWindow(marker, infoWindow, html);
 
       gMarkersCollectorArray.push(markers[i].getAttribute("COLL_ID")); //sidekick nya gMarkersArray
     }
 
     $("#collector").html(optCollector);
-    
+
     setTimeout(function() {
       locateCollector("<?php echo asset_url(); ?>/collection/monitoring/position", processXML);
     }, <?php echo getSetting("MONITORING_INTERVAL_MS"); ?>);
@@ -332,7 +332,7 @@
     request.open('GET', url, true);
     request.send(null);
   }
- 
+
   function doNothing() {}
 
   function gotoMarker() {
@@ -351,7 +351,7 @@
           locationArray.push(gMarkersArray[i].getPosition());
         }
       }
-      
+
       var waypointsArray = [];
       for (var i = 0; i < locationArray.length; i++) {
         if (locationArray[i] !== "") {
@@ -375,7 +375,7 @@
           gDirectionsDisplay.setMap(gMap);
           gDirectionsDisplay.setDirections(response);
           //console.log("direction status OK from " + gMarkersArray[markerIdx].getPosition() + " to " + gMarkersArray[nextMarkerIdx].getPosition());
-        } 
+        }
         else {
           window.alert("[ERROR]\r\nGoogle Maps error dengan status kesalahan : " + status);
         }
@@ -391,13 +391,13 @@
     //set the directions display service to the map
     directionDisplay.setMap(map);
     //set the directions display panel
-    //panel is usually just and empty div.  
+    //panel is usually just and empty div.
     //This is where the turn by turn directions appear.
-    directionDisplay.setPanel(directionsPanel); 
+    directionDisplay.setPanel(directionsPanel);
 
     //build the waypoints
     //free api allows a max of 9 total stops including the start and end address
-    //premier allows a total of 25 stops. 
+    //premier allows a total of 25 stops.
     var items = ["address 1", "address 2", "address 3"];
     var waypoints = [];
     for (var i = 0; i < items.length; i++) {

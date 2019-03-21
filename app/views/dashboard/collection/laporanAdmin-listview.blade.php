@@ -86,8 +86,8 @@
               <td><?= $value->BUD_KOLEKTIBILITAS ?></td>
               <td><?= $value->BUD_PINJ_PERIODE ?></td>
               <td><?= $value->BUD_PINJ_MASA_KREDIT ?></td>
-              <td><?= tglIndo($value->BUD_PINJ_TGL_KREDIT, "SHORT") ?></td>
-              <td><?= tglIndo($value->BUD_PINJ_TGL_JADWAL, "SHORT") ?></td>
+              <td><?= $value->BUD_PINJ_TGL_KREDIT ?></td>
+              <td><?= $value->BUD_PINJ_TGL_JADWAL ?></td>
               <td><?= $value->BUD_TGL_DEPAN_JADWAL ?></td>
               <td><?= $value->BUD_PINJ_POKOK ?></td>
               <td><?= $value->BUD_PINJ_BUNGA ?></td>
@@ -100,7 +100,7 @@
               <td><?= $value->BUD_EDIT_DENDA ?></td>
               <td><?= $value->J_PINJ_JUMLAH_BAYAR ?></td>
               <td><?= tglIndo($value->BUD_PINJ_TGL_BAYAR, "LONG") ?></td>
-              <td><?= date("H:i:s", strtotime($value->J_PINJ_JUMLAH_BAYAR)) ?></td>
+              <td><?= date("H:i:s", strtotime($value->BUD_PINJ_TGL_BAYAR)) ?></td>
             </tr>
             <?php endforeach ?>
           </tbody>
@@ -139,5 +139,5 @@
     });
   });
 </script>
-      
+
 @stop

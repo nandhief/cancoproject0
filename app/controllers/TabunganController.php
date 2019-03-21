@@ -88,15 +88,15 @@ class TabunganController extends BaseController {
                     for ($row=0; $row <= $highestRow - 2; $row++) {
                         $data = [];
                         for ($column=0; $column <= $highestColumnIndex - 1; $column++) {
-                            if($column == 0 && $titles[0][$column] != "KODE_GROUP") return composeReply("ERROR","Kolom ke-1 HARUS bernama KODE_GROUP");
-                            if($column == 1 && $titles[0][$column] != "CAB") return composeReply("ERROR","Kolom ke-2 HARUS bernama CAB");
-                            if($column == 2 && $titles[0][$column] != "NO_REKENING") return composeReply("ERROR","Kolom ke-3 HARUS bernama NO_REKENING");
-                            if($column == 3 && $titles[0][$column] != "NASABAH_ID") return composeReply("ERROR","Kolom ke-4 HARUS bernama ID_NASABAH");
-                            if($column == 4 && $titles[0][$column] != "NAMA_NASABAH") return composeReply("ERROR","Kolom ke-5 HARUS bernama NAMA_NASABAH");
-                            if($column == 5 && $titles[0][$column] != "PONSEL") return composeReply("ERROR","Kolom ke-6 HARUS bernama PONSEL");
-                            if($column == 6 && $titles[0][$column] != "ALAMAT") return composeReply("ERROR","Kolom ke-7 HARUS bernama ALAMAT");
-                            if($column == 7 && $titles[0][$column] != "SETOR_MINIMUM") return composeReply("ERROR","Kolom ke-8 HARUS bernama SETOR_MINIMUM");
-                            $data[$titles[0][$column]] = $body[$row][$column];
+                            if($column == 0 && strtoupper($titles[0][$column]) != "KODE_GROUP") return composeReply("ERROR","Kolom ke-1 HARUS bernama KODE_GROUP");
+                            if($column == 1 && strtoupper($titles[0][$column]) != "CAB") return composeReply("ERROR","Kolom ke-2 HARUS bernama CAB");
+                            if($column == 2 && strtoupper($titles[0][$column]) != "NO_REKENING") return composeReply("ERROR","Kolom ke-3 HARUS bernama NO_REKENING");
+                            if($column == 3 && strtoupper($titles[0][$column]) != "NASABAH_ID") return composeReply("ERROR","Kolom ke-4 HARUS bernama ID_NASABAH");
+                            if($column == 4 && strtoupper($titles[0][$column]) != "NAMA_NASABAH") return composeReply("ERROR","Kolom ke-5 HARUS bernama NAMA_NASABAH");
+                            if($column == 5 && strtoupper($titles[0][$column]) != "PONSEL") return composeReply("ERROR","Kolom ke-6 HARUS bernama PONSEL");
+                            if($column == 6 && strtoupper($titles[0][$column]) != "ALAMAT") return composeReply("ERROR","Kolom ke-7 HARUS bernama ALAMAT");
+                            if($column == 7 && strtoupper($titles[0][$column]) != "SETOR_MINIMUM") return composeReply("ERROR","Kolom ke-8 HARUS bernama SETOR_MINIMUM");
+                            $data[strtoupper($titles[0][$column])] = $body[$row][$column];
                         }
                         $table[$row] = $data;
                         if(isset($table[$row]) && !empty($table[$row]["NASABAH_ID"])) {
@@ -230,8 +230,8 @@ class TabunganController extends BaseController {
                     for ($row=0; $row <= $highestRow - 2; $row++) {
                         $data = [];
                         for ($column=0; $column <= $highestColumnIndex - 1; $column++) {
-                            if($column == 0 && $titles[0][$column] != "NO_REKENING") return composeReply("ERROR","Kolom ke-1 HARUS bernama NO_REKENING");
-                            $data[$titles[0][$column]] = $body[$row][$column];
+                            if($column == 0 && strtoupper($titles[0][$column]) != "NO_REKENING") return composeReply("ERROR","Kolom ke-1 HARUS bernama NO_REKENING");
+                            $data[strtoupper($titles[0][$column])] = $body[$row][$column];
                         }
                         $table[$row] = $data;
                         if(isset($table[$row]) && !empty($table[$row]["NO_REKENING"])) {

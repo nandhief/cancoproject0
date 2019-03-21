@@ -63,7 +63,7 @@
                 <div class="form-group col-md-12">
                     <label class="col-md-4 control-label text-semibold">Bulan</label>
                     <div class="col-md-8">
-                        <select class="form-control" id="filterPeriode" onChange="reloadPage()">
+                        <select class="form-control" id="filterPeriode">
                             <option value="<?= (date("Y")-1); ?>-12">Desember <?= date("Y")-1; ?></option>
                             <option value="<?= date("Y"); ?>-01">Januari <?= date("Y"); ?></option>
                             <option value="<?= date("Y"); ?>-02">Februari <?= date("Y"); ?></option>
@@ -269,10 +269,10 @@
 </script>
 
 <script type="text/javascript">
-  function reloadPage() {
-    var filterPeriode = $("#filterPeriode").val();
-    window.location = "<?= asset_url(); ?>/collection/laporan?periode=" + filterPeriode;
-  }
+//   function reloadPage() {
+//     var filterPeriode = $("#filterPeriode").val();
+//     window.location = "<?= asset_url(); ?>/collection/laporan?periode=" + filterPeriode;
+//   }
 
   function downloadReport(rptType) {
     if(rptType == "RPT_COLLECTING") {

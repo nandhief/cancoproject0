@@ -26,7 +26,9 @@ class CompanyController extends BaseController {
 				$jml = $jml+1;
 			} while (DB::table('coll_perusahaan')->where('PRSH_ID', 'PIN' . $jml)->count() > 0);
 
-
+			$maxSpv = [];
+			$coll = 1;
+			$spv = 1;
 			foreach ($prsh as $aData) {
 				$spv = DB::select("SELECT IFNULL(COUNT(U_ID),0) AS JUMLAH FROM coll_user WHERE PRSH_ID = ? AND U_GROUP_ROLE = 'GR_SUPERVISOR'", array($aData->{"PRSH_ID"}));
 				$aData->{"JUMLAH_SPV"} = $spv[0]->{"JUMLAH"};

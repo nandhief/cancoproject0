@@ -77,7 +77,6 @@ class CollectionController extends BaseController {
       $date_now = date('Y-m-d');
       $userData = DB::table('coll_user')->where('U_ID',$userId)->first();
       $dataTgl = DB::table('coll_batch_upload')->where('BU_TGL', $date_now)->where('BU_TYPE', 'BU_JADWAL')->where('U_ID', $userId)->first();
-      // $dataTgl = DB::select("SELECT * FROM coll_batch_upload WHERE BU_TGL")
 
       if(isset($_FILES['jdwFile'])){
         $fileName = $_FILES['jdwFile']['name'];
@@ -127,70 +126,79 @@ class CollectionController extends BaseController {
                 $a = array();
                 for ($column=0; $column <= $highestColumnIndex - 1; $column++) {
                   //cek field sama atau tidak dengan data excel
-                  if($column == 0 && $titles[0][$column] != "KODE_GROUP")   return composeReply("ERROR","Kolom ke-1 HARUS bernama KODE_GROUP");
-                  if($column == 1 && $titles[0][$column] != "NO_REKENING") return composeReply("ERROR","Kolom ke-2 HARUS bernama NO_REKENING");
-                  if($column == 2 && $titles[0][$column] != "CAB")    return composeReply("ERROR","Kolom ke-3 HARUS bernama CAB");
-                  //$colomn = 2;
-                  //if(isset($colomn)) return composeReply("ERROR", "Kolom NO_REKENING tidak boleh kosong");
-                  if($column == 3 && $titles[0][$column] != "ID_NASABAH")    return composeReply("ERROR","Kolom ke-4 HARUS bernama ID_NASABAH");
-                  if($column == 4 && $titles[0][$column] != "NAMA_NASABAH")           return composeReply("ERROR","Kolom ke-5 HARUS bernama NAMA_NASABAH");
-                  if($column == 5 && $titles[0][$column] != "ALAMAT")         return composeReply("ERROR","Kolom ke-6 HARUS bernama ALAMAT");
-                  if($column == 6 && $titles[0][$column] != "NO_HP")          return composeReply("ERROR","Kolom ke-7 HARUS bernama NO_HP");
-                  if($column == 7 && $titles[0][$column] != "AGUNAN")        return composeReply("ERROR","Kolom ke-8 HARUS bernama AGUNAN");
-                  if($column == 8 && $titles[0][$column] != "JML_PINJAMAN")        return composeReply("ERROR","Kolom ke-9 HARUS bernama JML_PINJAMAN");
-                  if($column == 9 && $titles[0][$column] != "SALDO_NOMINATIF")        return composeReply("ERROR","Kolom ke-10 HARUS bernama SALDO_NOMINATIF");
-                  if($column == 10 && $titles[0][$column] != "FP")    return composeReply("ERROR","Kolom ke-11 HARUS bernama FP");
-                  if($column == 11 && $titles[0][$column] != "FB")     return composeReply("ERROR","Kolom ke-12 HARUS bernama FB");
-                  if($column == 12 && $titles[0][$column] != "POKOK_BLN")       return composeReply("ERROR","Kolom ke-13 HARUS bernama POKOK_BLN");
-                  if($column == 13 && $titles[0][$column] != "BUNGA_BLN")      return composeReply("ERROR","Kolom ke-14 HARUS bernama BUNGA_BLN");
-                  if($column == 14 && $titles[0][$column] != "KOLEKTIBILITAS")      return composeReply("ERROR","Kolom ke-15 HARUS bernama KOLEKTIBILITAS");
-                  if($column == 15 && $titles[0][$column] != "ANGSURAN_KE")      return composeReply("ERROR","Kolom ke-16 HARUS bernama  ANGSURAN_KE");
-                  if($column == 16 && $titles[0][$column] != "JANGKA_WAKTU")         return composeReply("ERROR","Kolom ke-17 HARUS bernama JANGKA_WAKTU");
-                  if($column == 17 && $titles[0][$column] != "TGL_REALISASI")         return composeReply("ERROR","Kolom ke-18 HARUS bernama TGL_REALISASI");
-                  if($column == 18 && $titles[0][$column] != "TGL_UPLOAD")     return composeReply("ERROR","Kolom ke-19 HARUS bernama TGL_UPLOAD");
-                  if($column == 19 && $titles[0][$column] != "TGL_JATUH_TEMPO")        return composeReply("ERROR","Kolom ke-20 HARUS bernama TGL_JATUH_TEMPO");
-                  if($column == 20 && $titles[0][$column] != "TUNGG_POKOK")        return composeReply("ERROR","Kolom ke-21 HARUS bernama TUNGG_POKOK");
-                  if($column == 21 && $titles[0][$column] != "TUNGG_BUNGA")        return composeReply("ERROR","Kolom ke-22 HARUS bernama TUNGG_BUNGA");
-                  if($column == 22 && $titles[0][$column] != "TUNGG_DENDA")        return composeReply("ERROR","Kolom ke-23 HARUS bernama TUNGG_DENDA");
-                  if($column == 23 && $titles[0][$column] != "TAGIHAN")        return composeReply("ERROR","Kolom ke-24 HARUS bernama TAGIHAN");
-                  // if($column == 23 && $titles[0][$column] != "PEMBAYARAN") return composeReply("ERROR", "Kolom ke-24 HARUS bernama PEMBAYARAN");
-                  // if($column == 24 && $titles[0][$column] != "TGL_BAYAR") return composeReply("ERROR", "Kolom ke-25 HARUS bernama TGL_BAYAR");
-                  // if($column == 25 && $titles[0][$column] != "STATUS") return composeReply("ERROR", "Kolom ke-26 HARUS bernama STATUS");
-                  // if($column == 26 && $titles[0][$column] != "KETERANGAN") return composeReply("ERROR", "Kolom ke-27 HARUS bernama KETERANGAN");
-                  //end field if
+                  if($column == 0 && strtoupper($titles[0][$column]) != "KODE_GROUP")   return composeReply("ERROR","Kolom ke-1 HARUS bernama KODE_GROUP");
+                  if($column == 1 && strtoupper($titles[0][$column]) != "NO_REKENING") return composeReply("ERROR","Kolom ke-2 HARUS bernama NO_REKENING");
+                  if($column == 2 && strtoupper($titles[0][$column]) != "CAB")    return composeReply("ERROR","Kolom ke-3 HARUS bernama CAB");
+                  if($column == 3 && strtoupper($titles[0][$column]) != "ID_NASABAH")    return composeReply("ERROR","Kolom ke-4 HARUS bernama ID_NASABAH");
+                  if($column == 4 && strtoupper($titles[0][$column]) != "NAMA_NASABAH")           return composeReply("ERROR","Kolom ke-5 HARUS bernama NAMA_NASABAH");
+                  if($column == 5 && strtoupper($titles[0][$column]) != "ALAMAT")         return composeReply("ERROR","Kolom ke-6 HARUS bernama ALAMAT");
+                  if($column == 6 && strtoupper($titles[0][$column]) != "NO_HP")          return composeReply("ERROR","Kolom ke-7 HARUS bernama NO_HP");
+                  if($column == 7 && strtoupper($titles[0][$column]) != "AGUNAN")        return composeReply("ERROR","Kolom ke-8 HARUS bernama AGUNAN");
+                  if($column == 8 && strtoupper($titles[0][$column]) != "JML_PINJAMAN")        return composeReply("ERROR","Kolom ke-9 HARUS bernama JML_PINJAMAN");
+                  if($column == 9 && strtoupper($titles[0][$column]) != "SALDO_NOMINATIF")        return composeReply("ERROR","Kolom ke-10 HARUS bernama SALDO_NOMINATIF");
+                  if($column == 10 && strtoupper($titles[0][$column]) != "FP")    return composeReply("ERROR","Kolom ke-11 HARUS bernama FP");
+                  if($column == 11 && strtoupper($titles[0][$column]) != "FB")     return composeReply("ERROR","Kolom ke-12 HARUS bernama FB");
+                  if($column == 12 && strtoupper($titles[0][$column]) != "POKOK_BLN")       return composeReply("ERROR","Kolom ke-13 HARUS bernama POKOK_BLN");
+                  if($column == 13 && strtoupper($titles[0][$column]) != "BUNGA_BLN")      return composeReply("ERROR","Kolom ke-14 HARUS bernama BUNGA_BLN");
+                  if($column == 14 && strtoupper($titles[0][$column]) != "KOLEKTIBILITAS")      return composeReply("ERROR","Kolom ke-15 HARUS bernama KOLEKTIBILITAS");
+                  if($column == 15 && strtoupper($titles[0][$column]) != "ANGSURAN_KE")      return composeReply("ERROR","Kolom ke-16 HARUS bernama  ANGSURAN_KE");
+                  if($column == 16 && strtoupper($titles[0][$column]) != "JANGKA_WAKTU")         return composeReply("ERROR","Kolom ke-17 HARUS bernama JANGKA_WAKTU");
+                  if($column == 17 && strtoupper($titles[0][$column]) != "TGL_REALISASI")         return composeReply("ERROR","Kolom ke-18 HARUS bernama TGL_REALISASI");
+                  if($column == 18 && strtoupper($titles[0][$column]) != "TGL_UPLOAD")     return composeReply("ERROR","Kolom ke-19 HARUS bernama TGL_UPLOAD");
+                  if($column == 19 && strtoupper($titles[0][$column]) != "TGL_JATUH_TEMPO")        return composeReply("ERROR","Kolom ke-20 HARUS bernama TGL_JATUH_TEMPO");
+                  if($column == 20 && strtoupper($titles[0][$column]) != "TUNGG_POKOK")        return composeReply("ERROR","Kolom ke-21 HARUS bernama TUNGG_POKOK");
+                  if($column == 21 && strtoupper($titles[0][$column]) != "TUNGG_BUNGA")        return composeReply("ERROR","Kolom ke-22 HARUS bernama TUNGG_BUNGA");
+                  if($column == 22 && strtoupper($titles[0][$column]) != "TUNGG_DENDA")        return composeReply("ERROR","Kolom ke-23 HARUS bernama TUNGG_DENDA");
+                  if($column == 23 && strtoupper($titles[0][$column]) != "TAGIHAN")        return composeReply("ERROR","Kolom ke-24 HARUS bernama TAGIHAN");
 
-
-                  $a[$titles[0][$column]] = $body[$row][$column];
+                  $a[strtoupper($titles[0][$column])] = strtoupper($body[$row][$column]);
                 }
                 $table[$row] = $a;
                 if(isset($table[$row]) && trim($table[$row]["ID_NASABAH"]) !== "") {
-                  //return composeReply("ERROR", "HIT : ".$table[$row]["ID_CUSTOMER"]);
-                  $separator = "";
-                  if(strpos($table[$row]["TGL_REALISASI"], "-") !== false) $separator = "-";
-                  if(strpos($table[$row]["TGL_REALISASI"], "/") !== false) $separator = "/";
+                //   $separator = "";
+                //   if(strpos($table[$row]["TGL_REALISASI"], "-") !== false) $separator = "-";
+                //   if(strpos($table[$row]["TGL_REALISASI"], "/") !== false) $separator = "/";
+                //     var_dump($separator);
+                //   if($separator == "")  {
+                //     break;
+                //   }
 
-                  if($separator == "")  {
-                    //return composeReply("ERROR", " ROW : ".$row);
-                    break;
-                  }
-
-                  $arrTgl = explode($separator, $table[$row]["TGL_REALISASI"]); //menjadi 02-24-17
-                  $tglKredit = "20".trim($arrTgl[2])."-".trim($arrTgl[0])."-".trim($arrTgl[1]);
-                  //return composeReply("ERROR", "TGL_KREDIT : ".$tglKredit);
+                //   $arrTgl = explode($separator, $table[$row]["TGL_REALISASI"]); //menjadi 02-24-17
+                //   $tglKredit = "20".trim($arrTgl[2])."-".trim($arrTgl[0])."-".trim($arrTgl[1]);
                   //new format tanggal
                   $var1 = trim($table[$row]["TGL_REALISASI"]);
                   $date1 = str_replace('/', '-', $var1);
                   $tglKredit1 = date("Y-m-d", strtotime($date1));
+                    if (strlen($var1) == 8) {
+                        $arrTgl = explode('-', str_replace('/', '-', $var1));
+                        $tglKredit1 = "20".trim($arrTgl[2])."-".trim($arrTgl[0])."-".trim($arrTgl[1]);
+                    }
 
                   if(strpos($table[$row]["TGL_UPLOAD"], "-") !== false) $separator = "-";
                   if(strpos($table[$row]["TGL_UPLOAD"], "/") !== false) $separator = "/";
-                  // $arrTgl = explode("-", $table[$row]["TGL_UPLOAD"]);
-                  // $tglAngsur = "20".trim($arrTgl[2])."-".trim($arrTgl[0])."-".trim($arrTgl[1]);;
                   //new format tanggal
                   $var2 = trim($table[$row]["TGL_UPLOAD"]);
                   $date2 = str_replace('/', '-', $var2);
                   $tglAngsur1 = date("Y-m-d", strtotime($date2));
+                    if (strlen($var2) == 8) {
+                        $arrTgl = explode('-', str_replace('/', '-', $var2));
+                        $tglAngsur1 = "20".trim($arrTgl[2])."-".trim($arrTgl[0])."-".trim($arrTgl[1]);
+                    }
 
+                  if(strpos($table[$row]["TGL_JATUH_TEMPO"], "-") !== false) $separator = "-";
+                  if(strpos($table[$row]["TGL_JATUH_TEMPO"], "/") !== false) $separator = "/";
+                  //new format tanggal
+                  $var3 = trim($table[$row]["TGL_JATUH_TEMPO"]);
+                  $date3 = str_replace('/', '-', $var3);
+                  $tglTempo = date("Y-m-d", strtotime($date3));
+                    if (strlen($var3) == 8) {
+                        $arrTgl = explode('-', str_replace('/', '-', $var3));
+                        $tglTempo = "20".trim($arrTgl[2])."-".trim($arrTgl[0])."-".trim($arrTgl[1]);
+                    }
+
+                //   var_dump($var1, $date1, $tglKredit1);
+                //   var_dump($var2, $date2, $tglAngsur1);
+                //   exit;
                   //dd($tglKredit1);
 
 
@@ -216,43 +224,55 @@ class CollectionController extends BaseController {
                   // $kolektor = DB::table("coll_user")->where("U_KODE_GROUP",trim($table[$row]["KODE_GROUP"]))->first();
 
                   //cek dl apakah sdh ada data nasabah
-                  $nasabah = DB::table("coll_customers")->where("CUST_ID", trim($table[$row]["ID_NASABAH"]))->first();
+                  $nasabah = DB::table("coll_customers")->where('PRSH_ID', $userData->PRSH_ID)->where("CUST_ID", trim($table[$row]["ID_NASABAH"]))->first();
                   if(count($nasabah) <= 0) {
                     DB::table("coll_customers")->insert(array(
-                      'CUST_ID' => trim($table[$row]["ID_NASABAH"]),
-                      'CUST_NAMA' => trim($table[$row]["NAMA_NASABAH"]),
-                      'CUST_ALAMAT' => trim($table[$row]["ALAMAT"]),
-                      'CUST_PONSEL' => trim($table[$row]["NO_HP"])
+                        'PRSH_ID' => $userData->PRSH_ID,
+                        'CUST_ID' => trim($table[$row]["ID_NASABAH"]),
+                        'CUST_NAMA' => trim($table[$row]["NAMA_NASABAH"]),
+                        'CUST_ALAMAT' => trim($table[$row]["ALAMAT"]),
+                        'CUST_PONSEL' => trim($table[$row]["NO_HP"])
                     ));
                   }
                   else { //cek apakah ada perubahan data
                     if(trim(strtoupper($nasabah->{"CUST_NAMA"})) != trim(strtoupper($table[$row]["NAMA_NASABAH"]))) {
-                      DB::table("coll_customers")->where("CUST_ID",trim($table[$row]["ID_NASABAH"]))->update(array(
+                      DB::table("coll_customers")->where('PRSH_ID', $userData->PRSH_ID)->where("CUST_ID",trim($table[$row]["ID_NASABAH"]))->update(array(
                         'CUST_NAMA' => $table[$row]["NAMA_NASABAH"]
                       ));
                     }
                     if(trim(strtoupper($nasabah->{"CUST_ALAMAT"})) != trim(strtoupper($table[$row]["ALAMAT"]))) {
-                      DB::table("coll_customers")->where("CUST_ID",trim($table[$row]["ID_NASABAH"]))->update(array(
+                      DB::table("coll_customers")->where('PRSH_ID', $userData->PRSH_ID)->where("CUST_ID",trim($table[$row]["ID_NASABAH"]))->update(array(
                         'CUST_ALAMAT' => $table[$row]["ALAMAT"]
                       ));
                     }
                     if(trim(strtoupper($nasabah->{"CUST_PONSEL"})) != trim(strtoupper($table[$row]["NO_HP"]))) {
-                      DB::table("coll_customers")->where("CUST_ID",trim($table[$row]["ID_NASABAH"]))->update(array(
+                      DB::table("coll_customers")->where('PRSH_ID', $userData->PRSH_ID)->where("CUST_ID",trim($table[$row]["ID_NASABAH"]))->update(array(
                         'CUST_PONSEL' => $table[$row]["NO_HP"]
                       ));
                     }
                   }
 
                   //cek dl apakah sdh ada data pinjaman
-                  $pinjaman = DB::table("coll_pinjaman")->where("PINJ_ID", str_replace(',', '.', trim($table[$row]["NO_REKENING"])))->first();
+                  $pinjaman = DB::table("coll_pinjaman")->where('PRSH_ID', $userData->PRSH_ID)->where("PINJ_ID", str_replace(',', '.', trim($table[$row]["NO_REKENING"])))->first();
                   if(count($pinjaman) <= 0) {
-                    DB::table("coll_pinjaman")->insert(array(
-                      'PINJ_ID' => str_replace(',', '.', trim($table[$row]["NO_REKENING"])),
-                      'CUST_ID' => trim($table[$row]["ID_NASABAH"]),
-                      'PINJ_JUMLAH' => trim($table[$row]["JML_PINJAMAN"]),
-                      'PINJ_MASA_KREDIT' => trim($table[$row]["JANGKA_WAKTU"]),
-                      'PINJ_TGL_KREDIT' => $tglKredit1
-                    ));
+                    DB::table("coll_pinjaman")->insert([
+                        'PRSH_ID' => $userData->PRSH_ID,
+                        'PINJ_ID' => str_replace(',', '.', trim($table[$row]["NO_REKENING"])),
+                        'CUST_ID' => trim($table[$row]["ID_NASABAH"]),
+                        'PINJ_JUMLAH' => trim($table[$row]["JML_PINJAMAN"]),
+                        'PINJ_MASA_KREDIT' => trim($table[$row]["JANGKA_WAKTU"]),
+                        'PINJ_TGL_KREDIT' => $tglKredit1
+                    ]);
+                    $sisa_kredit = trim($table[$row]["JANGKA_WAKTU"]);
+                  } else {
+                    $sisa = DB::table("coll_batch_upload_data")->where("PRSH_ID", $userData->PRSH_ID)
+                                ->where('BUD_PINJ_ID', $pinjaman->PINJ_ID)
+                                ->orderBy('created_at', 'DESC')->first();
+                    if ($sisa) {
+                        $sisa_kredit = $sisa->BUD_SISA_KREDIT;
+                    } else {
+                        $sisa_kredit = $pinjaman->PINJ_MASA_KREDIT;
+                    }
                   }
 
                   //ambil data ID collector jika ada didatabase
@@ -267,6 +287,7 @@ class CollectionController extends BaseController {
                     $collID = DB::table("coll_user")->whereNull("U_KODE_GROUP")->first();
                   }
                   $collect_id = $collID->{"U_ID"};
+                  $collect_bigid = $collID->{"USERBIGID"};
                   $coll_nama = $collID->{"U_NAMA"};
 
                   $budId = DB::table("coll_batch_upload_data")->insertGetId(array(
@@ -283,7 +304,7 @@ class CollectionController extends BaseController {
                     'BUD_AGUNAN' => trim($table[$row]["AGUNAN"]),
                     'BUD_JML_PINJAMAN' => trim($table[$row]["JML_PINJAMAN"]),
                     'BUD_SALDO_NOMINATIF' => trim($table[$row]["SALDO_NOMINATIF"]),
-                    'BUD_SISA_KREDIT' => '0',
+                    'BUD_SISA_KREDIT' => $collect_bigid,
                     'BUD_FP' => trim($table[$row]["FP"]),
                     'BUD_FB' => trim($table[$row]["FB"]),
                     'BUD_BLN_POKOK' => $pokokBulan,
@@ -293,7 +314,7 @@ class CollectionController extends BaseController {
                     'BUD_PINJ_TGL_KREDIT' => $tglKredit1,
                     'BUD_PINJ_TGL_ANGS' => $tglAngsur1,
                     'BUD_PINJ_TGL_JADWAL' => $tglAngsur1,
-                    'BUD_TGL_DEPAN_JADWAL' => trim($table[$row]["TGL_JATUH_TEMPO"]),
+                    'BUD_TGL_DEPAN_JADWAL' => $tglTempo,
                     'BUD_PINJ_POKOK' => $bayarPokok,
                     'BUD_PINJ_BUNGA' => $bayarBunga,
                     'BUD_PINJ_DENDA' => $bayarDenda,
@@ -341,7 +362,8 @@ class CollectionController extends BaseController {
                         'J_PINJ_JUMLAH_BAYAR' => '0',
                         'J_STATUS' => 'ST_JADWAL',
                         'PRSH_ID' => $userData->{"PRSH_ID"},
-                        'J_COLL_U_ID' => $collect_id
+                        'J_COLL_U_ID' => $collect_id,
+                        'J_COLL_U_BIGID' => $collect_bigid,
                       ));
                     }
                     else {
@@ -352,7 +374,7 @@ class CollectionController extends BaseController {
                         ->where("J_PINJ_JUMLAH", $bayarJumlah)
                         ->update(array(
                             'BUD_ID' => $budId,
-                            'BU_ID' => $budId
+                            'BU_ID' => $buId
                           ));
                     }
                   //}
@@ -362,8 +384,7 @@ class CollectionController extends BaseController {
               return composeReply("SUCCESS", "Data telah disimpan");
               //return composeReply("SUCCESS", "Hasil : ".$table[0]["ID_COLLECTOR"]." - ".$table[0]["NAMA_COLLECTOR"]." - ".$tglKredit." - ".$tglAngsur." - ".$tglJadwal." - ".$bayarPokok." - ".$bayarJumlah);
             }
-          }
-          else {
+          } else {
             return composeReply("ERROR","Proses upload gagal (file upload tidak terdeteksi server)");
           }
         } else {
@@ -394,42 +415,72 @@ class CollectionController extends BaseController {
                         $a = array();
                         for ($column=0; $column <= $highestColumnIndex - 1; $column++) {
                             //cek field sama atau tidak dengan data excel
-                            if($column == 0 && $titles[0][$column] != "KODE_GROUP")   return composeReply("ERROR","Kolom ke-1 HARUS bernama KODE_GROUP");
-                            if($column == 1 && $titles[0][$column] != "NO_REKENING") return composeReply("ERROR","Kolom ke-2 HARUS bernama NO_REKENING");
-                            if($column == 2 && $titles[0][$column] != "CAB")    return composeReply("ERROR","Kolom ke-3 HARUS bernama CAB");
+                            if($column == 0 && strtoupper($titles[0][$column]) != "KODE_GROUP")   return composeReply("ERROR","Kolom ke-1 HARUS bernama KODE_GROUP");
+                            if($column == 1 && strtoupper($titles[0][$column]) != "NO_REKENING") return composeReply("ERROR","Kolom ke-2 HARUS bernama NO_REKENING");
+                            if($column == 2 && strtoupper($titles[0][$column]) != "CAB")    return composeReply("ERROR","Kolom ke-3 HARUS bernama CAB");
                             //$colomn = 2;
                             //if(isset($colomn)) return composeReply("ERROR", "Kolom NO_REKENING tidak boleh kosong");
-                            if($column == 3 && $titles[0][$column] != "ID_NASABAH")    return composeReply("ERROR","Kolom ke-4 HARUS bernama ID_NASABAH");
-                            if($column == 4 && $titles[0][$column] != "NAMA_NASABAH")           return composeReply("ERROR","Kolom ke-5 HARUS bernama NAMA_NASABAH");
-                            if($column == 5 && $titles[0][$column] != "ALAMAT")         return composeReply("ERROR","Kolom ke-6 HARUS bernama ALAMAT");
-                            if($column == 6 && $titles[0][$column] != "NO_HP")          return composeReply("ERROR","Kolom ke-7 HARUS bernama NO_HP");
-                            if($column == 7 && $titles[0][$column] != "AGUNAN")        return composeReply("ERROR","Kolom ke-8 HARUS bernama AGUNAN");
-                            if($column == 8 && $titles[0][$column] != "JML_PINJAMAN")        return composeReply("ERROR","Kolom ke-9 HARUS bernama JML_PINJAMAN");
-                            if($column == 9 && $titles[0][$column] != "SALDO_NOMINATIF")        return composeReply("ERROR","Kolom ke-10 HARUS bernama SALDO_NOMINATIF");
-                            if($column == 10 && $titles[0][$column] != "FP")    return composeReply("ERROR","Kolom ke-11 HARUS bernama FP");
-                            if($column == 11 && $titles[0][$column] != "FB")     return composeReply("ERROR","Kolom ke-12 HARUS bernama FB");
-                            if($column == 12 && $titles[0][$column] != "POKOK_BLN")       return composeReply("ERROR","Kolom ke-13 HARUS bernama POKOK_BLN");
-                            if($column == 13 && $titles[0][$column] != "BUNGA_BLN")      return composeReply("ERROR","Kolom ke-14 HARUS bernama BUNGA_BLN");
-                            if($column == 14 && $titles[0][$column] != "KOLEKTIBILITAS")      return composeReply("ERROR","Kolom ke-15 HARUS bernama KOLEKTIBILITAS");
-                            if($column == 15 && $titles[0][$column] != "ANGSURAN_KE")      return composeReply("ERROR","Kolom ke-16 HARUS bernama  ANGSURAN_KE");
-                            if($column == 16 && $titles[0][$column] != "JANGKA_WAKTU")         return composeReply("ERROR","Kolom ke-17 HARUS bernama JANGKA_WAKTU");
-                            if($column == 17 && $titles[0][$column] != "TGL_REALISASI")         return composeReply("ERROR","Kolom ke-18 HARUS bernama TGL_REALISASI");
-                            if($column == 18 && $titles[0][$column] != "TGL_UPLOAD")     return composeReply("ERROR","Kolom ke-19 HARUS bernama TGL_UPLOAD");
-                            if($column == 19 && $titles[0][$column] != "TGL_JATUH_TEMPO")        return composeReply("ERROR","Kolom ke-20 HARUS bernama TGL_JATUH_TEMPO");
-                            if($column == 20 && $titles[0][$column] != "TUNGG_POKOK")        return composeReply("ERROR","Kolom ke-21 HARUS bernama TUNGG_POKOK");
-                            if($column == 21 && $titles[0][$column] != "TUNGG_BUNGA")        return composeReply("ERROR","Kolom ke-22 HARUS bernama TUNGG_BUNGA");
-                            if($column == 22 && $titles[0][$column] != "TUNGG_DENDA")        return composeReply("ERROR","Kolom ke-23 HARUS bernama TUNGG_DENDA");
-                            if($column == 23 && $titles[0][$column] != "TAGIHAN")        return composeReply("ERROR","Kolom ke-24 HARUS bernama TAGIHAN");
+                            if($column == 3 && strtoupper($titles[0][$column]) != "ID_NASABAH")    return composeReply("ERROR","Kolom ke-4 HARUS bernama ID_NASABAH");
+                            if($column == 4 && strtoupper($titles[0][$column]) != "NAMA_NASABAH")           return composeReply("ERROR","Kolom ke-5 HARUS bernama NAMA_NASABAH");
+                            if($column == 5 && strtoupper($titles[0][$column]) != "ALAMAT")         return composeReply("ERROR","Kolom ke-6 HARUS bernama ALAMAT");
+                            if($column == 6 && strtoupper($titles[0][$column]) != "NO_HP")          return composeReply("ERROR","Kolom ke-7 HARUS bernama NO_HP");
+                            if($column == 7 && strtoupper($titles[0][$column]) != "AGUNAN")        return composeReply("ERROR","Kolom ke-8 HARUS bernama AGUNAN");
+                            if($column == 8 && strtoupper($titles[0][$column]) != "JML_PINJAMAN")        return composeReply("ERROR","Kolom ke-9 HARUS bernama JML_PINJAMAN");
+                            if($column == 9 && strtoupper($titles[0][$column]) != "SALDO_NOMINATIF")        return composeReply("ERROR","Kolom ke-10 HARUS bernama SALDO_NOMINATIF");
+                            if($column == 10 && strtoupper($titles[0][$column]) != "FP")    return composeReply("ERROR","Kolom ke-11 HARUS bernama FP");
+                            if($column == 11 && strtoupper($titles[0][$column]) != "FB")     return composeReply("ERROR","Kolom ke-12 HARUS bernama FB");
+                            if($column == 12 && strtoupper($titles[0][$column]) != "POKOK_BLN")       return composeReply("ERROR","Kolom ke-13 HARUS bernama POKOK_BLN");
+                            if($column == 13 && strtoupper($titles[0][$column]) != "BUNGA_BLN")      return composeReply("ERROR","Kolom ke-14 HARUS bernama BUNGA_BLN");
+                            if($column == 14 && strtoupper($titles[0][$column]) != "KOLEKTIBILITAS")      return composeReply("ERROR","Kolom ke-15 HARUS bernama KOLEKTIBILITAS");
+                            if($column == 15 && strtoupper($titles[0][$column]) != "ANGSURAN_KE")      return composeReply("ERROR","Kolom ke-16 HARUS bernama  ANGSURAN_KE");
+                            if($column == 16 && strtoupper($titles[0][$column]) != "JANGKA_WAKTU")         return composeReply("ERROR","Kolom ke-17 HARUS bernama JANGKA_WAKTU");
+                            if($column == 17 && strtoupper($titles[0][$column]) != "TGL_REALISASI")         return composeReply("ERROR","Kolom ke-18 HARUS bernama TGL_REALISASI");
+                            if($column == 18 && strtoupper($titles[0][$column]) != "TGL_UPLOAD")     return composeReply("ERROR","Kolom ke-19 HARUS bernama TGL_UPLOAD");
+                            if($column == 19 && strtoupper($titles[0][$column]) != "TGL_JATUH_TEMPO")        return composeReply("ERROR","Kolom ke-20 HARUS bernama TGL_JATUH_TEMPO");
+                            if($column == 20 && strtoupper($titles[0][$column]) != "TUNGG_POKOK")        return composeReply("ERROR","Kolom ke-21 HARUS bernama TUNGG_POKOK");
+                            if($column == 21 && strtoupper($titles[0][$column]) != "TUNGG_BUNGA")        return composeReply("ERROR","Kolom ke-22 HARUS bernama TUNGG_BUNGA");
+                            if($column == 22 && strtoupper($titles[0][$column]) != "TUNGG_DENDA")        return composeReply("ERROR","Kolom ke-23 HARUS bernama TUNGG_DENDA");
+                            if($column == 23 && strtoupper($titles[0][$column]) != "TAGIHAN")        return composeReply("ERROR","Kolom ke-24 HARUS bernama TAGIHAN");
 
 
-                            $a[$titles[0][$column]] = $body[$row][$column];
+                            $a[strtoupper($titles[0][$column])] = $body[$row][$column];
                         }
                         $table[$row] = $a;
                         if(isset($table[$row]) && trim($table[$row]["ID_NASABAH"]) !== "") {
 
-                            $tglKredit = date("Y-m-d", strtotime(str_replace('/', '-', trim($table[$row]["TGL_REALISASI"]))));
+                            //new format tanggal
+                            $var1 = trim($table[$row]["TGL_REALISASI"]);
+                            $date1 = str_replace('/', '-', $var1);
+                            $tglKredit = date("Y-m-d", strtotime($date1));
+                                if (strlen($var1) == 8) {
+                                    $arrTgl = explode('-', str_replace('/', '-', $var1));
+                                    $tglKredit = "20".trim($arrTgl[2])."-".trim($arrTgl[0])."-".trim($arrTgl[1]);
+                                }
 
-                            $tglAngsur = date("Y-m-d", strtotime(str_replace('/', '-', trim($table[$row]["TGL_UPLOAD"]))));
+                            if(strpos($table[$row]["TGL_UPLOAD"], "-") !== false) $separator = "-";
+                            if(strpos($table[$row]["TGL_UPLOAD"], "/") !== false) $separator = "/";
+                            //new format tanggal
+                            $var2 = trim($table[$row]["TGL_UPLOAD"]);
+                            $date2 = str_replace('/', '-', $var2);
+                            $tglAngsur = date("Y-m-d", strtotime($date2));
+                                if (strlen($var2) == 8) {
+                                    $arrTgl = explode('-', str_replace('/', '-', $var2));
+                                    $tglAngsur = "20".trim($arrTgl[2])."-".trim($arrTgl[0])."-".trim($arrTgl[1]);
+                                }
+
+                            if(strpos($table[$row]["TGL_JATUH_TEMPO"], "-") !== false) $separator = "-";
+                            if(strpos($table[$row]["TGL_JATUH_TEMPO"], "/") !== false) $separator = "/";
+                            //new format tanggal
+                            $var3 = trim($table[$row]["TGL_JATUH_TEMPO"]);
+                            $date3 = str_replace('/', '-', $var3);
+                            $tglTempo = date("Y-m-d", strtotime($date3));
+                                if (strlen($var3) == 8) {
+                                    $arrTgl = explode('-', str_replace('/', '-', $var3));
+                                    $tglTempo = "20".trim($arrTgl[2])."-".trim($arrTgl[0])."-".trim($arrTgl[1]);
+                                }
+                            // var_dump($tglKredit, trim($table[$row]["TGL_REALISASI"]));
+                            // var_dump($tglAngsur, trim($table[$row]["TGL_UPLOAD"]));
+                            // exit;
 
                             $pokokBulan = str_replace(",", "", $table[$row]["POKOK_BLN"]);
                             $pokokBulan = str_replace(".", "", $pokokBulan);
@@ -455,9 +506,10 @@ class CollectionController extends BaseController {
                             $tKgroup = trim($table[$row]["KODE_GROUP"]);
                             $prshId = $userData->{"PRSH_ID"};
 
-                            $nasabah = DB::table("coll_customers")->where("CUST_ID", $id_nasabah)->first();
+                            $nasabah = DB::table("coll_customers")->where("PRSH_ID", $userData->PRSH_ID)->where("CUST_ID", $id_nasabah)->first();
                             if(empty($nasabah)) {
                                 DB::table("coll_customers")->insert([
+                                    'PRSH_ID' => $userData->PRSH_ID,
                                     'CUST_ID' => $id_nasabah,
                                     'CUST_NAMA' => trim($table[$row]["NAMA_NASABAH"]),
                                     'CUST_ALAMAT' => trim($table[$row]["ALAMAT"]),
@@ -505,6 +557,7 @@ class CollectionController extends BaseController {
                                 $collID = DB::table("coll_user")->whereNull("U_KODE_GROUP")->first();
                             }
                             $collect_id = $collID->{"U_ID"};
+                            $collect_bigid = $collID->{"USERBIGID"};
                             $coll_nama = $collID->{"U_NAMA"};
 
                             // check data penagihan hari ini
@@ -539,7 +592,7 @@ class CollectionController extends BaseController {
                                             'BUD_PINJ_TGL_KREDIT' => $tglKredit,
                                             'BUD_PINJ_TGL_ANGS' => $tglAngsur,
                                             'BUD_PINJ_TGL_JADWAL' => $tglAngsur,
-                                            'BUD_TGL_DEPAN_JADWAL' => trim($table[$row]["TGL_JATUH_TEMPO"]),
+                                            'BUD_TGL_DEPAN_JADWAL' => $tglTempo,
                                             'BUD_PINJ_POKOK' => $bayarPokok,
                                             'BUD_PINJ_BUNGA' => $bayarBunga,
                                             'BUD_PINJ_DENDA' => $bayarDenda,
@@ -571,7 +624,7 @@ class CollectionController extends BaseController {
                                     'BUD_AGUNAN' => trim($table[$row]["AGUNAN"]),
                                     'BUD_JML_PINJAMAN' => trim($table[$row]["JML_PINJAMAN"]),
                                     'BUD_SALDO_NOMINATIF' => trim($table[$row]["SALDO_NOMINATIF"]),
-                                    'BUD_SISA_KREDIT' => '0',
+                                    'BUD_SISA_KREDIT' => $collect_bigid,
                                     'BUD_FP' => trim($table[$row]["FP"]),
                                     'BUD_FB' => trim($table[$row]["FB"]),
                                     'BUD_BLN_POKOK' => $pokokBulan,
@@ -581,7 +634,7 @@ class CollectionController extends BaseController {
                                     'BUD_PINJ_TGL_KREDIT' => $tglKredit,
                                     'BUD_PINJ_TGL_ANGS' => $tglAngsur,
                                     'BUD_PINJ_TGL_JADWAL' => $tglAngsur,
-                                    'BUD_TGL_DEPAN_JADWAL' => trim($table[$row]["TGL_JATUH_TEMPO"]),
+                                    'BUD_TGL_DEPAN_JADWAL' => $tglTempo,
                                     'BUD_PINJ_POKOK' => $bayarPokok,
                                     'BUD_PINJ_BUNGA' => $bayarBunga,
                                     'BUD_PINJ_DENDA' => $bayarDenda,
@@ -623,7 +676,8 @@ class CollectionController extends BaseController {
                                                 'J_PINJ_JUMLAH_BAYAR' => '0',
                                                 'J_STATUS' => 'ST_JADWAL',
                                                 'PRSH_ID' => $userData->{"PRSH_ID"},
-                                                'J_COLL_U_ID' => $collect_id
+                                                'J_COLL_U_ID' => $collect_id,
+                                                'J_COLL_U_BIGID' => $collect_bigid,
                                             ]);
                                 }
                             }
@@ -882,21 +936,21 @@ class CollectionController extends BaseController {
                   $a = array();
                   for ($column=0; $column <= $highestColumnIndex - 1; $column++) {
                     //cek field sama atau tidak dengan data excel
-                    if($column == 0 && $titles[0][$column] != "KODE_GROUP") return composeReply("ERROR","Kolom ke-1 HARUS bernama KODE_GROUP");
-                    if($column == 1 && $titles[0][$column] != "CAB") return composeReply("ERROR","Kolom ke-3 HARUS bernama CAB");
-                    if($column == 2 && $titles[0][$column] != "NO_REKENING") return composeReply("ERROR","Kolom ke-2 HARUS bernama NO_REKENING");
+                    if($column == 0 && strtoupper($titles[0][$column]) != "KODE_GROUP") return composeReply("ERROR","Kolom ke-1 HARUS bernama KODE_GROUP");
+                    if($column == 1 && strtoupper($titles[0][$column]) != "CAB") return composeReply("ERROR","Kolom ke-3 HARUS bernama CAB");
+                    if($column == 2 && strtoupper($titles[0][$column]) != "NO_REKENING") return composeReply("ERROR","Kolom ke-2 HARUS bernama NO_REKENING");
                     //$colomn = 2;
                     //if(isset($colomn)) return composeReply("ERROR", "Kolom NO_REKENING tidak boleh kosong");
-                    if($column == 3 && $titles[0][$column] != "NASABAH_ID") return composeReply("ERROR","Kolom ke-4 HARUS bernama ID_NASABAH");
-                    if($column == 4 && $titles[0][$column] != "NAMA_NASABAH") return composeReply("ERROR","Kolom ke-5 HARUS bernama NAMA_NASABAH");
-                    if($column == 5 && $titles[0][$column] != "ALAMAT") return composeReply("ERROR","Kolom ke-6 HARUS bernama ALAMAT");
-                    if($column == 6 && $titles[0][$column] != "TGL_REGISTRASI") return composeReply("ERROR","Kolom ke-7 HARUS bernama TGL_REGISTRASI");
-                    if($column == 7 && $titles[0][$column] != "TGL_UPLOAD")  return composeReply("ERROR","Kolom ke-8 HARUS bernama TGL_UPLOAD");
-                    if($column == 8 && $titles[0][$column] != "SALDO_AWAL")  return composeReply("ERROR","Kolom ke-9 HARUS bernama SALDO_AWAL");
-                    if($column == 9 && $titles[0][$column] != "SETOR_MINIMUM") return composeReply("ERROR","Kolom ke-10 HARUS bernama SETOR_MINIMUM");
-                    if($column == 10 && $titles[0][$column] != "SALDO_MINIMUM") return composeReply("ERROR","Kolom ke-11 HARUS bernama SALDO_MINIMUM");
+                    if($column == 3 && strtoupper($titles[0][$column]) != "NASABAH_ID") return composeReply("ERROR","Kolom ke-4 HARUS bernama ID_NASABAH");
+                    if($column == 4 && strtoupper($titles[0][$column]) != "NAMA_NASABAH") return composeReply("ERROR","Kolom ke-5 HARUS bernama NAMA_NASABAH");
+                    if($column == 5 && strtoupper($titles[0][$column]) != "ALAMAT") return composeReply("ERROR","Kolom ke-6 HARUS bernama ALAMAT");
+                    if($column == 6 && strtoupper($titles[0][$column]) != "TGL_REGISTRASI") return composeReply("ERROR","Kolom ke-7 HARUS bernama TGL_REGISTRASI");
+                    if($column == 7 && strtoupper($titles[0][$column]) != "TGL_UPLOAD")  return composeReply("ERROR","Kolom ke-8 HARUS bernama TGL_UPLOAD");
+                    if($column == 8 && strtoupper($titles[0][$column]) != "SALDO_AWAL")  return composeReply("ERROR","Kolom ke-9 HARUS bernama SALDO_AWAL");
+                    if($column == 9 && strtoupper($titles[0][$column]) != "SETOR_MINIMUM") return composeReply("ERROR","Kolom ke-10 HARUS bernama SETOR_MINIMUM");
+                    if($column == 10 && strtoupper($titles[0][$column]) != "SALDO_MINIMUM") return composeReply("ERROR","Kolom ke-11 HARUS bernama SALDO_MINIMUM");
 
-                    $a[$titles[0][$column]] = $body[$row][$column];
+                    $a[strtoupper($titles[0][$column])] = $body[$row][$column];
                   }
                   $table[$row] = $a;
                   if(isset($table[$row]) && trim($table[$row]["NASABAH_ID"]) !== "") {
@@ -1045,19 +1099,19 @@ class CollectionController extends BaseController {
                   $a = array();
                   for ($column=0; $column <= $highestColumnIndex - 1; $column++) {
                     //cek field sama atau tidak dengan data excel
-                    if($column == 0 && $titles[0][$column] != "KODE_GROUP") return composeReply("ERROR","Kolom ke-1 HARUS bernama KODE_GROUP");
-                    if($column == 1 && $titles[0][$column] != "CAB") return composeReply("ERROR","Kolom ke-3 HARUS bernama CAB");
-                    if($column == 2 && $titles[0][$column] != "NO_REKENING") return composeReply("ERROR","Kolom ke-2 HARUS bernama NO_REKENING");
-                    if($column == 3 && $titles[0][$column] != "NASABAH_ID") return composeReply("ERROR","Kolom ke-4 HARUS bernama ID_NASABAH");
-                    if($column == 4 && $titles[0][$column] != "NAMA_NASABAH") return composeReply("ERROR","Kolom ke-5 HARUS bernama NAMA_NASABAH");
-                    if($column == 5 && $titles[0][$column] != "ALAMAT") return composeReply("ERROR","Kolom ke-6 HARUS bernama ALAMAT");
-                    if($column == 6 && $titles[0][$column] != "TGL_REGISTRASI") return composeReply("ERROR","Kolom ke-7 HARUS bernama TGL_REGISTRASI");
-                    if($column == 7 && $titles[0][$column] != "TGL_UPLOAD")  return composeReply("ERROR","Kolom ke-8 HARUS bernama TGL_UPLOAD");
-                    if($column == 8 && $titles[0][$column] != "SALDO_AWAL")  return composeReply("ERROR","Kolom ke-9 HARUS bernama SALDO_AWAL");
-                    if($column == 9 && $titles[0][$column] != "SETOR_MINIMUM") return composeReply("ERROR","Kolom ke-10 HARUS bernama SETOR_MINIMUM");
-                    if($column == 10 && $titles[0][$column] != "SALDO_MINIMUM") return composeReply("ERROR","Kolom ke-11 HARUS bernama SALDO_MINIMUM");
+                    if($column == 0 && strtoupper($titles[0][$column]) != "KODE_GROUP") return composeReply("ERROR","Kolom ke-1 HARUS bernama KODE_GROUP");
+                    if($column == 1 && strtoupper($titles[0][$column]) != "CAB") return composeReply("ERROR","Kolom ke-3 HARUS bernama CAB");
+                    if($column == 2 && strtoupper($titles[0][$column]) != "NO_REKENING") return composeReply("ERROR","Kolom ke-2 HARUS bernama NO_REKENING");
+                    if($column == 3 && strtoupper($titles[0][$column]) != "NASABAH_ID") return composeReply("ERROR","Kolom ke-4 HARUS bernama ID_NASABAH");
+                    if($column == 4 && strtoupper($titles[0][$column]) != "NAMA_NASABAH") return composeReply("ERROR","Kolom ke-5 HARUS bernama NAMA_NASABAH");
+                    if($column == 5 && strtoupper($titles[0][$column]) != "ALAMAT") return composeReply("ERROR","Kolom ke-6 HARUS bernama ALAMAT");
+                    if($column == 6 && strtoupper($titles[0][$column]) != "TGL_REGISTRASI") return composeReply("ERROR","Kolom ke-7 HARUS bernama TGL_REGISTRASI");
+                    if($column == 7 && strtoupper($titles[0][$column]) != "TGL_UPLOAD")  return composeReply("ERROR","Kolom ke-8 HARUS bernama TGL_UPLOAD");
+                    if($column == 8 && strtoupper($titles[0][$column]) != "SALDO_AWAL")  return composeReply("ERROR","Kolom ke-9 HARUS bernama SALDO_AWAL");
+                    if($column == 9 && strtoupper($titles[0][$column]) != "SETOR_MINIMUM") return composeReply("ERROR","Kolom ke-10 HARUS bernama SETOR_MINIMUM");
+                    if($column == 10 && strtoupper($titles[0][$column]) != "SALDO_MINIMUM") return composeReply("ERROR","Kolom ke-11 HARUS bernama SALDO_MINIMUM");
 
-                    $a[$titles[0][$column]] = $body[$row][$column];
+                    $a[strtoupper($titles[0][$column])] = $body[$row][$column];
                   }
                   $table[$row] = $a;
                   if(isset($table[$row]) && trim($table[$row]["NASABAH_ID"]) !== "") {
@@ -1253,7 +1307,7 @@ class CollectionController extends BaseController {
       $userData = DB::table('coll_user')->where('U_ID',$userId)->first();
       //dd($budId);
 
-      $bud = DB::select("SELECT A.*, B.U_ID, B.U_NAMA, C.R_INFO FROM coll_batch_tabungan AS A INNER JOIN coll_user AS B ON A.BT_COLL_ID = B.U_ID INNER JOIN coll_referensi AS C ON A.BT_STATUS = C.R_ID WHERE A.BU_ID = ?", array($budId));
+      $bud = DB::select("SELECT A.*, B.*, C.R_INFO FROM coll_batch_tabungan AS A INNER JOIN coll_user AS B ON A.BT_COLL_ID = B.U_ID INNER JOIN coll_referensi AS C ON A.BT_STATUS = C.R_ID WHERE A.BU_ID = ?", array($budId));
       //dd($bud);
 
       return View::make("dashboard.collection.detail-tabungan")
@@ -1282,7 +1336,7 @@ class CollectionController extends BaseController {
       $userId = Session::get('SESSION_USER_ID', '');
       $userData = DB::table('coll_user')->where('U_ID',$userId)->first();
 
-      $bud = DB::select("SELECT A.*, B.U_ID, B.U_NAMA, C.R_INFO FROM coll_batch_upload_data AS A INNER JOIN coll_user AS B ON A.BUD_COLL_U_ID = B.U_ID INNER JOIN coll_referensi AS C ON A.BUD_STATUS = C.R_ID WHERE A.BU_ID = ?", array($buId));
+      $bud = DB::select("SELECT A.*, B.*, C.R_INFO FROM coll_batch_upload_data AS A INNER JOIN coll_user AS B ON A.BUD_COLL_U_ID = B.U_ID INNER JOIN coll_referensi AS C ON A.BUD_STATUS = C.R_ID WHERE A.BU_ID = ?", array($buId));
 
       return View::make("dashboard.collection.jadwal-detail-list")
         ->with("ctlUserData", $userData)
@@ -1646,14 +1700,13 @@ class CollectionController extends BaseController {
             for ($row=0; $row <= $highestRow - 2; $row++) {
               $a = array();
               for ($column=0; $column <= $highestColumnIndex - 1; $column++) {
-                if($column == 0 && $titles[0][$column] != "USERID")   return composeReply("ERROR","Kolom ke-1 HARUS bernama USERID");
-                if($column == 1 && $titles[0][$column] != "USERNAME")           return composeReply("ERROR","Kolom ke-2 HARUS bernama USERNAME");
-                if($column == 2 && $titles[0][$column] != "NAMA")           return composeReply("ERROR","Kolom ke-3 HARUS bernama NAMA");
-                if($column == 3 && $titles[0][$column] != "KODE_GROUP")           return composeReply("ERROR","Kolom ke-4 HARUS bernama KODE_GROUP");
+                if($column == 0 && strtoupper($titles[0][$column]) != "USERID")   return composeReply("ERROR","Kolom ke-1 HARUS bernama USERID");
+                if($column == 1 && strtoupper($titles[0][$column]) != "USERNAME")           return composeReply("ERROR","Kolom ke-2 HARUS bernama USERNAME");
+                if($column == 2 && strtoupper($titles[0][$column]) != "NAMA")           return composeReply("ERROR","Kolom ke-3 HARUS bernama NAMA");
+                if($column == 3 && strtoupper($titles[0][$column]) != "KODE_GROUP")           return composeReply("ERROR","Kolom ke-4 HARUS bernama KODE_GROUP");
+                if($column == 4 && strtoupper($titles[0][$column]) != "KODE_TABUNGAN")           return composeReply("ERROR","Kolom ke-4 HARUS bernama KODE_TABUNGAN");
 
-                //if($colomn == 2 && $titles[0][$colomn] != "KODE_GROUP") return composeReply("ERROR", "Kolom ke-3 HARUS bernama KODE GROUP");
-
-                $a[$titles[0][$column]] = $body[$row][$column];
+                $a[strtoupper($titles[0][$column])] = $body[$row][$column];
               }
               $table[$row] = $a;
               if(isset($table[$row]) && trim($table[$row]["USERNAME"]) !== "") {
@@ -1674,6 +1727,8 @@ class CollectionController extends BaseController {
                   if(count($cekUserId) <= 0) {
                   $randomTelp = "089".randomDigits(10);
                     $randomEmail = strtolower(trim($table[$row]["USERNAME"]))."@".strtolower($userData->{"PRSH_ID"}).".com";
+                    $status_collect = empty($table[$row]["KODE_GROUP"]) ? 0 : 1;
+                    $status_tabungan = empty($table[$row]["KODE_TABUNGAN"]) ? 0 : 1;
                     //dd($randomTelp);
                     DB::table("coll_user")->insert(array(
                       'U_ID' => trim($table[$row]["USERNAME"]),
@@ -1685,6 +1740,9 @@ class CollectionController extends BaseController {
                       'U_TELPON' => $randomTelp,
                       'U_EMAIL' => $randomEmail,
                       'U_KODE_GROUP' => trim($table[$row]["KODE_GROUP"]),
+                      'U_KODE_TABUNGAN' => trim($table[$row]["KODE_TABUNGAN"]),
+                      'U_STATUS_COLLECT' => $status_collect,
+                      'U_STATUS_TAB' => $status_tabungan,
                       'U_STATUS' => 'USER_ACTIVE',
                       'U_REGISTRASI_TGL' => date("Y-m-d H:i:s"),
                       'U_NOTA_ID' => '0',
@@ -2279,6 +2337,9 @@ class CollectionController extends BaseController {
         return Redirect::to('login')->with('ctlError','Please login to access system');
       }
 
+        /* SET Execution time off */
+        ini_set('max_execution_time', 0);
+
       function bulan($bulan)
           {
           Switch ($bulan){
@@ -2318,10 +2379,11 @@ class CollectionController extends BaseController {
 
       $prshData = Input::get("collector");
       $tgl_awal = Input::get("tglAwal");
-      $tAwal = date("Y-m-d", strtotime($tgl_awal));
-
-      $tgl_akhir = Input::get("tglAkhir");
-      $tAkhir = date("Y-m-d", strtotime($tgl_akhir));
+        $awal = $tAwal = date("Y-m-d", strtotime($tgl_awal));
+        $tgl_akhir = Input::get("tglAkhir");
+        $akhir = $tAkhir = date("Y-m-d", strtotime($tgl_akhir));
+        $bln = date('m', strtotime($tgl_akhir));
+        $thn = date('Y', strtotime($tgl_akhir));
 
       //$jadwal = DB::select("SELECT A.*,B.*,DATE(B.BUD_STATUS_WAKTU) AS TGL_STATUS,C.* FROM coll_jadwal AS A INNER JOIN coll_batch_upload_data AS B ON A.BUD_ID = B.BUD_ID INNER JOIN coll_user AS C ON A.PRSH_ID = C.PRSH_ID WHERE (A.J_TGL BETWEEN '$tAwal' AND '$tAkhir') AND A.PRSH_ID = '$prshData' ORDER BY A.J_TGL, A.J_COLL_U_ID, A.BU_ID, A.BUD_ID");
             //}
@@ -2331,430 +2393,257 @@ class CollectionController extends BaseController {
 
       //****
 
-      if($rptType == "RPT_COLLECTING") {
-        $bln = date("m");
-        $thn = date("Y");
-        if(null !== Input::get("bln") && trim(Input::get("bln")) !== "")  $bln = Input::get("bln");
-        if(null !== Input::get("thn") && trim(Input::get("thn")) !== "")  $thn = Input::get("thn");
-
-        if(null !== Input::get("periode") && trim(Input::get("periode")) !== "") {
-          $arrPeriode = explode("-", Input::get("periode"));
-          $bln = $arrPeriode[1];
-          $thn = $arrPeriode[0];
+      if($prshData == "ALL") {
+            $jadwal = DB::table("coll_batch_upload_data")->join("coll_perusahaan", "coll_batch_upload_data.PRSH_ID", "=", "coll_perusahaan.PRSH_ID")->join("coll_jadwal", "coll_batch_upload_data.BUD_ID", "=", "coll_jadwal.BUD_ID")->whereBetween("coll_jadwal.J_TGL", array($tAwal, $tAkhir ))->get();
+        } else {
+            $jadwal = DB::table("coll_batch_upload_data")->join("coll_perusahaan", "coll_batch_upload_data.PRSH_ID", "=", "coll_perusahaan.PRSH_ID")->join("coll_jadwal", "coll_batch_upload_data.BUD_ID", "=", "coll_jadwal.BUD_ID")->whereBetween("coll_jadwal.J_TGL", array($tAwal, $tAkhir ))->where("coll_batch_upload_data.PRSH_ID", $prshData)->get();
         }
+        Excel::create('Pintech Mobile App Report', function($excel) use($rptType, $userData, $bln, $thn, $awal, $akhir, $prshData, $tAwal, $tAkhir, $jadwal) {
+            $rptName = getReferenceInfo("REPORT_TYPE", $rptType);
+            $excel->setTitle('Pintech Mobile App System Report '.$thn."_".$bln);
+            $excel->setCreator('Pintech Mobile App System')->setCompany($prshData);
+            $excel->setDescription('Laporan hasil collecting');
+            $excel->sheet('Sheet 1', function ($sheet) use($rptType, $userData, $bln, $thn, $awal, $akhir, $prshData, $tAwal, $tAkhir, $jadwal) {
+                $sheet->setOrientation('landscape');
+                $sheet->setCellValue('M1', PHPExcel_Shared_Date::PHPToExcel( gmmktime(0,0,0,date('m'),date('d'),date('Y')) ));
+                $sheet->getStyle('M1')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_DATE_XLSX15);
+                $sheet->setCellValue('A1', "PINTECH MOBILE APP REPORT DARI TANGGAL " . $awal . " -  " .$akhir);
+                $sheet->mergeCells('A1:AA1');
+                $sheet->getRowDimension('1')->setRowHeight(30);
+                $sheet->getColumnDimension('A')->setWidth(50);
+                $sheet->setCellValue('A2', "TANGGAL");
+                $sheet->getRowDimension('2')->setRowHeight(30);
+                $sheet->getColumnDimension('A')->setWidth(30);
+                $sheet->setCellValue('B2', "NAMA COLLECTOR");
+                $sheet->getColumnDimension('B')->setWidth(30);
+                $sheet->setCellValue('C2', "KODE GROUP");
+                $sheet->getColumnDimension('C')->setWidth(30);
+                $sheet->setCellValue('D2', "CAB");
+                $sheet->getColumnDimension('D')->setWidth(30);
+                $sheet->setCellValue('E2', "NO REKENING");
+                $sheet->getColumnDimension('E')->setWidth(35);
+                $sheet->setCellValue('F2', "ID NASABAH");
+                $sheet->getColumnDimension('F')->setWidth(35);
+                $sheet->setCellValue('G2', "NAMA NASABAH");
+                $sheet->getColumnDimension('G')->setWidth(50);
+                $sheet->setCellValue('H2', "ALAMAT");
+                $sheet->getColumnDimension('H')->setWidth(70);
+                $sheet->setCellValue('I2', "HP");
+                $sheet->getColumnDimension('I')->setWidth(20);
+                $sheet->setCellValue('J2', "AGUNAN");
+                $sheet->getColumnDimension('J')->setWidth(30);
+                $sheet->setCellValue('K2', "JML PINJAMAN");
+                $sheet->getColumnDimension('K')->setWidth(30);
+                $sheet->setCellValue('L2', "SALDO NOMINATIF");
+                $sheet->getColumnDimension('L')->setWidth(30);
+                $sheet->setCellValue('M2', "FP");
+                $sheet->getColumnDimension('M')->setWidth(25);
+                $sheet->setCellValue('N2', "FB");
+                $sheet->getColumnDimension('N')->setWidth(25);
+                $sheet->setCellValue('O2', "POKOK/BLN");
+                $sheet->getColumnDimension('O')->setWidth(35);
+                $sheet->setCellValue('P2', "BUNGA/BLN");
+                $sheet->getColumnDimension('P')->setWidth(35);
+                $sheet->setCellValue('Q2', "KOLEKTIBILITAS");
+                $sheet->getColumnDimension('Q')->setWidth(20);
+                $sheet->setCellValue('R2', "ANGSURAN KE");
+                $sheet->getColumnDimension('R')->setWidth(38);
+                $sheet->setCellValue('S2', "JANGKA WAKTU");
+                $sheet->getColumnDimension('S')->setWidth(35);
+                $sheet->setCellValue('T2', "TGL REALISASI");
+                $sheet->getColumnDimension('T')->setWidth(35);
+                $sheet->setCellValue('U2', "TGL UPLOAD");
+                $sheet->getColumnDimension('U')->setWidth(35);
+                $sheet->setCellValue('V2', "TGL JADWAL");
+                $sheet->getColumnDimension('V')->setWidth(35);
+                $sheet->setCellValue('W2', "TUNGG POKOK");
+                $sheet->getColumnDimension('W')->setWidth(40);
+                $sheet->setCellValue('X2', "TUNGG BUNGA");
+                $sheet->getColumnDimension('X')->setWidth(40);
+                $sheet->setCellValue('Y2', "TUNGG DENDA");
+                $sheet->getColumnDimension('Y')->setWidth(40);
+                $sheet->setCellValue('Z2', "TAGIHAN");
+                $sheet->getColumnDimension('Z')->setWidth(40);
+                $sheet->setCellValue('AA2', "STATUS");
+                $sheet->getColumnDimension('AA')->setWidth(40);
+                $sheet->setCellValue('AB2', "KETERANGAN");
+                $sheet->getColumnDimension('AB')->setWidth(35);
+                $sheet->setCellValue('AC2', "BAYAR POKOK");
+                $sheet->getColumnDimension('AC')->setWidth(35);
+                $sheet->setCellValue('AD2', "BAYAR BUNGA");
+                $sheet->getColumnDimension('AD')->setWidth(35);
+                $sheet->setCellValue('AE2', "BAYAR DENDA");
+                $sheet->getColumnDimension('AE')->setWidth(35);
+                $sheet->setCellValue('AF2', "TOTAL BAYAR");
+                $sheet->getColumnDimension('AF')->setWidth(35);
+                $sheet->setCellValue('AG2', "TANGGAL BAYAR");
+                $sheet->getColumnDimension('AG')->setWidth(35);
+                $sheet->setCellValue('AH2', "JAM BAYAR");
+                $sheet->getColumnDimension('AH')->setWidth(35);
+                $sheet->getStyle('A2:AI2')->getFont()->setBold(true);
+                $grandTotalBayar = 0;
+                $row = 3;
+                $tgl = '';
+                foreach ($jadwal as $key => $value) {
+                    if ($tgl == date('Y-m-d', strtotime($value->{'J_TGL'}))) {
+                        $sheet->setCellValue('A' . $row, '');
+                    } else {
+                        $sheet->setCellValue('A' . $row, tglIndo(date('Y-m-d', strtotime($value->{'J_TGL'})), "SHORT"));
+                        $sheet->getStyle('A')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+                        $sheet->getStyle('A' . $row)->getFont()->setBold(true);
+                    }
+                    $tgl = date('Y-m-d', strtotime($value->{'J_TGL'}));
 
-        //formalitas
-        $daysOfMonth = cal_days_in_month(CAL_GREGORIAN, date("m"), date("Y"));
-        $awal = date("Y")."-".date("m")."-01";
-        $akhir = date("Y")."-".date("m")."-".$daysOfMonth;
-        $collector = "ALL";
-      }
+                    $sheet->getStyle('B')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+                    $sheet->setCellValue('B' . $row, $value->{"J_COLL_U_ID"});
+                    $sheet->getStyle('C')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+                    $sheet->setCellValue('C' . $row, $value->{"BUD_KODE_GROUP"});
+                    $sheet->getStyle('D')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+                    $sheet->setCellValue('D' . $row, $value->{"BUD_CAB"});
+                    $sheet->getStyle('E')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+                    $sheet->setCellValue('E' . $row, $value->{"BUD_PINJ_ID"});
+                    $sheet->getStyle('F')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+                    $sheet->setCellValue('F' . $row, $value->{"BUD_CUST_ID"});
+                    $sheet->getStyle('G')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+                    $sheet->setCellValue('G' . $row, $value->{"BUD_CUST_NAMA"});
+                    $sheet->getStyle('H')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+                    $sheet->setCellValue('H' . $row, $value->{"BUD_CUST_ALAMAT"});
+                    $sheet->getStyle('I')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+                    $sheet->setCellValue('I' . $row, $value->{"BUD_CUST_PONSEL"});
+                    $sheet->getStyle('J')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+                    $sheet->setCellValue('J' . $row, $value->{"BUD_AGUNAN"});
+                    $sheet->getStyle('K')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+                    $sheet->setCellValue('K' . $row, $value->{"BUD_JML_PINJAMAN"});
+                    $sheet->getStyle('L')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+                    $sheet->setCellValue('L' . $row, date('d-m-Y', strtotime($value->{"BUD_JML_PINJAMAN"})));
+                    $sheet->getStyle('M')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+                    $sheet->setCellValue('M' . $row, $value->{"BUD_FP"});
+                    $sheet->getStyle('N')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+                    $sheet->setCellValue('N' . $row, $value->{"BUD_FB"});
+                    $sheet->getStyle('O')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+                    $sheet->setCellValue('O' . $row, $value->{"BUD_BLN_POKOK"});
+                    $sheet->getStyle('P')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+                    $sheet->setCellValue('P' . $row, $value->{"BUD_BLN_BUNGA"});
+                    $sheet->getStyle('Q')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+                    $sheet->setCellValue('Q' . $row, $value->{"BUD_KOLEKTIBILITAS"});
+                    $sheet->getStyle('R')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+                    $sheet->setCellValue('R' . $row, $value->{"BUD_PINJ_PERIODE"});
+                    $sheet->getStyle('S')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+                    $sheet->setCellValue('S' . $row, $value->{"BUD_PINJ_MASA_KREDIT"});
+                    $sheet->getStyle('T')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+                    $sheet->setCellValue('T' . $row, $value->{"BUD_PINJ_TGL_KREDIT"});
+                    $sheet->getStyle('U')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+                    $sheet->setCellValue('U' . $row, $value->{"BUD_PINJ_TGL_JADWAL"});
+                    $sheet->getStyle('V')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+                    $sheet->setCellValue('V' . $row, $value->{"BUD_TGL_DEPAN_JADWAL"});
+                    $sheet->getStyle('W')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+                    $sheet->setCellValue('W' . $row, $value->{"BUD_PINJ_POKOK"});
+                    $sheet->getStyle('X')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+                    $sheet->setCellValue('X' . $row, $value->{"BUD_PINJ_BUNGA"});
+                    $sheet->getStyle('Y')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+                    $sheet->setCellValue('Y' . $row, $value->{"BUD_PINJ_DENDA"});
+                    $sheet->getStyle('Z')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+                    $sheet->setCellValue('Z' . $row, $value->{"BUD_PINJ_JUMLAH"});
+                    $sheet->getStyle('AA')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+                    $sheet->setCellValue('AA' . $row, getReferenceInfo("STATUS_COLLECTION",$value->{"J_STATUS"}));
+                    if($value->{"J_STATUS"} == "ST_BAYAR" || $value->{"J_STATUS"} == "ST_BAYAR_PARSIAL") {
+                        $sheet->setCellValue('AB' . $row, tglIndo($value->{"BUD_PINJ_TGL_BAYAR"}, "SHORT"));
+                    $sheet->getStyle('AB')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+                    } else {
+                        $sheet->setCellValue('AB'.$row, "-");
+                    }
+                    $sheet->setCellValue('AB'.$row, $value->{"BUD_KETERANGAN"});
+                    $sheet->setCellValue('AC'.$row, $value->{"BUD_EDIT_POKOK"});
+                    $sheet->getStyle('AC')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+                    $sheet->setCellValue('AD'.$row, $value->{"BUD_EDIT_BUNGA"});
+                    $sheet->getStyle('AD')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+                    $sheet->setCellValue('AE'.$row, $value->{"BUD_EDIT_DENDA"});
+                    $sheet->getStyle('AE')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+                    $sheet->setCellValue('AF'.$row, $value->{"J_PINJ_JUMLAH_BAYAR"});
+                    $sheet->getStyle('AF')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+                    $sheet->setCellValue('AG'.$row, tglIndo($value->{"BUD_PINJ_TGL_BAYAR"}, "LONG"));
+                    $sheet->setCellValue('AH'.$row, date("H:i:s", strtotime($value->{"BUD_PINJ_TGL_BAYAR"})));
+                    $row++;
+                }
+                $sheet->mergeCells('A'.$row.':AF'.$row);
 
-      if($rptType == "RPT_COLLECTING_QUERY") {
-        $bln = date("m"); //formalitas
-        $bln = bulan($bln);
-        $thn = date("Y"); //formalitas
-
-        $collector = "ALL";
-        if(null !== Input::get("collector") && trim(Input::get("collector")) !== "")  $collector = Input::get("collector");
-
-        $awal = date("Y")."-".date("m")."-01";
-        $akhir = date("Y")."-".date("m")."-".getLastDate(date("m"), date("Y"));
-
-        if(null !== Input::get("awal") && trim(Input::get("awal")) !== "")    $awal = Input::get("awal");
-        if(null !== Input::get("akhir") && trim(Input::get("akhir")) !== "")  $akhir = Input::get("akhir");
-      }
-
-      Excel::create('Pintech Mobile App Report', function($excel) use($rptType, $userData, $bln, $thn, $awal, $akhir, $collector, $prshData, $tAwal, $tAkhir) {
-        $rptName = getReferenceInfo("REPORT_TYPE", $rptType);
-        // Set the title
-        $excel->setTitle('Pintech Mobile App System Report '.$thn."_".$bln);
-        $excel->setCreator('Pintech Mobile App System')->setCompany($userData->{"PRSH_ID"});
-        $excel->setDescription('Laporan hasil collecting');
-
-        $excel->sheet('Sheet 1', function ($sheet) use($rptType, $userData, $bln, $thn, $awal, $akhir, $collector, $prshData, $tAwal, $tAkhir) {
-          $sheet->setOrientation('landscape');
-          //$sheet->fromArray($data, NULL, 'A4');
-
-          //$sheet->setCellValue('A1', "Tanggal Laporan");
-          $sheet->setCellValue('M1', PHPExcel_Shared_Date::PHPToExcel( gmmktime(0,0,0,date('m'),date('d'),date('Y')) ));
-          $sheet->getStyle('M1')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_DATE_XLSX15);
-
-
-          $sheet->setCellValue('A1', "PINTECH MOBILE APP REPORT PER BULAN " .$bln. " " .$thn);
-          $sheet->mergeCells('A1:AA1');
-          $sheet->getRowDimension('1')->setRowHeight(30);
-          $sheet->getColumnDimension('A')->setWidth(50);
-
-          $sheet->setCellValue('A2', "TANGGAL");
-          $sheet->getRowDimension('2')->setRowHeight(30);
-          $sheet->getColumnDimension('A')->setWidth(30);
-          $sheet->setCellValue('B2', "USER ID");
-          $sheet->getColumnDimension('B')->setWidth(35);
-          $sheet->setCellValue('C2', "NAMA COLLECTOR");
-          $sheet->getColumnDimension('C')->setWidth(30);
-          $sheet->setCellValue('D2', "KODE GROUP");
-          $sheet->getColumnDimension('D')->setWidth(30);
-          $sheet->setCellValue('E2', "CAB");
-          $sheet->getColumnDimension('E')->setWidth(30);
-          $sheet->setCellValue('F2', "NO REKENING");
-          $sheet->getColumnDimension('F')->setWidth(35);
-          $sheet->setCellValue('G2', "ID NASABAH");
-          $sheet->getColumnDimension('G')->setWidth(35);
-          $sheet->setCellValue('H2', "NAMA NASABAH");
-          $sheet->getColumnDimension('H')->setWidth(50);
-          $sheet->setCellValue('I2', "ALAMAT");
-          $sheet->getColumnDimension('I')->setWidth(70);
-          $sheet->setCellValue('J2', "HP");
-          $sheet->getColumnDimension('J')->setWidth(20);
-          $sheet->setCellValue('K2', "AGUNAN");
-          $sheet->getColumnDimension('K')->setWidth(30);
-          $sheet->setCellValue('L2', "JML PINJAMAN");
-          $sheet->getColumnDimension('L')->setWidth(30);
-          $sheet->setCellValue('M2', "SALDO NOMINATIF");
-          $sheet->getColumnDimension('M')->setWidth(30);
-          $sheet->setCellValue('N2', "FP");
-          $sheet->getColumnDimension('N')->setWidth(25);
-          $sheet->setCellValue('O2', "FB");
-          $sheet->getColumnDimension('O')->setWidth(25);
-          $sheet->setCellValue('P2', "POKOK/BLN");
-          $sheet->getColumnDimension('P')->setWidth(35);
-          $sheet->setCellValue('Q2', "BUNGA/BLN");
-          $sheet->getColumnDimension('Q')->setWidth(35);
-          $sheet->setCellValue('R2', "KOLEKTIBILITAS");
-          $sheet->getColumnDimension('R')->setWidth(20);
-          $sheet->setCellValue('S2', "ANGSURAN KE");
-          $sheet->getColumnDimension('S')->setWidth(38);
-          $sheet->setCellValue('T2', "JANGKA WAKTU");
-          $sheet->getColumnDimension('T')->setWidth(35);
-          $sheet->setCellValue('U2', "TGL REALISASI");
-          $sheet->getColumnDimension('U')->setWidth(35);
-          $sheet->setCellValue('V2', "TGL UPLOAD");
-          $sheet->getColumnDimension('V')->setWidth(35);
-          $sheet->setCellValue('W2', "TGL JADWAL");
-          $sheet->getColumnDimension('W')->setWidth(35);
-          $sheet->setCellValue('X2', "TUNGG POKOK");
-          $sheet->getColumnDimension('X')->setWidth(40);
-          $sheet->setCellValue('Y2', "TUNGG BUNGA");
-          $sheet->getColumnDimension('Y')->setWidth(40);
-          $sheet->setCellValue('Z2', "TUNGG DENDA");
-          $sheet->getColumnDimension('Z')->setWidth(40);
-          $sheet->setCellValue('AA2', "TAGIHAN");
-          $sheet->getColumnDimension('AA')->setWidth(40);
-          $sheet->setCellValue('AB2', "STATUS");
-          $sheet->getColumnDimension('AB')->setWidth(40);
-          $sheet->setCellValue('AC2', "KETERANGAN");
-          $sheet->getColumnDimension('AC')->setWidth(35);
-          $sheet->setCellValue('AD2', "BAYAR POKOK");
-          $sheet->getColumnDimension('AD')->setWidth(35);
-          $sheet->setCellValue('AE2', "BAYAR BUNGA");
-          $sheet->getColumnDimension('AE')->setWidth(35);
-          $sheet->setCellValue('AF2', "BAYAR DENDA");
-          $sheet->getColumnDimension('AF')->setWidth(35);
-          $sheet->setCellValue('AG2', "TOTAL BAYAR");
-          $sheet->getColumnDimension('AG')->setWidth(35);
-          $sheet->setCellValue('AH2', "TANGGAL BAYAR");
-          $sheet->getColumnDimension('AH')->setWidth(35);
-          $sheet->setCellValue('AI2', "JAM BAYAR");
-          $sheet->getColumnDimension('AI')->setWidth(35);
-
-          $sheet->getStyle('A2:AI2')->getFont()->setBold(true);
-
-          $grandTotalBayar = 0;
-
-          $xlsRow = 3;
-          if($rptType == "RPT_COLLECTING") {
-            $daysOfMonth = cal_days_in_month(CAL_GREGORIAN, $bln, $thn);
-          }
-
-          if($rptType == "RPT_COLLECTING_QUERY") {
-            $arrDiff = dayDifference2($awal,$akhir,TRUE);
-            $daysOfMonth = $arrDiff["DAY"] + 1;
-          }
-
-          for($i=1; $i<=$daysOfMonth; $i++) {
-            if($rptType == "RPT_COLLECTING") {
-              $aDate = $thn."-".$bln."-".$i;
-              if(intval($aDate) < 10) $aDate = $thn."-".$bln."-0".$i;
-            }
-
-            if($rptType == "RPT_COLLECTING_QUERY") {
-              $aDate = addDaysWithDate($awal,($i-1),'Y-m-d');
-            }
-
-            //dd($tAwal);
-
-            if($collector == "ALL") {
-              $jadwal1 = DB::table("coll_jadwal")->join("coll_batch_upload_data", "coll_jadwal.BUD_ID", "=", "coll_batch_upload_data.BUD_ID")->whereBetween("coll_jadwal.J_TGL", array($tAwal, $tAkhir ))->get();
-            }
-            else {
-              $jadwal1 = DB::table("coll_jadwal")->join("coll_batch_upload_data", "coll_jadwal.BUD_ID", "=", "coll_batch_upload_data.BUD_ID")->whereBetween("coll_jadwal.J_TGL", array($tAwal, $tAkhir ))->where("coll_jadwal.PRSH_ID", $prshData)->get();
-            }
-
-            //
-            $aDate1 = $jadwal1[0]->{"J_TGL"};
-            // dd($jadwal1);
-
-
-            $sheet->setCellValue('A'.$xlsRow, tglIndo($aDate1,"SHORT"));
-            $sheet->getStyle('A')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
-            $sheet->getStyle('A'.$xlsRow)->getFont()->setBold(true);
-
-            $lastCollector = "";
-            $jmlPokokPerCollector = 0;
-            $jmlBungaPerCollector = 0;
-            $jmlDendaPerCollector = 0;
-            $jmlTagihanPerCollector = 0;
-            $jmlBayarPerCollector = 0;
-            $jmlTotalBayar = 0;
-
-            $jmlPokokPerTgl = 0;
-            $jmlBungaPerTgl = 0;
-            $jmlDendaPerTgl = 0;
-            $jmlTagihanPerTgl = 0;
-            $jmlBayarPerTgl = 0;
-            foreach ($jadwal1 as $aData) {
-              if($lastCollector == "")  $lastCollector = $aData->{"J_COLL_U_ID"};
-              if($aData->{"J_COLL_U_ID"}   != $lastCollector) {
-                $sheet->mergeCells('A'.$xlsRow.':J'.$xlsRow);
-                $sheet->setCellValue('W'.$xlsRow, "T O T A L");
-                $sheet->getStyle('W'.$xlsRow.':Z'.$xlsRow)->getFont()->setBold(true);
-                $sheet->setCellValue('X'.$xlsRow, $jmlPokokPerCollector);
-                //$sheet->getStyle('L')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
-                $sheet->setCellValue('Y'.$xlsRow, $jmlBungaPerCollector);
-                //$sheet->getStyle('M')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
-                $sheet->setCellValue('Z'.$xlsRow, $jmlDendaPerCollector);
-                //$sheet->getStyle('N')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
-                $sheet->setCellValue('AA'.$xlsRow, $jmlTagihanPerCollector);
-                //$sheet->getStyle('O')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
-                $sheet->setCellValue('AB'.$xlsRow, $jmlBayarPerCollector);
-                //$sheet->getStyle('P')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
-
-                $jmlPokokPerCollector = 0;
-                $jmlBungaPerCollector = 0;
-                $jmlDendaPerCollector = 0;
-                $jmlTagihanPerCollector = 0;
-                $jmlBayarPerCollector = 0;
-                $jmlTotalBayar = 0;
-                $lastCollector = $aData->{"J_COLL_U_ID"};
-                $xlsRow++;
-              }
-
-              $jmlPokokPerCollector += $aData->{"BUD_PINJ_POKOK"};
-              $jmlBungaPerCollector += $aData->{"BUD_PINJ_BUNGA"};
-              $jmlDendaPerCollector += $aData->{"BUD_PINJ_DENDA"};
-              $jmlTagihanPerCollector += $aData->{"BUD_PINJ_JUMLAH"};
-              $jmlBayarPerCollector += $aData->{"J_PINJ_JUMLAH_BAYAR"};
-
-              $jmlPokokPerTgl += $aData->{"BUD_PINJ_POKOK"};
-              $jmlBungaPerTgl += $aData->{"BUD_PINJ_BUNGA"};
-              $jmlDendaPerTgl += $aData->{"BUD_PINJ_DENDA"};
-              $jmlTagihanPerTgl += $aData->{"BUD_PINJ_JUMLAH"};
-              $jmlBayarPerTgl += $aData->{"J_PINJ_JUMLAH_BAYAR"};
-
-              $grandTotalBayar += $aData->{"J_PINJ_JUMLAH_BAYAR"};
-
-              //mulai start edit line setelah ini
-              $sheet->setCellValue('B'.$xlsRow, $aData->{"J_ID"});
-              $sheet->getStyle('B')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
-              $sheet->setCellValue('C'.$xlsRow, $aData->{"J_COLL_U_ID"});
-              //$sheet->getStyle('C')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
-              $sheet->setCellValue('D'.$xlsRow, $aData->{"BUD_KODE_GROUP"});
-              $sheet->getStyle('D')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
-              $sheet->setCellValue('E'.$xlsRow, $aData->{"BUD_CAB"});
-              $sheet->getStyle('E')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
-              $sheet->setCellValue('F'.$xlsRow, $aData->{"BUD_PINJ_ID"});
-              $sheet->getStyle('F')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
-              $sheet->setCellValue('G'.$xlsRow, $aData->{"BUD_CUST_ID"});
-              $sheet->getStyle('G')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
-              $sheet->setCellValue('H'.$xlsRow, $aData->{"BUD_CUST_NAMA"});
-             // $sheet->getStyle('E')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
-              $sheet->setCellValue('I'.$xlsRow, $aData->{"BUD_CUST_ALAMAT"});
-              $sheet->setCellValue('J'.$xlsRow, $aData->{"BUD_CUST_PONSEL"});
-              $sheet->setCellValue('K'.$xlsRow, $aData->{"BUD_AGUNAN"});
-              $sheet->setCellValue('L'.$xlsRow, $aData->{"BUD_JML_PINJAMAN"});
-              $sheet->getStyle('L')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
-              $sheet->setCellValue('M'.$xlsRow, $aData->{"BUD_SALDO_NOMINATIF"});
-              $sheet->getStyle('M')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
-              $sheet->setCellValue('N'.$xlsRow, $aData->{"BUD_FP"});
-              $sheet->setCellValue('O'.$xlsRow, $aData->{"BUD_FB"});
-              //$sheet->getStyle('H')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
-              $sheet->setCellValue('P'.$xlsRow, $aData->{"BUD_BLN_POKOK"});
-              $sheet->getStyle('P')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
-              $sheet->setCellValue('Q'.$xlsRow, $aData->{"BUD_BLN_BUNGA"});
-              $sheet->getStyle('Q')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
-              $sheet->setCellValue('R'.$xlsRow, $aData->{"BUD_KOLEKTIBILITAS"});
-              //end new
-              $sheet->setCellValue('S'.$xlsRow, $aData->{"BUD_PINJ_PERIODE"});
-              $sheet->getStyle('S')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
-              $sheet->setCellValue('T'.$xlsRow, $aData->{"BUD_PINJ_MASA_KREDIT"});
-              $sheet->getStyle('T')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
-              $sheet->setCellValue('U'.$xlsRow, tglIndo($aData->{"BUD_PINJ_TGL_KREDIT"},"SHORT"));
-             // $sheet->getStyle('U')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
-              $sheet->setCellValue('V'.$xlsRow, tglIndo($aData->{"BUD_PINJ_TGL_JADWAL"},"SHORT"));
-             // $sheet->getStyle('V')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
-              $sheet->setCellValue('W'.$xlsRow, $aData->{"BUD_TGL_DEPAN_JADWAL"});
-              //$sheet->getStyle('S')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
-              $sheet->setCellValue('X'.$xlsRow, $aData->{"BUD_PINJ_POKOK"});
-              $sheet->getStyle('X')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
-              $sheet->setCellValue('Y'.$xlsRow, $aData->{"BUD_PINJ_BUNGA"});
-              $sheet->getStyle('Y')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
-              $sheet->setCellValue('Z'.$xlsRow, $aData->{"BUD_PINJ_DENDA"});
-              $sheet->getStyle('Z')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
-              $sheet->setCellValue('AA'.$xlsRow, $aData->{"BUD_PINJ_JUMLAH"});
-              $sheet->getStyle('AA')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
-
-
-              if($aData->{"J_STATUS"} == "ST_BAYAR" || $aData->{"J_STATUS"} == "ST_BAYAR_PARSIAL") {
-                $sheet->setCellValue('AB'.$xlsRow, tglIndo($aData->{"BUD_PINJ_TGL_BAYAR"},"SHORT"));
-                $sheet->getStyle('AB')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
-              }
-              else {
-                $sheet->setCellValue('AB'.$xlsRow, "-");
-              }
-
-              $sheet->setCellValue('AB'.$xlsRow, getReferenceInfo("STATUS_COLLECTION",$aData->{"J_STATUS"}));
-              //$sheet->getStyle('R')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
-              $sheet->setCellValue('AC'.$xlsRow, $aData->{"BUD_KETERANGAN"});
-
-              $sheet->setCellValue('AD'.$xlsRow, $aData->{"BUD_EDIT_POKOK"});
-              $sheet->getStyle('AD')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
-
-              $sheet->setCellValue('AE'.$xlsRow, $aData->{"BUD_EDIT_BUNGA"});
-              $sheet->getStyle('AE')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
-
-              $sheet->setCellValue('AF'.$xlsRow, $aData->{"BUD_EDIT_DENDA"});
-              $sheet->getStyle('AF')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
-
-              $sheet->setCellValue('AG'.$xlsRow, $aData->{"J_PINJ_JUMLAH_BAYAR"});
-              $sheet->getStyle('AG')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
-
-              $sheet->setCellValue('AH'.$xlsRow, tglIndo($aData->{"BUD_PINJ_TGL_BAYAR"}, "LONG"));
-
-              $sheet->setCellValue('AI'.$xlsRow, date("H:i:s", strtotime($aData->{"BUD_PINJ_TGL_BAYAR"})));
-
-              $xlsRow++;
-            }
-            //last row per collector
-            $sheet->mergeCells('A'.$xlsRow.':J'.$xlsRow);
-            $sheet->setCellValue('W'.$xlsRow, "T O T A L");
-            $sheet->getStyle('X'.$xlsRow.':AA'.$xlsRow)->getFont()->setBold(true);
-            $sheet->setCellValue('X'.$xlsRow, $jmlPokokPerCollector);
-            //$sheet->getStyle('L')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
-            $sheet->setCellValue('Y'.$xlsRow, $jmlBungaPerCollector);
-            //$sheet->getStyle('M')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
-            $sheet->setCellValue('Z'.$xlsRow, $jmlDendaPerCollector);
-            //$sheet->getStyle('N')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
-            $sheet->setCellValue('AA'.$xlsRow, $jmlTagihanPerCollector);
-            //$sheet->getStyle('O')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
-            $sheet->setCellValue('AG'.$xlsRow, $jmlBayarPerCollector);
-            //$sheet->getStyle('P')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
-
-            $jmlPokokPerCollector = 0;
-            $jmlBungaPerCollector = 0;
-            $jmlDendaPerCollector = 0;
-            $jmlTagihanPerCollector = 0;
-            $jmlBayarPerCollector = 0;
-            $lastCollector = "";
-            $xlsRow++;
-            $sheet->mergeCells('A'.$xlsRow.':I'.$xlsRow);
-            $sheet->setCellValue('V'.$xlsRow, "TOTAL PER ".strtoupper(tglIndo($aDate,"SHORT")));
-            $sheet->getStyle('V'.$xlsRow.':W'.$xlsRow)->getFont()->setBold(true);
-            $sheet->mergeCells('V'.$xlsRow.':W'.$xlsRow);
-            $sheet->setCellValue('X'.$xlsRow, $jmlPokokPerTgl);
-            //$sheet->getStyle('L')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
-            $sheet->setCellValue('Y'.$xlsRow, $jmlBungaPerTgl);
-            //$sheet->getStyle('M')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
-            $sheet->setCellValue('Z'.$xlsRow, $jmlDendaPerTgl);
-            //$sheet->getStyle('N')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
-            $sheet->setCellValue('W'.$xlsRow, $jmlTagihanPerTgl);
-            //$sheet->getStyle('O')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
-            $sheet->setCellValue('AA'.$xlsRow, $jmlBayarPerTgl);
-            //$sheet->getStyle('P')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
-            $sheet->setCellValue('AG'.$xlsRow, $grandTotalBayar);
-
-            $xlsRow++;
-          }
-          $sheet->mergeCells('A'.$xlsRow.':AF'.$xlsRow);
-
-          $sheet->getStyle("A".$xlsRow.":B".$xlsRow)->applyFromArray(array(
-            'alignment' => array(
-              'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
-            )
-          ));
-
-          $sheet->setCellValue('A'.$xlsRow, " T  O  T  A  L ");
-          $sheet->getStyle('A'.$xlsRow.':AF'.$xlsRow)->getFont()->setBold(true);
-          $sheet->setCellValue('AG'.$xlsRow, $grandTotalBayar);
-
-          // Set style for header row using alternative method
-
-           $sheet->getStyle('A1:AI1')->applyFromArray(
-            array(
-              'font'    => array(
-                'bold'      => true,
-                'size'=>12
-              ),
-              'alignment' => array(
+            $sheet->getStyle("A".$row.":B".$row)->applyFromArray(array(
+                'alignment' => array(
                 'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
-                'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER
-              )
-              )
-          );
+                )
+            ));
 
-          $sheet->getStyle('A2:AI2')->applyFromArray(
-            array(
-              'font'    => array(
-                'bold'      => true
-              ),
-              'alignment' => array(
-                'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
-                'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER
-              ),
-              'borders' => array(
-                'top'     => array(
-                  'style' => PHPExcel_Style_Border::BORDER_THICK
+            $sheet->setCellValue('A'.$row, " T  O  T  A  L ");
+            $sheet->getStyle('A'.$row.':AF'.$row)->getFont()->setBold(true);
+            $sheet->setCellValue('AG'.$row, $grandTotalBayar);
+
+            // Set style for header row using alternative method
+
+            $sheet->getStyle('A1:AI1')->applyFromArray(
+                array(
+                'font'    => array(
+                    'bold'      => true,
+                    'size'=>12
                 ),
-                'bottom'     => array(
-                  'style' => PHPExcel_Style_Border::BORDER_THICK
+                'alignment' => array(
+                    'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+                    'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER
                 )
-              ),
-              'fill' => array(
-                'type'       => PHPExcel_Style_Fill::FILL_GRADIENT_LINEAR,
-                'rotation'   => 90,
-                'startcolor' => array(
-                  'argb' => 'FFA0A0A0'
+                )
+            );
+
+            $sheet->getStyle('A2:AI2')->applyFromArray(
+                array(
+                'font'    => array(
+                    'bold'      => true
                 ),
-                'endcolor'   => array(
-                  'argb' => 'FFFFFFFF'
+                'alignment' => array(
+                    'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+                    'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER
+                ),
+                'borders' => array(
+                    'top'     => array(
+                    'style' => PHPExcel_Style_Border::BORDER_THICK
+                    ),
+                    'bottom'     => array(
+                    'style' => PHPExcel_Style_Border::BORDER_THICK
+                    )
+                ),
+                'fill' => array(
+                    'type'       => PHPExcel_Style_Fill::FILL_GRADIENT_LINEAR,
+                    'rotation'   => 90,
+                    'startcolor' => array(
+                    'argb' => 'FFA0A0A0'
+                    ),
+                    'endcolor'   => array(
+                    'argb' => 'FFFFFFFF'
+                    )
                 )
-              )
-            )
-          );
-
-          $sheet->getStyle('A2')->applyFromArray(
-            array(
-              'borders' => array(
-                'left'     => array(
-                  'style' => PHPExcel_Style_Border::BORDER_THIN
                 )
-              )
-            )
-          );
+            );
 
-          $sheet->getStyle('AI2')->applyFromArray(
-            array(
-              'borders' => array(
-                'right'     => array(
-                  'style' => PHPExcel_Style_Border::BORDER_THIN
+            $sheet->getStyle('A2')->applyFromArray(
+                array(
+                'borders' => array(
+                    'left'     => array(
+                    'style' => PHPExcel_Style_Border::BORDER_THIN
+                    )
                 )
-              )
-            )
-          );
-        });
+                )
+            );
 
-        $excel->setActiveSheetIndex(0);
-      })->download('xlsx');
+            $sheet->getStyle('AI2')->applyFromArray(
+                array(
+                'borders' => array(
+                    'right'     => array(
+                    'style' => PHPExcel_Style_Border::BORDER_THIN
+                    )
+                )
+                )
+            );
+            });
+            $excel->setActiveSheetIndex(0);
+        })->download('xlsx');
     }
     else {
       Session::flush();
@@ -2887,7 +2776,7 @@ class CollectionController extends BaseController {
       else {
         $jadwal = DB::select("SELECT A.*,B.*,DATE(B.BUD_STATUS_WAKTU) AS TGL_STATUS,C.* FROM coll_jadwal AS A INNER JOIN coll_batch_upload_data AS B ON A.BUD_ID = B.BUD_ID INNER JOIN coll_user AS C ON A.J_COLL_U_ID = C.U_ID WHERE (A.J_TGL BETWEEN ? AND ?) AND A.PRSH_ID = ? AND A.J_COLL_U_ID = ? ORDER BY A.J_TGL, A.J_COLL_U_ID, A.BU_ID, A.BUD_ID", array($awal, $akhir, $userData->{"PRSH_ID"}, $collector));
       }
-      // var_dump($jadwal);
+      // var_var_dump($jadwal);
       return View::make('dashboard.collection.laporan-listview')
             ->with("ctlUserData", $userData)
             ->with('jadwal', $jadwal)
@@ -3196,9 +3085,9 @@ class CollectionController extends BaseController {
               $sheet->getStyle('S')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
               $sheet->setCellValue('T'.$xlsRow, $aData->{"BUD_PINJ_MASA_KREDIT"});
               $sheet->getStyle('T')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
-              $sheet->setCellValue('U'.$xlsRow, tglIndo($aData->{"BUD_PINJ_TGL_KREDIT"},"SHORT"));
+              $sheet->setCellValue('U'.$xlsRow, $aData->{"BUD_PINJ_TGL_KREDIT"});
              // $sheet->getStyle('U')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
-              $sheet->setCellValue('V'.$xlsRow, tglIndo($aData->{"BUD_PINJ_TGL_JADWAL"},"SHORT"));
+              $sheet->setCellValue('V'.$xlsRow, $aData->{"BUD_PINJ_TGL_JADWAL"});
              // $sheet->getStyle('V')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
               $sheet->setCellValue('W'.$xlsRow, $aData->{"BUD_TGL_DEPAN_JADWAL"});
               //$sheet->getStyle('S')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
@@ -3704,6 +3593,17 @@ class CollectionController extends BaseController {
 
         $uploadFile = "uploads/report-".$userData->{"U_ID"}."-".substr(md5(date("YmdHis")),0,10).".".$fileExt;
         if(move_uploaded_file($fileTmp,$uploadFile) == TRUE) {
+
+          /* Cek Sisa Kredit */
+          $sisa = DB::table("coll_batch_upload_data")->where("PRSH_ID", $userData->PRSH_ID)
+                    ->where('BUD_PINJ_ID', $budData->BUD_PINJ_ID)
+                    ->whereNotIn('BUD_ID', [$budData->BUD_ID])
+                    ->orderBy('created_at', 'DESC')->first();
+          $sisa_kredit = $budData->BUD_SISA_KREDIT - 1;
+          if ($sisa) {
+              $sisa_kredit = $sisa->BUD_SISA_KREDIT - 1;
+          }
+
           $opr = DB::table("coll_batch_upload_data")->where("BUD_ID", Input::get("budId"))->update(array(
             'BUD_EDIT_POKOK' => $editPokok,
             'BUD_EDIT_BUNGA' => $editBunga,
@@ -3716,7 +3616,8 @@ class CollectionController extends BaseController {
             'BUD_LOKASI_LAT' => Input::get("latitude"),
             'BUD_LOKASI_LNG' => Input::get("longitude"),
             'BUD_IMG_PATH' => $uploadFile,
-            'BUD_NO_NOTA' => Input::get("no_nota")
+            'BUD_NO_NOTA' => Input::get("no_nota"),
+            'BUD_SISA_KREDIT' => $userData->{'USERBIGID'},
           ));
 
           $dateNow = date("Y-m-d");
@@ -3904,7 +3805,8 @@ class CollectionController extends BaseController {
             'BUD_LOKASI_LAT' => Input::get("latitude"),
             'BUD_LOKASI_LNG' => Input::get("longitude"),
             'BUD_IMG_PATH' => $uploadFile,
-            'BUD_NO_NOTA' => Input::get("no_nota")
+            'BUD_NO_NOTA' => Input::get("no_nota"),
+            'BUD_SISA_KREDIT' => $userData->{'USERBIGID'},
           ));
 
           $dateNow = date("Y-m-d");
@@ -3915,6 +3817,7 @@ class CollectionController extends BaseController {
               'J_STATUS' => $statusPenagihan,
               'J_PINJ_JUMLAH_BAYAR' => $jmlBayar,
               'J_COLL_U_ID' => Input::get("userId"),
+                'J_COLL_U_BIGID' => $userData->{'USERBIGID'},
             ));
 
           if($statusPenagihan == "ST_BAYAR_NON_TARGET") {

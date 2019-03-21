@@ -413,7 +413,7 @@
               </div>
             </div>
             <?php
-          } else {
+          } else if($userData->{"U_GROUP_ROLE"} == "GR_ADMINISTRATOR") {
             $role = 'GR_ADMINISTRATOR';
             $prshData = DB::table("coll_user")->where("U_GROUP_ROLE", $role)->first();
             //if($prshData->{"PRSH_IMG_PATH"} == "" || $prshData->{"PRSH_IMG_PATH"} == "-") {
@@ -433,12 +433,38 @@
                 </div>
               </div>
             </div>
-         <?php }
-          ?>
+         <?php } else { ?>
+            <div class="sidebar-user" style="background-color: #FAF9F5 !important">
+              <div class="category-content">
+                <div class="media">
+                  <a href="#" class="media-left"><img src="<?= asset_url()."/assets/images/pintech.png" ?>" class="img-circle img-sm" width="500px;" alt="<?php echo Session::get("SESSION_COMPANY_NAME"); ?>"></a>
+                  <div class="media-body" style="color: #000">
+                    <span class="media-heading text-semibold">Direksi Page</span>
+                    <div class="text-size-mini text-muted" style="color: #000">
+                      Pintech Mobile Apps
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+         <?php } ?>
           <!-- Main navigation -->
           <div class="sidebar-category sidebar-category-visible">
             <div class="category-content no-padding" style="color: white;">
               <ul class="navigation navigation-main navigation-accordion">
+                <?php if ($ctlUserData->{"U_GROUP_ROLE"} == "GR_DIREKSI") : ?>
+                  <li class="navigation-header" style="color: white"><span>COLLECTION</span> <i class="icon-menu" title="Collection"></i></li>
+                  <li <?php if(isset($ctlNavMenu) && $ctlNavMenu == "mCollDashboard") echo "class='active'"; ?>>
+                    <a href="<?php echo asset_url(); ?>/dashboard"><i class="icon-meter-fast"  style="color: white"></i>
+                      <span  style="color: white">Dashboard</span>
+                    </a>
+                  </li>
+                  <li <?php if(isset($ctlNavMenu) && $ctlNavMenu == "mCollMonitoring") echo "class='active'"; ?>>
+                    <a href="<?php echo asset_url(); ?>/direksi"><i class=" icon-location4"  style="color: white"></i>
+                      <span  style="color: white">Monitoring</span>
+                    </a>
+                  </li>
+                <?php endif ?>
                 <?php
                 if($ctlUserData->{"U_GROUP_ROLE"} == "GR_SUPERVISOR") {
                   ?>
@@ -461,6 +487,11 @@
                   <li <?php if(isset($ctlNavMenu) && $ctlNavMenu == "mCollTabungan") echo "class='active'"; ?>>
                     <a href="<?php echo asset_url(); ?>/tabungan"><i class=" icon-calendar2"  style="color: white"></i>
                       <span  style="color: white">Tabungan</span>
+                    </a>
+                  </li>
+                  <li <?php if(isset($ctlNavMenu) && $ctlNavMenu == "mCollMarketing") echo "class='active'"; ?>>
+                    <a href="<?php echo asset_url(); ?>/marketing"><i class="icon-briefcase"  style="color: white"></i>
+                      <span  style="color: white">Marketing</span>
                     </a>
                   </li>
                   <li <?php if(isset($ctlNavMenu) && $ctlNavMenu == "mCollMonitoring") echo "class='active'"; ?>>

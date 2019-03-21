@@ -75,6 +75,7 @@
                 <th style="text-align:center" width="18%">Nama Nasabah</th>
                 <th style="text-align:center" width="15%">Masa Kredit</th>
                 <th style="text-align:center" width="15%">Periode</th>
+                <th style="text-align:center" width="15%">Sisa Kredit</th>
                 <th style="text-align:center" width="25%">Alamat Nasabah</th>
                 <th style="text-align:center" width="15%">No.Ponsel</th>
                 <th style="text-align:center" width="15%">Agunan</th>
@@ -108,7 +109,7 @@
                   <tr>
                     <td style="text-align: center;"><?php echo $aData->{"BUD_CAB"}; ?></td>
                     <td style="text-align: center;"><?php echo $aData->{"BUD_KODE_GROUP"}; ?></td>
-                    <td style="text-align:center" ><?php echo $aData->{"U_ID"}; ?></td>
+                    <td style="text-align:center" ><?php echo $aData->{"USERBIGID"}; ?></td>
                     <td style="text-align:left" ><?php echo $aData->{"U_NAMA"}; ?></td>
                     <td style="text-align:center" ><?php echo $aData->{"BUD_PINJ_ID"}; ?></td>
                     <td style="text-align:center" ><?php echo $aData->{"R_INFO"}; ?></td>
@@ -116,6 +117,7 @@
                     <td style="text-align:left" ><?php echo $aData->{"BUD_CUST_NAMA"}; ?></td>
                     <td style="text-align:center" ><?php echo $aData->{"BUD_PINJ_MASA_KREDIT"}; ?> Bulan</td>
                     <td style="text-align:center" >Ke-<?php echo $aData->{"BUD_PINJ_PERIODE"}."/".$aData->{"BUD_PINJ_MASA_KREDIT"}; ?></td>
+                    <td style="text-align:left" ><?php echo $aData->{"BUD_SISA_KREDIT"}; ?></td>
                     <td style="text-align:left" ><?php echo $aData->{"BUD_CUST_ALAMAT"}; ?></td>
                     <td style="text-align:center" ><?php echo $aData->{"BUD_CUST_PONSEL"}; ?></td>
                     <td style="text-align:center" ><?php echo $aData->{"BUD_AGUNAN"}; ?></td>

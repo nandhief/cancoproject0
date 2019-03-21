@@ -288,6 +288,7 @@ class UserController extends BaseController {
 		$userFind = DB::select("SELECT * FROM coll_user WHERE USERBIGID = '$userBigId' AND U_ID = '$userId' AND U_KODE_GROUP = '$kode_group' AND PRSH_ID = '$prshId'");
 
 		if(Input::get('userGroup') === "GR_SUPERVISOR") {
+            if (Input::get("userPrsh") === '-') return composeReply("ERROR", "User Supervisor harus ada perusahaan");
 			if(empty($userFind)) {
 				if(count($allspv) < $prshMax) {
 				$opr = DB::table("coll_user")->insert(array(
@@ -311,6 +312,7 @@ class UserController extends BaseController {
 				return composeReply("ERROR", "User ID,Kode Group sudah pernah digunkanan");
 			}
 		} elseif(Input::get('userGroup') === "GR_COLLECTOR") {
+            if (Input::get("userPrsh") === '-') return composeReply("ERROR", "User Kolektor harus ada perusahaan");
 			if(empty($userFind)) {
 				if(count($allColl) < $collMax) {
 						$opr = DB::table("coll_user")->insert(array(
@@ -342,6 +344,25 @@ class UserController extends BaseController {
 			//if(count($allAdmin) > 0) {
 				$opr = DB::table("coll_user")->insert(array(
 						'U_ID' => $userId,
+						'U_NAMA' => trim(Input::get("userNama")),
+						'U_GROUP_ROLE' => trim(Input::get("userGroup")),
+						'U_TELPON' => $userPonsel,
+						'U_EMAIL' => $userEmail,
+						'U_PASSWORD' => trim(Input::get("userPass")),
+						'U_PASSWORD_HASH' => md5($userId.Input::get("userPass")),
+						'U_STATUS' => 'USER_ACTIVE',
+						'PRSH_ID' => trim(Input::get("userPrsh"))
+				));
+		    //} else {
+		    //	return composeReply("ERROR", "Tester ");
+		    //}
+		}
+
+		if(trim(Input::get('userGroup')) === "GR_DIREKSI") {
+			//if(count($allAdmin) > 0) {
+				$opr = DB::table("coll_user")->insert(array(
+						'U_ID' => $userId,
+                        'USERBIGID' => Input::get("userBigId"),
 						'U_NAMA' => trim(Input::get("userNama")),
 						'U_GROUP_ROLE' => trim(Input::get("userGroup")),
 						'U_TELPON' => $userPonsel,
